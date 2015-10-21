@@ -1,11 +1,10 @@
-﻿using Assets.src.mediators;
-using Assets.src.model;
+﻿using Assets.src.services;
+using Assets.src.signals;
 using UnityEngine;
 using strange.extensions.command.api;
 using strange.extensions.command.impl;
 using strange.extensions.context.api;
 using strange.extensions.context.impl;
-using Assets.src.services;
 
 namespace Assets.src.contexts {
     public class GameContext : MVCSContext {
@@ -40,18 +39,18 @@ namespace Assets.src.contexts {
             
 			//signals
             injectionBinder.Bind<OnClickSignal>().ToSingleton();
-            injectionBinder.Bind<IMapModel>().To<MapModel>();
+            //injectionBinder.Bind<IMapModel>().To<MapModel>();
             
 			//services
             injectionBinder.Bind<IInputService>().To<InputService>().ToSingleton();
 			injectionBinder.Bind<IGameDataService>().To<GameDataService>().ToSingleton();
 			injectionBinder.Bind<ICooldownService>().To<CooldownService>().ToSingleton();
             //mediators
-			mediationBinder.Bind<GameView>().To<GameMediator>();
-			mediationBinder.Bind<MapView>().To<MapMediator>();
-            mediationBinder.Bind<RoadView>().To<RoadMediator>();
+			//mediationBinder.Bind<GameView>().To<GameMediator>();
+			//mediationBinder.Bind<MapView>().To<MapMediator>();
+            //mediationBinder.Bind<RoadView>().To<RoadMediator>();
             //singletons
-            commandBinder.Bind<OnBuildRoadSignal>().To<BuildRoadCommand>();
+            //commandBinder.Bind<OnBuildRoadSignal>().To<BuildRoadCommand>();
 
         }
 
