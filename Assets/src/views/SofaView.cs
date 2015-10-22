@@ -1,9 +1,12 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using strange.extensions.mediation.impl;
+using UnityEngine;
 
-public class SofaView : MonoBehaviour {
+namespace Assets.src.views {
+    public class SofaView : View {
 
-    public void DestroyView() {
-        Destroy(this);
+        public void DestroyView() {
+            Destroy(this);
+        }
     }
 }

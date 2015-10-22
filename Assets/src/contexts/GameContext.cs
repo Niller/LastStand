@@ -1,10 +1,18 @@
-﻿using Assets.src.services;
+﻿using Assets.src.battle;
+using Assets.src.commands;
+using Assets.src.mediators;
+using Assets.src.services;
 using Assets.src.signals;
+using Assets.src.utils;
+using Assets.src.views;
+using strange.examples.strangerocks;
 using UnityEngine;
 using strange.extensions.command.api;
 using strange.extensions.command.impl;
 using strange.extensions.context.api;
 using strange.extensions.context.impl;
+using strange.extensions.pool.api;
+using strange.extensions.pool.impl;
 
 namespace Assets.src.contexts {
     public class GameContext : MVCSContext {
@@ -15,15 +23,15 @@ namespace Assets.src.contexts {
 
         public GameContext(MonoBehaviour view) : base(view) {
             rootContext = view as RootContext;
-			InitServices();
-            
+            InitServices();
+
         }
 
 
-        override public IContext Start() {
+        public override IContext Start() {
             instance = this;
             base.Start();
-            
+
             return this;
         }
 
@@ -33,34 +41,51 @@ namespace Assets.src.contexts {
             injectionBinder.Unbind<ICommandBinder>();
             injectionBinder.Bind<ICommandBinder>().To<SignalCommandBinder>().ToSingleton();
         }
-		
+
 
         protected override void mapBindings() {
             
-			//signals
-            injectionBinder.Bind<OnClickSignal>().ToSingleton();
-            //injectionBinder.Bind<IMapModel>().To<MapModel>();
-            
-			//services
-            injectionBinder.Bind<IInputService>().To<InputService>().ToSingleton();
-			injectionBinder.Bind<IGameDataService>().To<GameDataService>().ToSingleton();
-			injectionBinder.Bind<ICooldownService>().To<CooldownService>().ToSingleton();
-            //mediators
-			//mediationBinder.Bind<GameView>().To<GameMediator>();
-			//mediationBinder.Bind<MapView>().To<MapMediator>();
-            //mediationBinder.Bind<RoadView>().To<RoadMediator>();
+
             //singletons
-            //commandBinder.Bind<OnBuildRoadSignal>().To<BuildRoadCommand>();
+            injectionBinder.Bind<IGameManager>().To<GameManager>().ToSingleton();
+            injectionBinder.Bind<IBattleManager>().To<BattleManager>().ToSingleton();
 
+            //signals
+            injectionBinder.Bind<OnClickSignal>().ToSingleton();
+            commandBinder.Bind<RegisterTargetSignal>().To<RegisterTargetCommand>();
+            commandBinder.Bind<UnregisterTargetSignal>().To<UnregisterTargetCommand>();
+            commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
+            //pools
+            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_MELEE);
+            //services
+            injectionBinder.Bind<IInputService>().To<InputService>().ToSingleton();
+            injectionBinder.Bind<IGameDataService>().To<GameDataService>().ToSingleton();
+            injectionBinder.Bind<ICooldownService>().To<CooldownService>().ToSingleton();
+
+            
+            
+
+            //mediators
+            mediationBinder.Bind<SofaView>().To<SofaMediator>();
+            mediationBinder.Bind<UnitView>().To<UnitMediator>();
         }
 
-		protected void InitServices() {
-			rootContext.AddService(injectionBinder.GetInstance<IInputService>());
-			rootContext.AddService(injectionBinder.GetInstance<ICooldownService>());
-		}
-
-        public void BindRoad() {
-            //mediationBinder.Bind<RoadView>().To<RoadMediator>();
+        protected void InitServices() {
+            rootContext.AddService(injectionBinder.GetInstance<IInputService>());
+            rootContext.AddService(injectionBinder.GetInstance<ICooldownService>());
         }
+
+        protected override void postBindings() {
+            
+            IPool<GameObject> enemyMeleePool = injectionBinder.GetInstance<IPool<GameObject>>(UnitTypes.ENEMY_MELEE);
+            enemyMeleePool.instanceProvider = new ResourceInstanceProvider("prefabs/EnemyMeleeUnit",
+                LayerMask.NameToLayer("enemy"));
+            enemyMeleePool.inflationType = PoolInflationType.INCREMENT;
+            
+            injectionBinder.GetInstance<IBattleManager>().Initialize();
+            base.postBindings();
+        }
+
+        
     }
 }
