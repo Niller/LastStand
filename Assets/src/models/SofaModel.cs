@@ -3,7 +3,6 @@ using Assets.Common.Extensions;
 using Assets.src.battle;
 using Assets.src.data;
 using Assets.src.mediators;
-using Assets.src.views;
 using UnityEngine;
 using UnityEngine.Assertions;
 

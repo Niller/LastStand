@@ -62,6 +62,7 @@ namespace Assets.src.contexts {
             //mediators
             mediationBinder.Bind<SofaView>().To<SofaMediator>();
             mediationBinder.Bind<UnitView>().To<UnitMediator>();
+            mediationBinder.Bind<BarracksView>().To<BarracksMediator>();
         }
 
         protected void InitServices() {
@@ -70,14 +71,14 @@ namespace Assets.src.contexts {
         }
 
         protected override void postBindings() {
-            
+            base.postBindings();
             IPool<GameObject> enemyMeleePool = injectionBinder.GetInstance<IPool<GameObject>>(UnitTypes.ENEMY_MELEE);
             enemyMeleePool.instanceProvider = new ResourceInstanceProvider("prefabs/EnemyMeleeUnit",
                 LayerMask.NameToLayer("enemy"));
             enemyMeleePool.inflationType = PoolInflationType.INCREMENT;
             
             injectionBinder.GetInstance<IBattleManager>().Initialize();
-            base.postBindings();
+            
         }
 
         

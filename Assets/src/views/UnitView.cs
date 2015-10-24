@@ -3,7 +3,7 @@ using strange.extensions.mediation.impl;
 using UnityEngine;
 
 namespace Assets.src.views {
-    public class UnitView : View {
+    public class UnitView : BaseView {
         public void SetGoal(Vector3 screenPosition) {
             var ray = Camera.main.ScreenPointToRay(screenPosition);
             RaycastHit rayCastInfo;

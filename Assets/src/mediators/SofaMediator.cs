@@ -19,6 +19,7 @@ namespace Assets.src.mediators {
         }
 
         public override void OnRemove() {
+            base.OnRemove();
             Model.OnDestroyed -= Dispose;
         }
 

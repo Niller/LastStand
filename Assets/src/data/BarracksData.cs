@@ -1,11 +1,12 @@
-﻿using Assets.Common.Extensions;
+﻿using System;
+using Assets.Common.Extensions;
 using Assets.src.utils;
 using UnityEngine;
 
 namespace Assets.src.data {
-    public class BarracksData : MonoBehaviour {
+    [Serializable]
+    public class BarracksData {
         public UnitTypes produceUnitType;
-        //public float trainingSpeed;
         public int level;
         public BarracksUpgradeData[] upgradeData;
     }

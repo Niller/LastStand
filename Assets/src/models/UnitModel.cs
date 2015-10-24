@@ -29,7 +29,6 @@ namespace Assets.src.models {
             InjectionBinder.injector.Inject(targetSelector);
             targetSelector.SetProvider(targetProvider);
             targetSelector.SetCurrentUnit(this);
-            Debug.Log(targetProvider.GetTargets().Count);
         }
 
         protected override void InitializeData() {
