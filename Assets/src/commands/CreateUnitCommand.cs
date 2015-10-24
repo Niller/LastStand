@@ -1,4 +1,5 @@
 using Assets.src.data;
+using Assets.src.mediators;
 using Assets.src.utils;
 using strange.extensions.command.impl;
 using strange.extensions.pool.api;
@@ -36,6 +37,9 @@ namespace Assets.src.commands {
             IPool<GameObject> currentPool = injectionBinder.GetInstance<IPool<GameObject>>(Type);
             if (currentPool != null) {
                 GameObject unitGO = currentPool.GetInstance();
+                var unitInformer = unitGO.AddComponent<UnitInformer>();
+                unitInformer.data = Data;
+                unitInformer.isDefender = IsDefender;
                 unitGO.SetActive(true);
                 unitGO.transform.position = Position;
                 //unitGO.transform.parent =

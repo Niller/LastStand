@@ -44,16 +44,13 @@ namespace Assets.src.contexts {
 
 
         protected override void mapBindings() {
-            
-
             //singletons
             injectionBinder.Bind<IGameManager>().To<GameManager>().ToSingleton();
             injectionBinder.Bind<IBattleManager>().To<BattleManager>().ToSingleton();
 
             //signals
             injectionBinder.Bind<OnClickSignal>().ToSingleton();
-            commandBinder.Bind<RegisterTargetSignal>().To<RegisterTargetCommand>();
-            commandBinder.Bind<UnregisterTargetSignal>().To<UnregisterTargetCommand>();
+
             commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
             //pools
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_MELEE);
@@ -61,9 +58,6 @@ namespace Assets.src.contexts {
             injectionBinder.Bind<IInputService>().To<InputService>().ToSingleton();
             injectionBinder.Bind<IGameDataService>().To<GameDataService>().ToSingleton();
             injectionBinder.Bind<ICooldownService>().To<CooldownService>().ToSingleton();
-
-            
-            
 
             //mediators
             mediationBinder.Bind<SofaView>().To<SofaMediator>();

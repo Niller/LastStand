@@ -2,7 +2,7 @@
 
 namespace Assets.src.data {
     [Serializable]
-    public class UnitData {
+    public class UnitData : BaseBattleData {
         public int health;
         public float armor;
         public int damage;

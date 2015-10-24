@@ -3,34 +3,26 @@ using Assets.Common.Extensions;
 using Assets.src.battle;
 using Assets.src.data;
 using Assets.src.mediators;
+using Assets.src.views;
+using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Assets.src.models {
-    public class SofaModel : IModel, ITarget {
-
-        public Action OnDestroyed { get; set; }
+    public class SofaModel : BaseTarget {
 
         private SofaData data;
 
-        private int currentHealth;
+        public SofaMediator Mediator { protected get; set; }
 
-        public void SetDamage(int damage) {
-            currentHealth -= damage;
-            if (currentHealth <= 0) {
-                Destroy();
+        protected override void InitializeData() {
+            base.InitializeData();
+            data = informer.GetBaseBattleData() as SofaData;
+            //IsDefender = Mediator.Infomer.isDefender;
+            if (data != null) {
+                currentHealth = data.health;
+            } else {
+                Debug.LogError("Data isn't valid for this object", Mediator);
             }
         }
-
-        public bool IsDefender { get { return true; } }
-
-        private void Destroy() {
-            OnDestroyed.TryCall();
-        }
-
-        public void InitializeData(SofaData dataParam) {    
-            data = dataParam;
-            currentHealth = data.health;
-        } 
-
-        public SofaMediator Mediator { protected get; set; }
     }
 }

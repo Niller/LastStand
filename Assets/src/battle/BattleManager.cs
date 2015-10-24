@@ -35,5 +35,13 @@ namespace Assets.src.battle {
         public void UnregisterTarget(ITarget target) {
             GetAppropriateListForTarget(target).Remove(target);
         }
+
+        public List<ITarget> GetDefenders() {
+            return defenders;
+        }
+
+        public List<ITarget> GetAttackers() {
+            return attackers;
+        }
     }
 }

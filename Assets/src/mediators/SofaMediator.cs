@@ -6,22 +6,16 @@ using Assets.src.views;
 using UnityEngine;
 
 namespace Assets.src.mediators {
-    public class SofaMediator : ViewModelMediator<SofaModel> {
+    public class SofaMediator : BaseTargetMediator<SofaModel> {
 
         [Inject]
         public SofaView View { get; set; }
 
-        [Inject]
-        public RegisterTargetSignal RegisterTargetSignal { get; set; }
-
-        [Inject]
-        public UnregisterTargetSignal UnregisterTargetSignal { get; set; }
-
         public override void OnRegister() {
             base.OnRegister();
             Model.Mediator = this;
-            RegisterTargetSignal.Dispatch(Model);
             Model.OnDestroyed += Dispose;
+            Model.Initialize(infomer);
         }
 
         public override void OnRemove() {
@@ -29,7 +23,6 @@ namespace Assets.src.mediators {
         }
 
         protected void Dispose() {
-            UnregisterTargetSignal.Dispatch(Model);
             View.DestroyView();
         }
 
