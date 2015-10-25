@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Assets.src.models {
-    public class SofaModel : BaseTarget {
+    public class SofaModel : BaseTargetModel {
 
         private SofaData data;
 

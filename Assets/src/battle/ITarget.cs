@@ -6,6 +6,9 @@ namespace Assets.src.battle {
         void SetDamage(int damage);
         bool IsDefender { get; }
         Vector3 GetPosition();
+        float GetVulnerabilityRadius();
         void Initialize(BaseBattleInformer informerParam);
+        bool IsUnvailableForAttack();
+       
     }
 }

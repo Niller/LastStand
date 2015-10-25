@@ -15,6 +15,7 @@ namespace Assets.src.mediators {
             base.OnRegister();
             Model.Mediator = this;
             Model.OnDestroyed += Dispose;
+            Model.SetView(View);
             Model.Initialize(infomer);
         }
 

@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 
 namespace Assets.src.views {
-    public class SofaView : BaseView {
+    public class SofaView : BaseTargetView {
 
     }
 }

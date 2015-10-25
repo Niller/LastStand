@@ -5,6 +5,7 @@ namespace Assets.src.services {
         int Id { get; }
         float Duration { get; }
         float ElapsedTime { get; }
+        bool Test { get; set; }
 
         Action OnTick { get; }
         Action OnEnd { get; }

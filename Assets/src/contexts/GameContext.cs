@@ -54,6 +54,7 @@ namespace Assets.src.contexts {
             commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
             //pools
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_MELEE);
+            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.MINION_MELEE);
             //services
             injectionBinder.Bind<IInputService>().To<InputService>().ToSingleton();
             injectionBinder.Bind<IGameDataService>().To<GameDataService>().ToSingleton();
@@ -76,7 +77,12 @@ namespace Assets.src.contexts {
             enemyMeleePool.instanceProvider = new ResourceInstanceProvider("prefabs/EnemyMeleeUnit",
                 LayerMask.NameToLayer("enemy"));
             enemyMeleePool.inflationType = PoolInflationType.INCREMENT;
-            
+
+            IPool<GameObject> minionMeleePool = injectionBinder.GetInstance<IPool<GameObject>>(UnitTypes.MINION_MELEE);
+            minionMeleePool.instanceProvider = new ResourceInstanceProvider("prefabs/MinionMeleeUnit",
+                LayerMask.NameToLayer("minion"));
+            minionMeleePool.inflationType = PoolInflationType.INCREMENT;
+
             injectionBinder.GetInstance<IBattleManager>().Initialize();
             
         }

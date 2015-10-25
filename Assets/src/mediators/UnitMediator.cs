@@ -16,13 +16,23 @@ namespace Assets.src.mediators {
             base.OnRegister();
             Model.Mediator = this;
             //Model.OnDestroyed += Dispose;
+            Model.SetView(View);
             Model.Initialize(infomer);
+            Model.SetNavUnit(View);
+            Model.InitializeStates();
+            Model.StartAct();
+            Model.OnDestroyed += View.DestroyView;
             OnClickSignal.AddListener(View.SetGoal);
         }
 
         public override void OnRemove() {
             base.OnRemove();
+            Model.OnDestroyed -= View.DestroyView;
             OnClickSignal.RemoveListener(View.SetGoal);
+        }
+
+        private void Update() {
+            Model.Update();
         }
 
     }

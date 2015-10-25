@@ -9,6 +9,7 @@ namespace Assets.src.services {
         public float Duration { get; private set; }
         //сколько прошло времени
         public float ElapsedTime { get; private set; }
+        public bool Test { get; set; }
 
         public float TickInterval { get; private set; }
 
@@ -45,6 +46,10 @@ namespace Assets.src.services {
         }
 
         public void Tick() {
+            if (Test) {
+                Debug.LogError("asds");
+            }
+
             ElapsedTime += TickInterval;
             OnTick.TryCall();
 

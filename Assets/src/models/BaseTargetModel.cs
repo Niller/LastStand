@@ -4,18 +4,26 @@ using Assets.src.battle;
 using Assets.src.data;
 using Assets.src.views;
 using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.EventSystems;
 
 namespace Assets.src.models {
-    public abstract class BaseTarget : IModel, ITarget {
+    public abstract class BaseTargetModel : IModel, ITarget {
 
         [Inject]
         public IBattleManager BattleManager { get; set; }
 
-        protected IView view;
+        protected ITargetView view;
 
         protected int currentHealth;
 
         protected BaseBattleInformer informer;
+
+        protected bool isDied;
+
+        public float GetVulnerabilityRadius() {
+            return view.GetVulnerabilityRadius();
+        }
 
         public virtual void Initialize(BaseBattleInformer informerParam) {
             informer = informerParam;
@@ -28,7 +36,8 @@ namespace Assets.src.models {
         }
 
         public void SetView(IView viewParam) {
-            view = viewParam;
+            view = (ITargetView)viewParam;
+            Assert.AreEqual(false, view==null, "Incorrect view for target object");
         }
 
         protected virtual void InitializeData() {
@@ -37,6 +46,7 @@ namespace Assets.src.models {
 
         public void SetDamage(int damage) {
             currentHealth -= damage;
+            Debug.Log(currentHealth);
             if (currentHealth <= 0) {
                 Destroy();
             }
@@ -44,11 +54,16 @@ namespace Assets.src.models {
 
         public bool IsDefender { get { return informer.isDefender; } }
 
-        protected void Destroy() {
+        protected virtual void Destroy() {
+            isDied = true;
             BattleManager.UnregisterTarget(this);
             OnDestroyed.TryCall();
         }
 
         public Action OnDestroyed { get; set; }
+
+        public bool IsUnvailableForAttack() {
+            return isDied;
+        }
     }
 }
