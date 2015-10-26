@@ -14,7 +14,7 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         public override void Update() {
-            if (target.IsUnvailableForAttack())
+            if (target.IsUnvailableForAttack()) 
                 return;
             if (currentUnit.CheckAttackDistance(target)) {
                 Stop();

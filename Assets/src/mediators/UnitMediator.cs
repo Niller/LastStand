@@ -2,6 +2,7 @@ using Assets.src.models;
 using Assets.src.signals;
 using Assets.src.views;
 using strange.extensions.injector.api;
+using UnityEngine;
 
 namespace Assets.src.mediators {
     public class UnitMediator : BaseTargetMediator<UnitModel> {
@@ -33,6 +34,13 @@ namespace Assets.src.mediators {
 
         private void Update() {
             Model.Update();
+        }
+
+        void OnDrawGizmos() {
+            Gizmos.color = Color.red;
+            if (Model.currentTarget != null && !Model.currentTarget.IsUnvailableForAttack()) {
+                Gizmos.DrawLine(transform.position, Model.currentTarget.GetPosition());
+            }
         }
 
     }

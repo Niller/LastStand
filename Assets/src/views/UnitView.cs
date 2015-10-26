@@ -14,6 +14,7 @@ namespace Assets.src.views {
 
         protected override void Awake() {
             base.Awake();
+            
             //NavMeshAgent.avoidancePriority = Random.Range(0,100);
         }
 

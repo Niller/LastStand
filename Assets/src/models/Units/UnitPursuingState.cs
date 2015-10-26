@@ -3,8 +3,10 @@
 namespace ru.pragmatix.orbix.world.units {
     public class UnitPursuingState : UnitMoveState, IUnitPursuingState {
         public override void Update() {
-            if (target.IsUnvailableForAttack())
+            if (target.IsUnvailableForAttack()) {
+                Stop();
                 return;
+            }
             currentUnit.GetNavUnit().SetDestination(target.GetPosition());
             base.Update();
         }

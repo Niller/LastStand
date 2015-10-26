@@ -46,7 +46,7 @@ namespace Assets.src.models {
 
         public void SetDamage(int damage) {
             currentHealth -= damage;
-            Debug.Log(currentHealth);
+            //Debug.Log(currentHealth);
             if (currentHealth <= 0) {
                 Destroy();
             }

@@ -30,14 +30,14 @@ namespace ru.pragmatix.orbix.world.units {
         public override void Start() {
             if (!CheckAttackPossibility())
                 Stop();
-            weapon.ShootTo(currentUnit.GetPosition(), target);
+            Shoot();
         }
 
         protected void Shoot() {
-            if (target.IsUnvailableForAttack())
+            if (target.IsUnvailableForAttack() || currentUnit.IsUnvailableForAttack())
                 return;
-            target.SetDamage(currentUnit.GetUnitData().damage);
-            attackSpeedCooldown = CooldownService.AddCooldown(1f/currentUnit.GetUnitData().attackSpeed, null, Start);
+            weapon.ShootTo(currentUnit.GetPosition(), target);
+            attackSpeedCooldown = CooldownService.AddCooldown(1f/currentUnit.GetUnitData().attackSpeed, null, Start, 0, 0.1f);
         }
 
         public override void Update() {

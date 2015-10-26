@@ -2,6 +2,7 @@ using System;
 using Assets.Common.Extensions;
 using Assets.src.battle;
 using strange.extensions.mediation.impl;
+using UnityEngine;
 
 namespace Assets.src.views {
     public class BulletView : View {
@@ -10,7 +11,7 @@ namespace Assets.src.views {
 
         protected ITarget target;
 
-        public virtual void Initialize(ITarget targetParam, Action<ITarget> endCallback) {
+        public virtual void Initialize(Vector3 startPosition, ITarget targetParam, Action<ITarget> endCallback) {
             target = targetParam;
             onEnd = endCallback;
         }

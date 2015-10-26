@@ -26,7 +26,7 @@ namespace Assets.src.models {
 
         protected INavigationUnit navigationUnit;
 
-        protected ITarget currentTarget;
+        public ITarget currentTarget;
 
         protected UnitInformer unitInformer;
 
@@ -155,8 +155,6 @@ namespace Assets.src.models {
         }
 
         protected virtual void OnStateStopped() {
-            Debug.Log(currentState.GetType());
-
             if (currentState is IUnitPursuingState) {
                 TransitAfterPursuingState();
                 return;
