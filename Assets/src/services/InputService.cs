@@ -9,6 +9,9 @@ namespace Assets.src.contexts {
         public OnClickSignal OnClick { get; set; }
 
         [Inject]
+        public OnAlternativeClickSignal OnAlternativeClick { get; set; }
+
+        [Inject]
         public OnDragStartSignal OnDragStart { get; set; }
 
         [Inject]
@@ -60,6 +63,10 @@ namespace Assets.src.contexts {
                 } else {
                     OnClick.Dispatch(GetMousePosition());
                 }
+            }
+
+            if (Input.GetMouseButtonUp(1)) {
+                OnAlternativeClick.Dispatch(GetMousePosition());
             }
         }
 

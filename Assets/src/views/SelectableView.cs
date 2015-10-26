@@ -7,15 +7,19 @@ namespace Assets.src.views {
     public abstract class SelectableView : View, ISelectable {
 
         [Inject]
-        public DeselectAllSignal DeselectAllSignal { get; set; }
-
-        [Inject]
         public ISelectionManager SelectionManager { get; set; }
         
         protected override void Start() {
             base.Start();
+            RegisterSelectableObject();
+        }
+
+        protected virtual void RegisterSelectableObject() {
             SelectionManager.RegisterSelectableObject(this);
-            DeselectAllSignal.AddListener(Deselect);
+        }
+
+        protected virtual void UnregisterSelectableObject() {
+            SelectionManager.UnregisterSelectableObject(this);
         }
 
         public Projector selectableCircle;
@@ -29,8 +33,8 @@ namespace Assets.src.views {
         }
 
         protected override void OnDestroy() {
-            SelectionManager.UnregisterSelectableObject(this);
-            DeselectAllSignal.RemoveListener(Deselect);
+            SelectionManager.Deselect(this);
+            UnregisterSelectableObject();
             base.OnDestroy();
         }
 

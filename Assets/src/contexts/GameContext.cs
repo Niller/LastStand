@@ -58,6 +58,7 @@ namespace Assets.src.contexts {
             commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
             commandBinder.Bind<OnClickSignal>().To<TrySelectUnitCommand>();
             commandBinder.Bind<OnDragEndSignal>().To<TrySelectUnitGroupCommand>();
+            commandBinder.Bind<OnAlternativeClickSignal>().To<TrySetPriorityTargetCommand>();
             //pools
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_MELEE);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.MINION_MELEE);

@@ -6,5 +6,8 @@ namespace Assets.src.battle {
         void RegisterSelectableObject(ISelectable selectable);
         void UnregisterSelectableObject(ISelectable selectable);
         List<ISelectable> GetAllSelectableObjects();
+        List<ISelectable> GetSelectedObjects();
+        void Select(ISelectable selectableObject);
+        void Deselect(ISelectable selectableObject);
     }
 }

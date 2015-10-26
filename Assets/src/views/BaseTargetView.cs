@@ -22,5 +22,17 @@ namespace Assets.src.views {
         public BaseBattleData GetData() {
             return GetComponent<BaseBattleInformer>().GetBaseBattleData();
         }
+
+        protected override void RegisterSelectableObject() {
+            if (GetComponent<BaseBattleInformer>().isDefender) {
+                base.RegisterSelectableObject();
+            }
+        }
+
+        protected override void UnregisterSelectableObject() {
+            if (GetComponent<BaseBattleInformer>().isDefender) {
+                base.UnregisterSelectableObject();
+            }
+        }
     }
 }

@@ -50,7 +50,7 @@ namespace Assets.src.commands {
             if (objectsToSelect.Count > 0) {
                 DeselectAllSignal.Dispatch();
                 foreach (var selectable in objectsToSelect) {
-                    selectable.Select();
+                    SelectionManager.Select(selectable);
                 }
             }
         }

@@ -9,5 +9,6 @@ namespace Assets.src.models {
         bool CheckAttackDistance(ITarget target);
         void InitializeStates();
         void StartAct();
+        void SetPriorityTarget(ITarget target, bool isOverride);
     }
 }

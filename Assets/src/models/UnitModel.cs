@@ -28,6 +28,8 @@ namespace Assets.src.models {
 
         public ITarget currentTarget;
 
+        protected ITarget priorityTarget;
+
         protected UnitInformer unitInformer;
 
         public override void Initialize(BaseBattleInformer informerParam) {
@@ -70,9 +72,20 @@ namespace Assets.src.models {
         }
 
         protected bool FindTarget() {
-            currentTarget = targetSelector.FindTarget();
+            if (priorityTarget != null) {
+                priorityTarget = priorityTarget.IsUnvailableForAttack() ? null : priorityTarget;
+            }
+            currentTarget = priorityTarget ?? targetSelector.FindTarget();
             return currentTarget != null;
-        }  
+        }
+
+        public void SetPriorityTarget(ITarget target, bool isOverride) {
+            if (isOverride || priorityTarget == null) {
+                priorityTarget = target;
+                ForceStopCurrentState();
+                StartPursueOrIdle();
+            }
+        }
     }
 
     public abstract partial class BaseUnitModel<TTargetSelector, TTargetProvider> : BaseTargetModel
