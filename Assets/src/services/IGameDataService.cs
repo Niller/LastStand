@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.src.utils;
 
 public interface IGameDataService {
-
-	float GetCommonData(string key);
+    BulletTypes GetBulletType(UnitTypes uniType);
 }

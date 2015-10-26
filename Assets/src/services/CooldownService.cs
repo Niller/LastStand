@@ -43,6 +43,7 @@ namespace Assets.src.services {
             //RemoveCooldown(item.InitSortId);
             if (item == null)
                 return;
+            item.Test = true;
             if (cooldowns.ContainsKey(item.TickInterval)) {
                 cooldowns[item.TickInterval].Remove(item.Id);
                 if (cooldowns[item.TickInterval].Count == 0)

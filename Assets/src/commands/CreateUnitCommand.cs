@@ -10,7 +10,6 @@ namespace Assets.src.commands {
 
         //[Inject(GameElements.GAME_FIELD)]
         //public GameObject GameField { get; set; }
-
         
         [Inject]
         public Vector3 Position { get; set; }
@@ -23,15 +22,7 @@ namespace Assets.src.commands {
 
         [Inject]
         public bool IsDefender { get; set; }
-
-           
-        /*
-        [Inject(UnitTypes.ENEMY_MELEE)]
-        public IPool<GameObject> EnemyMeleePool { get; set; }
-
-        protected IPool<GameObject> currentPool;
-        */
-
+        
         public override void Execute() {
             
             IPool<GameObject> currentPool = injectionBinder.GetInstance<IPool<GameObject>>(Type);
@@ -40,6 +31,7 @@ namespace Assets.src.commands {
                 var unitInformer = unitGO.AddComponent<UnitInformer>();
                 unitInformer.data = Data;
                 unitInformer.isDefender = IsDefender;
+                unitInformer.type = Type;
                 unitGO.SetActive(true);
                 unitGO.transform.position = Position;
                 //unitGO.transform.parent =
@@ -48,15 +40,6 @@ namespace Assets.src.commands {
             }
            
         }
-
-        /*
-        private void InitPool() {
-            switch (Type) {
-                case UnitTypes.ENEMY_MELEE:
-                    currentPool = EnemyMeleePool;
-                    break;
-            }
-        }
-        */
+        
     }
 }

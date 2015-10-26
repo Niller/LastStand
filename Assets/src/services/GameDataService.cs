@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.src.utils;
 
 public class GameDataService : IGameDataService {
 
-	private Dictionary<string, float> commonData = new Dictionary<string, float>() {
-		{"CellCountWidth",10},
-		{"CellCountHeight",10},
-		{"CellSize",1}
+    private Dictionary<UnitTypes, BulletTypes> bullets = new Dictionary<UnitTypes, BulletTypes>() {
+        {UnitTypes.ENEMY_MELEE, BulletTypes.MELEE_BULLET },
+        {UnitTypes.MINION_MELEE, BulletTypes.MELEE_BULLET },
+        {UnitTypes.ENEMY_RANGE, BulletTypes.RANGE_BULLET },
+        {UnitTypes.MINION_RANGE, BulletTypes.RANGE_BULLET }
+    };
 
-	};
-
-	public float GetCommonData(string key) {
-		return commonData[key];
-	}
-
+    public BulletTypes GetBulletType(UnitTypes uniType) {
+        return bullets[uniType];
+    }
 }

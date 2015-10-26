@@ -5,6 +5,7 @@ using Assets.src.mediators;
 using Assets.src.views;
 using ru.pragmatix.orbix.world.units;
 using strange.extensions.injector.api;
+using strange.extensions.pool.api;
 using UnityEngine;
 
 namespace Assets.src.models {
@@ -27,6 +28,8 @@ namespace Assets.src.models {
 
         protected ITarget currentTarget;
 
+        protected UnitInformer unitInformer;
+
         public override void Initialize(BaseBattleInformer informerParam) {
             base.Initialize(informerParam);
             targetProvider = Activator.CreateInstance<TTargetProvider>();
@@ -38,11 +41,12 @@ namespace Assets.src.models {
             targetSelector.SetCurrentUnit(this);
         }
 
-        protected override void InitializeData() {
+        protected override void InitializeData() {       
             base.InitializeData();
-            data = informer.GetBaseBattleData() as UnitData;
+            unitInformer = informer as UnitInformer;
+            data = unitInformer.data;
             if (data != null) {
-                currentHealth = data.health;
+                currentHealth = data.health;                     
             } else {
                 Debug.LogError("Data isn't valid for this object", Mediator);
             }
@@ -61,7 +65,6 @@ namespace Assets.src.models {
         }
 
         public bool CheckAttackDistance(ITarget target) {
-            //Debug.Log(Vector3.Distance(target.GetPosition(), GetPosition()) - target.GetVulnerabilityRadius());
             return Vector3.Distance(target.GetPosition(), GetPosition())-target.GetVulnerabilityRadius() <=
                    GetUnitData().attackRange;
         }
@@ -75,6 +78,9 @@ namespace Assets.src.models {
     public abstract partial class BaseUnitModel<TTargetSelector, TTargetProvider> : BaseTargetModel
         where TTargetSelector : ITargetSelector
         where TTargetProvider : ITargetProvider {
+
+        [Inject]
+        public IGameDataService GameDataService { get; set; }
 
         protected IUnitPursuingState pursuingState;
 
@@ -105,7 +111,7 @@ namespace Assets.src.models {
         protected virtual void InitAttackState() {
             attackState = new UnitAttackState();
             InjectionBinder.injector.Inject(attackState);
-            //attackState.SetWeapon(weapon);
+            attackState.SetWeapon(new Weapon(GetUnitData().damage, InjectionBinder.GetInstance<IPool<GameObject>>(GameDataService.GetBulletType(unitInformer.type))));
             attackState.Initialize(this, null);
             
         }

@@ -47,7 +47,7 @@ namespace Assets.src.services {
 
         public void Tick() {
             if (Test) {
-                Debug.LogError("asds");
+                Debug.LogError("Removed cooldown was executed!");
             }
 
             ElapsedTime += TickInterval;

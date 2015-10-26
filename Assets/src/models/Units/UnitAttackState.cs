@@ -1,4 +1,5 @@
 ﻿using Assets.src.battle;
+using Assets.src.models;
 using Assets.src.services;
 using UnityEngine;
 
@@ -12,8 +13,14 @@ namespace ru.pragmatix.orbix.world.units {
 
         protected ITarget target;
 
+        protected Weapon weapon;
+
         public void SetTarget(ITarget targetParam) {
             target = targetParam;
+        }
+
+        public void SetWeapon(Weapon weaponParam) {
+            weapon = weaponParam;
         }
 
         protected bool CheckAttackPossibility() {
@@ -21,16 +28,9 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         public override void Start() {
-            try {
-                if (!CheckAttackPossibility())
-                    Stop();
-            }
-            catch {
-                Debug.LogError(attackSpeedCooldown);
-                Debug.LogError(currentUnit.IsUnvailableForAttack());
-                Debug.LogError(target.IsUnvailableForAttack());
-            }
-            Shoot();
+            if (!CheckAttackPossibility())
+                Stop();
+            weapon.ShootTo(currentUnit.GetPosition(), target);
         }
 
         protected void Shoot() {
@@ -46,8 +46,6 @@ namespace ru.pragmatix.orbix.world.units {
 
         public override void ForceStop() {
             CooldownService.RemoveCooldown(attackSpeedCooldown);
-            //attackSpeedCooldown = null;
-            attackSpeedCooldown.Test = true;
         }
     }
 }
