@@ -3,7 +3,7 @@ using strange.extensions.mediation.impl;
 using UnityEngine;
 
 namespace Assets.src.views {
-    public abstract class BaseTargetView : View, ITargetView {
+    public abstract class BaseTargetView : SelectableView, ITargetView {
 
         public SphereCollider vulnerabilityCollider;
 

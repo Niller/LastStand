@@ -47,11 +47,17 @@ namespace Assets.src.contexts {
             //singletons
             injectionBinder.Bind<IGameManager>().To<GameManager>().ToSingleton();
             injectionBinder.Bind<IBattleManager>().To<BattleManager>().ToSingleton();
+            injectionBinder.Bind<ISelectionManager>().To<SelectionManager>().ToSingleton();
 
             //signals
-            injectionBinder.Bind<OnClickSignal>().ToSingleton();
+            injectionBinder.Bind<DeselectAllSignal>().ToSingleton();
+            injectionBinder.Bind<OnDragStartSignal>().ToSingleton();
+            
+            injectionBinder.Bind<OnDragSignal>().ToSingleton();
 
             commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
+            commandBinder.Bind<OnClickSignal>().To<TrySelectUnitCommand>();
+            commandBinder.Bind<OnDragEndSignal>().To<TrySelectUnitGroupCommand>();
             //pools
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_MELEE);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.MINION_MELEE);
