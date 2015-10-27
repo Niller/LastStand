@@ -30,6 +30,10 @@ namespace Assets.src.models {
             
         }
 
+        public IView GetView() {
+            return null;
+        }
+
         public bool IsDefender { get { return Mediator.Informer.isDefender; } }
 
         public void Initialize() {

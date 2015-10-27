@@ -10,5 +10,6 @@ namespace Assets.src.models {
         void InitializeStates();
         void StartAct();
         void SetPriorityTarget(ITarget target, bool isOverride);
+        ITarget GetCurrentTarget();
     }
 }

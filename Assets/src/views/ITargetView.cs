@@ -1,5 +1,5 @@
 ﻿namespace Assets.src.views {
-    public interface ITargetView : IView {
+    public interface ITargetView : ISelectable, IView {
         float GetVulnerabilityRadius();
     }
 }

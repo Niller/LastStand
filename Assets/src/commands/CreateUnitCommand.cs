@@ -33,7 +33,7 @@ namespace Assets.src.commands {
                 unitInformer.type = Type;
                 unitGO.SetActive(true);
                 unitGO.transform.position = Position;
-                //unitGO.transform.parent =
+                unitGO.transform.parent = GameObject.Find("game").transform;
             } else {
                 Debug.LogError("Unit pool isn't exist");  
             }

@@ -2,6 +2,7 @@ using System;
 using Assets.src.battle;
 using Assets.src.data;
 using Assets.src.mediators;
+using Assets.src.utils;
 using Assets.src.views;
 using ru.pragmatix.orbix.world.units;
 using strange.extensions.injector.api;
@@ -16,6 +17,9 @@ namespace Assets.src.models {
         [Inject]
         public IInjectionBinder InjectionBinder { get; set; }
 
+        [Inject]
+        public IHUDManager HUDManager { get; set; }
+
         protected TTargetSelector targetSelector;
 
         protected TTargetProvider targetProvider;
@@ -26,7 +30,7 @@ namespace Assets.src.models {
 
         protected INavigationUnit navigationUnit;
 
-        public ITarget currentTarget;
+        protected ITarget currentTarget;
 
         protected ITarget priorityTarget;
 
@@ -41,6 +45,8 @@ namespace Assets.src.models {
             InjectionBinder.injector.Inject(targetSelector);
             targetSelector.SetProvider(targetProvider);
             targetSelector.SetCurrentUnit(this);
+            view.OnSelected += OnSelected;
+            view.OnDeselected += OnDeselected;
         }
 
         protected override void InitializeData() {       
@@ -75,7 +81,14 @@ namespace Assets.src.models {
             if (priorityTarget != null) {
                 priorityTarget = priorityTarget.IsUnvailableForAttack() ? null : priorityTarget;
             }
+            if (currentTarget != null && view.IsSelected()) {
+                if (!currentTarget.IsUnvailableForAttack())
+                    OnDeselected();
+            }
             currentTarget = priorityTarget ?? targetSelector.FindTarget();
+            if (view.IsSelected()) {
+                OnSelected();
+            }
             return currentTarget != null;
         }
 
@@ -85,6 +98,20 @@ namespace Assets.src.models {
                 ForceStopCurrentState();
                 StartPursueOrIdle();
             }
+        }
+
+        public ITarget GetCurrentTarget() {
+            return currentTarget;
+        }
+
+        private void OnDeselected() {
+            if (currentTarget != null && !currentTarget.IsUnvailableForAttack())
+                HUDManager.RemoveHUD((currentTarget as IModel).GetView().GetGameObject(), HudTypes.TARGET_POINTER);
+        }
+
+        private void OnSelected() {
+            if (currentTarget != null && !currentTarget.IsUnvailableForAttack())
+                HUDManager.AddHUD((currentTarget as IModel).GetView().GetGameObject(), HudTypes.TARGET_POINTER);
         }
     }
 

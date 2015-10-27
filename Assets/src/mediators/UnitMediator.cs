@@ -38,8 +38,8 @@ namespace Assets.src.mediators {
 
         void OnDrawGizmos() {
             Gizmos.color = Color.red;
-            if (Model.currentTarget != null && !Model.currentTarget.IsUnvailableForAttack()) {
-                Gizmos.DrawLine(transform.position, Model.currentTarget.GetPosition());
+            if (Model.GetCurrentTarget() != null && !Model.GetCurrentTarget().IsUnvailableForAttack()) {
+                Gizmos.DrawLine(transform.position, Model.GetCurrentTarget().GetPosition());
             }
         }
 

@@ -11,14 +11,6 @@ namespace Assets.src.views {
             return vulnerabilityCollider.radius;
         }
 
-        public void DestroyView() {
-            Destroy(gameObject);
-        }
-
-        public Vector3 GetPosition() {
-            return transform.position;
-        }
-
         public BaseBattleData GetData() {
             return GetComponent<BaseBattleInformer>().GetBaseBattleData();
         }

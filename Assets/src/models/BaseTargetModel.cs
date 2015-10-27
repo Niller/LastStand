@@ -40,6 +40,10 @@ namespace Assets.src.models {
             Assert.AreEqual(false, view==null, "Incorrect view for target object");
         }
 
+        public IView GetView() {
+            return view;
+        }
+
         protected virtual void InitializeData() {
             
         }

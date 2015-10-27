@@ -48,11 +48,11 @@ namespace Assets.src.contexts {
             injectionBinder.Bind<IGameManager>().To<GameManager>().ToSingleton();
             injectionBinder.Bind<IBattleManager>().To<BattleManager>().ToSingleton();
             injectionBinder.Bind<ISelectionManager>().To<SelectionManager>().ToSingleton();
+            injectionBinder.Bind<IHUDManager>().To<HUDManager>().ToSingleton();
 
             //signals
             injectionBinder.Bind<DeselectAllSignal>().ToSingleton();
-            injectionBinder.Bind<OnDragStartSignal>().ToSingleton();
-            
+            injectionBinder.Bind<OnDragStartSignal>().ToSingleton();            
             injectionBinder.Bind<OnDragSignal>().ToSingleton();
 
             commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
@@ -60,13 +60,22 @@ namespace Assets.src.contexts {
             commandBinder.Bind<OnDragEndSignal>().To<TrySelectUnitGroupCommand>();
             commandBinder.Bind<OnAlternativeClickSignal>().To<TrySetPriorityTargetCommand>();
             //pools
+            
+            
+            //units
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_MELEE);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.MINION_MELEE);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_RANGE);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.MINION_RANGE);
 
+            //bullets
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(BulletTypes.MELEE_BULLET);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(BulletTypes.RANGE_BULLET);
+
+            //hud
+            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(HudTypes.TARGET_POINTER);
+            
+            
             //services
             injectionBinder.Bind<IInputService>().To<InputService>().ToSingleton();
             injectionBinder.Bind<IGameDataService>().To<GameDataService>().ToSingleton();
@@ -120,11 +129,16 @@ namespace Assets.src.contexts {
                 LayerMask.NameToLayer("bullet"));
             bulletMeleePool.inflationType = PoolInflationType.INCREMENT;
 
-            //bullets
             IPool<GameObject> bulletRangePool = injectionBinder.GetInstance<IPool<GameObject>>(BulletTypes.RANGE_BULLET);
             bulletRangePool.instanceProvider = new ResourceInstanceProvider("prefabs/DirectTargetBullet",
                 LayerMask.NameToLayer("bullet"));
             bulletRangePool.inflationType = PoolInflationType.INCREMENT;
+
+            //hud
+            IPool<GameObject> targetPointerPool = injectionBinder.GetInstance<IPool<GameObject>>(HudTypes.TARGET_POINTER);
+            targetPointerPool.instanceProvider = new ResourceInstanceProvider("prefabs/gui/TargetPointer",
+                LayerMask.NameToLayer("bullet"));
+            targetPointerPool.inflationType = PoolInflationType.INCREMENT;
         }
 
         
