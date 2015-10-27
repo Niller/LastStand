@@ -8,7 +8,9 @@ namespace ru.pragmatix.orbix.world.units {
                 return;
             }
             currentUnit.GetNavUnit().SetDestination(target.GetPosition());
-            base.Update();
+            if (currentUnit.CheckAttackDistance(target)) {
+                Stop();
+            }
         }
 
         protected override void OnTargetReached() {

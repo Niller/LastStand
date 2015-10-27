@@ -58,7 +58,7 @@ namespace Assets.src.contexts {
             commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
             commandBinder.Bind<OnClickSignal>().To<TrySelectUnitCommand>();
             commandBinder.Bind<OnDragEndSignal>().To<TrySelectUnitGroupCommand>();
-            commandBinder.Bind<OnAlternativeClickSignal>().To<TrySetPriorityTargetCommand>();
+            commandBinder.Bind<OnAlternativeClickSignal>().To<TrySetPriorityTargetCommand>().To<TryManualMoveToPositionCommand>();
             //pools
             
             

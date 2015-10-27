@@ -69,5 +69,7 @@ namespace Assets.src.models {
         public bool IsUnvailableForAttack() {
             return isDied;
         }
+
+        public bool IsDynamic { get { return true; } }
     }
 }

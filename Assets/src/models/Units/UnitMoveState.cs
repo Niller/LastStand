@@ -1,4 +1,5 @@
 ﻿using Assets.src.battle;
+using UnityEngine;
 
 namespace ru.pragmatix.orbix.world.units {
     public class UnitMoveState : BaseUnitState, IUnitMoveState {
@@ -16,7 +17,7 @@ namespace ru.pragmatix.orbix.world.units {
         public override void Update() {
             if (target.IsUnvailableForAttack()) 
                 return;
-            if (currentUnit.CheckAttackDistance(target)) {
+            if (Vector3.Distance(currentUnit.GetPosition(), target.GetPosition()) < target.GetVulnerabilityRadius()) {
                 Stop();
             }
         }
