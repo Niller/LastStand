@@ -19,8 +19,11 @@ namespace Assets.src.mediators {
             InjectionBinder.injector.Inject(Model);
         }
 
-        public IModel GetModel() {
-            return Model;
+        public T1 GetModel<T1>() where T1 : class, IModel  {
+            var model = Model as T1;
+            if (model == null)
+                throw new InvalidCastException();
+            return model;
         }
     }
 }

@@ -44,6 +44,10 @@ namespace Assets.src.views {
             return isSelected;
         }
 
+        public IView GetView() {
+            return this;
+        }
+
         public virtual void Select() {
             isSelected = true;
             OnSelected.TryCall();

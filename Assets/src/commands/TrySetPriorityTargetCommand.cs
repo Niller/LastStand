@@ -22,23 +22,11 @@ namespace Assets.src.commands {
                 var targetView = col.collider.gameObject.GetComponent<ITargetView>();
                 if (targetView == null)
                     continue;
-                var monoBehaviour = targetView as MonoBehaviour;
-                var target = monoBehaviour.GetComponent<IViewModelMediator>().GetModel() as ITarget;
-                if (target != null) {
-                    priorityTarget = target;
-                }
+                priorityTarget = targetView.GetMediator().GetModel<BaseTargetModel>();              
             }
             if (priorityTarget != null) {
                 foreach (var selectedObject in selectedObjects) {
-                    var monoBehaviour = selectedObject as MonoBehaviour;
-                    var unitMediator = monoBehaviour.GetComponent<IViewModelMediator>();
-                    if (unitMediator != null) {
-                        var unitModel = unitMediator.GetModel() as IUnit;
-                        if (unitModel != null) {
-                            unitModel.SetPriorityTarget(priorityTarget, true);
-                        }
-                        
-                    }
+                    selectedObject.GetView().GetMediator().GetModel<IUnit>().SetPriorityTarget(priorityTarget, true);                    
                 }
             }
         }

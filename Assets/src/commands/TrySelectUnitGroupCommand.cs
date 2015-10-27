@@ -43,7 +43,7 @@ namespace Assets.src.commands {
             var selectableObjects = SelectionManager.GetAllSelectableObjects();
             List<ISelectable> objectsToSelect = new List<ISelectable>(); 
             foreach (var selectableObject in selectableObjects) {
-                if (TrySelectInGroup((selectableObject as MonoBehaviour).gameObject, Positions)) {
+                if (TrySelectInGroup(selectableObject.GetView().GetGameObject(), Positions)) {
                     objectsToSelect.Add(selectableObject);
                 }
             }

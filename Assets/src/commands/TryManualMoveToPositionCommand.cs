@@ -14,20 +14,12 @@ namespace Assets.src.commands {
 
         public override void Execute() {
             foreach (var selectedObject in SelectionManager.GetSelectedObjects()) {
-                var monoBehaviour = selectedObject as MonoBehaviour;
-                if (monoBehaviour == null)
-                    return;
-                var unitMediator = monoBehaviour.GetComponent<IViewModelMediator>();
-                if (unitMediator != null) {
-                    var unit = unitMediator.GetModel() as IUnit;
-                    if (unit != null) {
-                        if (unit.IsManualControl) {
-                            var ray = Camera.main.ScreenPointToRay(Position);
-                            RaycastHit hitInfo;
-                            if (Physics.Raycast(ray, out hitInfo, 1 << LayerMask.NameToLayer("Terrain"))) {
-                                unit.SetMovePoint(new TargetMock(hitInfo.point));
-                            }
-                        }
+                var unit = selectedObject.GetView().GetMediator().GetModel<IUnit>();
+                if (unit.IsManualControl) {
+                    var ray = Camera.main.ScreenPointToRay(Position);
+                    RaycastHit hitInfo;
+                    if (Physics.Raycast(ray, out hitInfo, 1 << LayerMask.NameToLayer("Terrain"))) {
+                        unit.SetMovePoint(new TargetMock(hitInfo.point));
                     }
                 }
             }
