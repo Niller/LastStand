@@ -59,6 +59,10 @@ namespace Assets.src.services {
             return null;
         }
 
+        public void Initialize() {
+            
+        }
+
         public void OnUpdate() {
             var listKeys = lastTickTimes.Keys.ToList();
             foreach (var lastTick in listKeys) {

@@ -1,5 +1,4 @@
 using Assets.src.battle;
-using Assets.src.mediators;
 using Assets.src.models;
 using strange.extensions.command.impl;
 using UnityEngine;

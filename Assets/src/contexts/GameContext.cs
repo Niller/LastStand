@@ -54,12 +54,16 @@ namespace Assets.src.contexts {
             injectionBinder.Bind<DeselectAllSignal>().ToSingleton();
             injectionBinder.Bind<OnDragStartSignal>().ToSingleton();            
             injectionBinder.Bind<OnDragSignal>().ToSingleton();
+            injectionBinder.Bind<OnSpellSlotActivated>().ToSingleton();
 
             commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
             commandBinder.Bind<OnClickSignal>().To<TrySelectUnitCommand>();
             commandBinder.Bind<OnDragEndSignal>().To<TrySelectUnitGroupCommand>();
             commandBinder.Bind<OnAlternativeClickSignal>().To<TryManualMoveToPositionCommand>().To<TrySetPriorityTargetCommand>();
-            
+            commandBinder.Bind<OnPreparationTargetSignal>().To<ResetSpellPreparationCommand>().To<TargetSpellPreparationCommand>();
+            commandBinder.Bind<OnPreparationAreaSignal>().To<ResetSpellPreparationCommand>().To<AreaSpellPreparationCommand>();
+            commandBinder.Bind<OnResetSpellPreparationSignal>().To<ResetSpellPreparationCommand>();
+
             //pools
 
             //units
@@ -81,6 +85,7 @@ namespace Assets.src.contexts {
             injectionBinder.Bind<IInputService>().To<InputService>().ToSingleton();
             injectionBinder.Bind<IGameDataService>().To<GameDataService>().ToSingleton();
             injectionBinder.Bind<ICooldownService>().To<CooldownService>().ToSingleton();
+            injectionBinder.Bind<IGameResourcesService>().To<GameResourcesService>().ToSingleton();
 
             //mediators
             mediationBinder.Bind<SofaView>().To<SofaMediator>();
@@ -93,6 +98,8 @@ namespace Assets.src.contexts {
         protected void InitServices() {
             rootContext.AddService(injectionBinder.GetInstance<IInputService>());
             rootContext.AddService(injectionBinder.GetInstance<ICooldownService>());
+            rootContext.AddService(injectionBinder.GetInstance<IGameDataService>());
+            rootContext.AddService(injectionBinder.GetInstance<IGameResourcesService>());
         }
 
         protected override void postBindings() {

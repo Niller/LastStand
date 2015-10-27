@@ -20,6 +20,12 @@ namespace Assets.src.contexts {
         [Inject]
         public OnDragEndSignal OnDragEnd { get; set; }
 
+        [Inject]
+        public OnSpellSlotActivated OnSpellSlotActivated { get; set; }
+
+        [Inject]
+        public OnResetSpellPreparationSignal OnResetSpellPreapration { get; set; }
+
         protected bool isInitialized;
 
         protected bool isMouseKeyDown;
@@ -33,6 +39,10 @@ namespace Assets.src.contexts {
         [PostConstruct]
         public void PostConstructor() {
             isInitialized = true;
+        }
+
+        public void Initialize() {
+            
         }
 
         public void OnUpdate() {
@@ -67,6 +77,18 @@ namespace Assets.src.contexts {
 
             if (Input.GetMouseButtonUp(1)) {
                 OnAlternativeClick.Dispatch(GetMousePosition());
+            }
+
+            if (Input.GetKeyUp(KeyCode.Q)) {
+                OnSpellSlotActivated.Dispatch(0);
+            }
+
+            if (Input.GetKeyUp(KeyCode.W)) {
+                OnSpellSlotActivated.Dispatch(1);
+            }
+
+            if (Input.GetKeyUp(KeyCode.Escape)) {
+                OnResetSpellPreapration.Dispatch();
             }
         }
 

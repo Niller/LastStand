@@ -14,6 +14,7 @@ namespace Assets.src.contexts {
 
         public void AddService(IService service) {
             services.Add(service);
+            service.Initialize();
         }
 
         void Update() {
