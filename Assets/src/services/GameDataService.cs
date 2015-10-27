@@ -9,7 +9,8 @@ public class GameDataService : IGameDataService {
         {UnitTypes.ENEMY_MELEE, BulletTypes.MELEE_BULLET },
         {UnitTypes.MINION_MELEE, BulletTypes.MELEE_BULLET },
         {UnitTypes.ENEMY_RANGE, BulletTypes.RANGE_BULLET },
-        {UnitTypes.MINION_RANGE, BulletTypes.RANGE_BULLET }
+        {UnitTypes.MINION_RANGE, BulletTypes.RANGE_BULLET },
+        {UnitTypes.HERO, BulletTypes.MELEE_BULLET }
     };
 
     public BulletTypes GetBulletType(UnitTypes uniType) {

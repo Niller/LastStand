@@ -21,6 +21,8 @@ namespace Assets.src.battle {
 
         private readonly List<ISpawner> defendersSpawners;
 
+        private FontainModel fontain;
+
         public BattleManager() {
             attackers = new List<ITarget>();
             defenders = new List<ITarget>();
@@ -55,8 +57,8 @@ namespace Assets.src.battle {
         }
 
         public void Initialize() {
-            //CreateUnitSignal.Dispatch(new Vector3(50,0,50), UnitTypes.ENEMY_MELEE, new UnitData(), false);
             StartRound();
+            fontain.SpawnHero();
         }
 
         public void RegisterTarget(ITarget target) {
@@ -77,6 +79,10 @@ namespace Assets.src.battle {
 
         public List<ITarget> GetAttackers() {
             return attackers;
+        }
+
+        public void RegisterFontaion(FontainModel fontainParam) {
+            fontain = fontainParam;
         }
     }
 }

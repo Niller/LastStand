@@ -4,33 +4,35 @@ using Assets.src.views;
 using UnityEngine;
 
 namespace Assets.src.mediators {
-    public class BaseUnitMediator<T> : BaseTargetMediator<T> where T : IUnit {
-        [Inject]
-        public UnitView View { get; set; }
+    public abstract class BaseUnitMediator<T> : BaseTargetMediator<T> where T : IUnit {
+        
 
         [Inject]
         public OnClickSignal OnClickSignal { get; set; }
 
         public override void OnRegister() {
             base.OnRegister();
-            Model.SetView(View);
+            Model.SetView(GetUnitView());
             Model.Initialize(infomer);
-            Model.SetNavUnit(View);
+            Model.SetNavUnit(GetUnitView());
             Model.InitializeStates();
             Model.StartAct();
-            Model.OnDestroyed += View.DestroyView;
-            OnClickSignal.AddListener(View.SetGoal);
+            Model.OnDestroyed += GetUnitView().DestroyView;
+            OnClickSignal.AddListener(GetUnitView().SetGoal);
         }
 
         public override void OnRemove() {
             base.OnRemove();
-            Model.OnDestroyed -= View.DestroyView;
-            OnClickSignal.RemoveListener(View.SetGoal);
+            Model.OnDestroyed -= GetUnitView().DestroyView;
+            OnClickSignal.RemoveListener(GetUnitView().SetGoal);
         }
 
         private void Update() {
             Model.Update();
         }
+
+        protected abstract BaseUnitView GetUnitView();
+
 
         void OnDrawGizmos() {
             Gizmos.color = Color.red;

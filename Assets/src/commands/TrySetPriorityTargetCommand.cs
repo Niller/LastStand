@@ -1,5 +1,6 @@
 using Assets.src.battle;
 using Assets.src.mediators;
+using Assets.src.models;
 using Assets.src.views;
 using strange.extensions.command.impl;
 using UnityEngine;
@@ -30,9 +31,13 @@ namespace Assets.src.commands {
             if (priorityTarget != null) {
                 foreach (var selectedObject in selectedObjects) {
                     var monoBehaviour = selectedObject as MonoBehaviour;
-                    var unitMediator = monoBehaviour.GetComponent<UnitMediator>();
+                    var unitMediator = monoBehaviour.GetComponent<IViewModelMediator>();
                     if (unitMediator != null) {
-                        unitMediator.Model.SetPriorityTarget(priorityTarget, true);
+                        var unitModel = unitMediator.GetModel() as IUnit;
+                        if (unitModel != null) {
+                            unitModel.SetPriorityTarget(priorityTarget, true);
+                        }
+                        
                     }
                 }
             }

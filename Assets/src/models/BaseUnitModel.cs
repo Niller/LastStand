@@ -292,6 +292,7 @@ namespace Assets.src.models {
 
         public void SetMovePoint(ITarget target) {
             ForceStopCurrentState();
+            OnDeselected();
             currentTarget = target;
             EnterMoveState();
         }

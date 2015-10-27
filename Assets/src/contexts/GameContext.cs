@@ -58,15 +58,16 @@ namespace Assets.src.contexts {
             commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
             commandBinder.Bind<OnClickSignal>().To<TrySelectUnitCommand>();
             commandBinder.Bind<OnDragEndSignal>().To<TrySelectUnitGroupCommand>();
-            commandBinder.Bind<OnAlternativeClickSignal>().To<TrySetPriorityTargetCommand>().To<TryManualMoveToPositionCommand>();
+            commandBinder.Bind<OnAlternativeClickSignal>().To<TryManualMoveToPositionCommand>().To<TrySetPriorityTargetCommand>();
+            
             //pools
-            
-            
+
             //units
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_MELEE);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.MINION_MELEE);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_RANGE);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.MINION_RANGE);
+            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.HERO);
 
             //bullets
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(BulletTypes.MELEE_BULLET);
@@ -84,7 +85,9 @@ namespace Assets.src.contexts {
             //mediators
             mediationBinder.Bind<SofaView>().To<SofaMediator>();
             mediationBinder.Bind<UnitView>().To<UnitMediator>();
+            mediationBinder.Bind<HeroView>().To<HeroMediator>();
             mediationBinder.Bind<BarracksView>().To<BarracksMediator>();
+            mediationBinder.Bind<FontainView>().To<FontainMediator>();
         }
 
         protected void InitServices() {
@@ -122,6 +125,11 @@ namespace Assets.src.contexts {
             minionRangePool.instanceProvider = new ResourceInstanceProvider("prefabs/MinionRangeUnit",
                 LayerMask.NameToLayer("minion"));
             minionRangePool.inflationType = PoolInflationType.INCREMENT;
+
+            IPool<GameObject> heroPool = injectionBinder.GetInstance<IPool<GameObject>>(UnitTypes.HERO);
+            heroPool.instanceProvider = new ResourceInstanceProvider("prefabs/Hero",
+                LayerMask.NameToLayer("minion"));
+            heroPool.inflationType = PoolInflationType.INCREMENT;
 
             //bullets
             IPool<GameObject> bulletMeleePool = injectionBinder.GetInstance<IPool<GameObject>>(BulletTypes.MELEE_BULLET);

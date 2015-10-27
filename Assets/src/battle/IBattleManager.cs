@@ -9,5 +9,6 @@ namespace Assets.src.battle {
         void RegisterSpawner(ISpawner spawner);
         List<ITarget> GetDefenders();
         List<ITarget> GetAttackers();
+        void RegisterFontaion(FontainModel fontain);
     }
 }

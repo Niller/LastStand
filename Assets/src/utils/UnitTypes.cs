@@ -8,6 +8,7 @@ namespace Assets.src.utils {
         ENEMY_MELEE,
         MINION_MELEE,
         ENEMY_RANGE,
-        MINION_RANGE
+        MINION_RANGE,
+        HERO
     }
 }

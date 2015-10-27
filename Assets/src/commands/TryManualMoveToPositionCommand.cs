@@ -19,7 +19,7 @@ namespace Assets.src.commands {
                     return;
                 var unitMediator = monoBehaviour.GetComponent<IViewModelMediator>();
                 if (unitMediator != null) {
-                    var unit = unitMediator.GetModel() as UnitModel;
+                    var unit = unitMediator.GetModel() as IUnit;
                     if (unit != null) {
                         if (unit.IsManualControl) {
                             var ray = Camera.main.ScreenPointToRay(Position);
