@@ -19,6 +19,9 @@ namespace Assets.src.commands {
         public IGameManager GameManager { get; set; }
 
         [Inject]
+        public IGameDataService GameDataService { get; set; }
+
+        [Inject]
         public OnResetSpellPreparationSignal OnResetSpellPreparationSignal { get; set; }
 
         public override void Execute() {
@@ -26,10 +29,10 @@ namespace Assets.src.commands {
             foreach (var selectable in currentSelectedUnits) {
                 var hero = selectable.GetView().GetMediator().GetModel<HeroModel>();
                 if (hero != null) {
-                    if (hero.GetActiveSpellType() == null) {
+                    if (hero.GetActiveSpell() == null) {
                         return;
                     }
-                    if (hero.GetActiveSpellType() == SpellTypes.TARGET) {
+                    if (GameDataService.GetSpellType(hero.GetActiveSpell().spell) == SpellTypes.TARGET) {
                         var ray = Camera.main.ScreenPointToRay(Position);
                         var colls = Physics.RaycastAll(ray);
                         foreach (var col in colls) {

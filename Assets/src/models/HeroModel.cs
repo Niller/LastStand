@@ -25,7 +25,7 @@ namespace Assets.src.models {
 
         protected List<SpellSlot> spells;
 
-        protected SpellSlot preparedSpell;
+        protected SpellSlot activeSpell;
 
         public override void Initialize(BaseBattleInformer informerParam) {
             base.Initialize(informerParam);
@@ -37,30 +37,30 @@ namespace Assets.src.models {
         }
 
         private void ActivateSpellSlot(int slot) {
+            if (!view.IsSelected())
+                return;
             if (GameDataService.GetSpellType(spells[slot].spell) == SpellTypes.TARGET) {
                 OnPreparationTargetSignal.Dispatch();
             } else {
                 OnPreparationAreaSignal.Dispatch((spells[slot].data as MeteorData).range);
             }
-            preparedSpell = spells[slot];
+            activeSpell = spells[slot];
         }
 
         private void ResetActivationSpellSlot() {
-            preparedSpell = null;
+            activeSpell = null;
         }
 
-        public SpellTypes? GetActiveSpellType() {
-            if (preparedSpell == null)
-                return null;
-            return GameDataService.GetSpellType(preparedSpell.spell);
+        public SpellSlot GetActiveSpell() {
+            return activeSpell;
         }
 
         public void TryCastSpell(ITarget target) {
-            if (preparedSpell != null) {
+            if (activeSpell != null) {
                 ForceStopCurrentState();
                 
-                OnSpellCast.Dispatch(GetPosition(), preparedSpell.spell, target, preparedSpell.data);
-                preparedSpell = null;
+                OnSpellCast.Dispatch(GetPosition(), activeSpell.spell, target, activeSpell.data);
+                activeSpell = null;
                 StartPursueOrIdle();
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.src.views;
 
 namespace Assets.src.battle {
@@ -9,5 +10,6 @@ namespace Assets.src.battle {
         List<ISelectable> GetSelectedObjects();
         void Select(ISelectable selectableObject);
         void Deselect(ISelectable selectableObject);
+        Action SelectionChanged { get; set; }
     }
 }

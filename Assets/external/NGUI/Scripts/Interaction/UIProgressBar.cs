@@ -121,6 +121,8 @@ public class UIProgressBar : UIWidgetContainer
 		}
 		set
 		{
+		    
+            foregroundWidget.enabled = value >= 0;
 
             if (value < 0.015f && thumb != null)
                 thumb.gameObject.SetActive(false);

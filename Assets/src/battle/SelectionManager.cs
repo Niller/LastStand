@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Assets.Common.Extensions;
 using Assets.src.signals;
 using Assets.src.views;
 using UnityEditor;
@@ -12,6 +14,8 @@ namespace Assets.src.battle {
         private readonly List<ISelectable> selectableObjects;
 
         private readonly List<ISelectable> selectedObjects; 
+
+        public Action SelectionChanged { get; set; }
 
         public SelectionManager() {
             selectableObjects = new List<ISelectable>();
@@ -49,10 +53,12 @@ namespace Assets.src.battle {
         public void Select(ISelectable selectableObject) {
             selectedObjects.Add(selectableObject);
             selectableObject.Select();
+            SelectionChanged.TryCall();
         }
 
         public void Deselect(ISelectable selectableObject) {
             selectedObjects.Remove(selectableObject);
+            SelectionChanged.TryCall();
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace EZData
 {
@@ -56,8 +57,10 @@ namespace EZData
 
         public virtual void SetValue(T value)
         {
+            
             if (_changing)
                 return;
+            
             _changing = true;
 
             bool changed;
