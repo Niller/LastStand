@@ -17,6 +17,9 @@ namespace Assets.src.commands {
         [Inject]
         public ISelectionManager SelectionManager { get; set; }
 
+        [Inject]
+        public IGameManager GameManager { get; set; }
+
         protected Bounds GetViewportBounds(Vector3 screenPosition1, Vector3 screenPosition2) {
             var v1 = Camera.main.ScreenToViewportPoint(screenPosition1);
             var v2 = Camera.main.ScreenToViewportPoint(screenPosition2);
@@ -40,6 +43,8 @@ namespace Assets.src.commands {
         }
 
         public override void Execute() {
+            if (GameManager.IsControlBlocked())
+                return;
             var selectableObjects = SelectionManager.GetAllSelectableObjects();
             List<ISelectable> objectsToSelect = new List<ISelectable>(); 
             foreach (var selectableObject in selectableObjects) {

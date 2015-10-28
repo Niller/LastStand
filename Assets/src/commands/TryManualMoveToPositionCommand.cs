@@ -11,7 +11,12 @@ namespace Assets.src.commands {
         [Inject]
         public ISelectionManager SelectionManager { get; set; }
 
+        [Inject]
+        public IGameManager GameManager { get; set; }
+
         public override void Execute() {
+            if (GameManager.IsControlBlocked())
+                return;
             foreach (var selectedObject in SelectionManager.GetSelectedObjects()) {
                 var unit = selectedObject.GetView().GetMediator().GetModel<IUnit>();
                 if (unit.IsManualControl) {

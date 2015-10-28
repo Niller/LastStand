@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assets.src.views {
     public class BulletView : View {
-
+            
         protected Action<ITarget> onEnd;
 
         protected ITarget target;

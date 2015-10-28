@@ -16,7 +16,12 @@ namespace Assets.src.commands {
         [Inject]
         public ISelectionManager SelectionManager { get; set; }
 
+        [Inject]
+        public IGameManager GameManager { get; set; }
+
         public override void Execute() {
+            if (GameManager.IsControlBlocked())
+                return;
             var ray = Camera.main.ScreenPointToRay(Position);
             var colls = Physics.RaycastAll(ray);
             foreach (var col in colls) {

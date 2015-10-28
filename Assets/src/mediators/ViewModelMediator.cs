@@ -15,6 +15,7 @@ namespace Assets.src.mediators {
         public IInjectionBinder InjectionBinder { get; set; }
 
         public override void OnRegister() {
+            base.OnRegister();
             Model = Activator.CreateInstance<T>();
             InjectionBinder.injector.Inject(Model);
         }

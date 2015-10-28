@@ -13,8 +13,19 @@ namespace Assets.src.services {
             {UnitTypes.HERO, BulletTypes.MELEE_BULLET }
         };
 
+        
+        private Dictionary<Spells, SpellTypes> spellsTypes = new Dictionary<Spells, SpellTypes>() {
+            {Spells.ICE_BOLT, SpellTypes.TARGET},
+            {Spells.METEOR, SpellTypes.AREA }
+        };
+        
+
         public BulletTypes GetBulletType(UnitTypes uniType) {
             return bullets[uniType];
+        }
+
+        public SpellTypes GetSpellType(Spells spell) {
+            return spellsTypes[spell];
         }
 
         public void Initialize() {

@@ -57,12 +57,13 @@ namespace Assets.src.contexts {
             injectionBinder.Bind<OnSpellSlotActivated>().ToSingleton();
 
             commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
-            commandBinder.Bind<OnClickSignal>().To<TrySelectUnitCommand>();
+            commandBinder.Bind<OnClickSignal>().To<TrySelectUnitCommand>().To<TryHeroCastSpellCommand>();
             commandBinder.Bind<OnDragEndSignal>().To<TrySelectUnitGroupCommand>();
             commandBinder.Bind<OnAlternativeClickSignal>().To<TryManualMoveToPositionCommand>().To<TrySetPriorityTargetCommand>();
             commandBinder.Bind<OnPreparationTargetSignal>().To<ResetSpellPreparationCommand>().To<TargetSpellPreparationCommand>();
             commandBinder.Bind<OnPreparationAreaSignal>().To<ResetSpellPreparationCommand>().To<AreaSpellPreparationCommand>();
             commandBinder.Bind<OnResetSpellPreparationSignal>().To<ResetSpellPreparationCommand>();
+            commandBinder.Bind<OnSpellCast>().To<CastSpellCommand>();
 
             //pools
 
@@ -76,6 +77,10 @@ namespace Assets.src.contexts {
             //bullets
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(BulletTypes.MELEE_BULLET);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(BulletTypes.RANGE_BULLET);
+
+            //spells
+            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(Spells.ICE_BOLT);
+            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(Spells.METEOR);
 
             //hud
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(HudTypes.TARGET_POINTER);
@@ -93,6 +98,8 @@ namespace Assets.src.contexts {
             mediationBinder.Bind<HeroView>().To<HeroMediator>();
             mediationBinder.Bind<BarracksView>().To<BarracksMediator>();
             mediationBinder.Bind<FontainView>().To<FontainMediator>();
+            mediationBinder.Bind<IceBoltView>().To<IceBoltMediator>();
+            mediationBinder.Bind<MeteorView>().To<MeteorMediator>();
         }
 
         protected void InitServices() {
@@ -149,11 +156,26 @@ namespace Assets.src.contexts {
                 LayerMask.NameToLayer("bullet"));
             bulletRangePool.inflationType = PoolInflationType.INCREMENT;
 
+            //spells
+            IPool<GameObject> iceBoltPool = injectionBinder.GetInstance<IPool<GameObject>>(Spells.ICE_BOLT);
+            iceBoltPool.instanceProvider = new ResourceInstanceProvider("prefabs/IceBolt",
+                LayerMask.NameToLayer("bullet"));
+            iceBoltPool.inflationType = PoolInflationType.INCREMENT;
+
+            InitPool(Spells.METEOR, "prefabs/Meteor");
+
             //hud
             IPool<GameObject> targetPointerPool = injectionBinder.GetInstance<IPool<GameObject>>(HudTypes.TARGET_POINTER);
             targetPointerPool.instanceProvider = new ResourceInstanceProvider("prefabs/gui/TargetPointer",
                 LayerMask.NameToLayer("bullet"));
             targetPointerPool.inflationType = PoolInflationType.INCREMENT;
+        }
+
+        protected void InitPool(object name, string prefabPath) {
+            IPool<GameObject> spellPool = injectionBinder.GetInstance<IPool<GameObject>>(name);
+            spellPool.instanceProvider = new ResourceInstanceProvider(prefabPath,
+                LayerMask.NameToLayer("bullet"));
+            spellPool.inflationType = PoolInflationType.INCREMENT;
         }
 
         

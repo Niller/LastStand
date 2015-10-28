@@ -54,12 +54,10 @@ namespace Assets.src.views {
             selectableCircle.enabled = true;
         }
 
-        protected override void OnDestroy() {
+        public override void DestroyView() {
             Deselect();
             UnregisterSelectableObject();
-            base.OnDestroy();
+            base.DestroyView();
         }
-
-
     }
 }

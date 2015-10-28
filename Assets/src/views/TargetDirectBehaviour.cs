@@ -28,6 +28,7 @@ namespace Assets.src.views {
         }
         
         public void Start(Transform currentTransform, Vector3 startPositionParam, Action endCallback) {
+            onEnd = endCallback;
             transform = currentTransform;
             startPosition = startPositionParam;
             lastTargetPosition = target.GetPosition();

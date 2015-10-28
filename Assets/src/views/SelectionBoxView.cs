@@ -1,3 +1,4 @@
+using Assets.src.battle;
 using Assets.src.signals;
 using strange.extensions.mediation.impl;
 using UnityEngine;
@@ -13,6 +14,9 @@ namespace Assets.src.views {
 
         [Inject]
         public OnDragEndSignal OnDragEnd { get; set; }
+
+        [Inject]
+        public IGameManager GameManager { get; set; }
 
         private bool isShow;
 
@@ -85,7 +89,7 @@ namespace Assets.src.views {
         }
 
         private void OnGUI() {
-            if (isShow) {
+            if (isShow && !GameManager.IsControlBlocked()) {
                 var rect = GetScreenRect(startPosition, endPosition);
                 DrawScreenRect(rect, new Color(0.8f, 0.8f, 0.95f, 0.25f));
                 DrawScreenRectBorder(rect, 2, new Color(0.8f, 0.8f, 0.95f));
