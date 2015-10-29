@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.src.data {
     [Serializable]
-    public class BarracksData {
+    public class SpawnerData {
         public UnitTypes produceUnitType;
         public int level;
         public BarracksUpgradeData[] upgradeData;

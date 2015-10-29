@@ -1,5 +1,6 @@
 ﻿using Assets.src.battle;
 using Assets.src.commands;
+using Assets.src.managers;
 using Assets.src.mediators;
 using Assets.src.services;
 using Assets.src.signals;
@@ -49,6 +50,7 @@ namespace Assets.src.contexts {
             injectionBinder.Bind<IBattleManager>().To<BattleManager>().ToSingleton();
             injectionBinder.Bind<ISelectionManager>().To<SelectionManager>().ToSingleton();
             injectionBinder.Bind<IHUDManager>().To<HUDManager>().ToSingleton();
+            injectionBinder.Bind<IViewModelManager>().To<ViewModelManager>().ToSingleton();
 
             //signals
             injectionBinder.Bind<DeselectAllSignal>().ToSingleton();

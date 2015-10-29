@@ -9,7 +9,7 @@ namespace Assets.src.views {
 
         public IViewModelMediator Mediator { get { return mediator = mediator ?? GetComponent<IViewModelMediator>(); } }
 
-        public virtual void DestroyView() {
+        public virtual void Destroy() {
             Destroy(gameObject);
         }
 

@@ -44,6 +44,10 @@ namespace Assets.src.models {
             return view;
         }
 
+        public void Initialize() {
+            
+        }
+
         protected virtual void InitializeData() {
             
         }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Assets.src.data;
 using Assets.src.models;
+using Assets.src.services;
 using Assets.src.signals;
 using Assets.src.utils;
 using JetBrains.Annotations;
@@ -12,6 +13,9 @@ namespace Assets.src.battle {
 
         [Inject]
         public OnCreateUnitSignal CreateUnitSignal { get; set; }
+
+        [Inject]
+        public ICooldownService CooldownService { get; set; }
 
         private readonly List<ITarget> attackers;
 
@@ -31,6 +35,7 @@ namespace Assets.src.battle {
         }
 
         public void StartRound() {
+            Debug.Log(attackersSpawners.Count);
             foreach (var attackersSpawner in attackersSpawners) {
                 attackersSpawner.StartSpawn();
             }
@@ -57,8 +62,8 @@ namespace Assets.src.battle {
         }
 
         public void Initialize() {
-            StartRound();
-            fontain.SpawnHero();
+            CooldownService.AddCooldown(3f, null, StartRound);
+            //fontain.SpawnHero();
         }
 
         public void RegisterTarget(ITarget target) {

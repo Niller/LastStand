@@ -9,13 +9,13 @@ using UnityEngine.Assertions;
 namespace Assets.src.models {
     public class SofaModel : BaseTargetModel {
 
-        private SofaData data;
+        private BuildingData data;
 
         public SofaMediator Mediator { protected get; set; }
 
         protected override void InitializeData() {
             base.InitializeData();
-            data = informer.GetBaseBattleData() as SofaData;
+            data = informer.GetBaseBattleData() as BuildingData;
             //IsDefender = Mediator.Infomer.isDefender;
             if (data != null) {
                 currentHealth = data.health;

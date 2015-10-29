@@ -17,13 +17,13 @@ namespace Assets.src.mediators {
             Model.SetNavUnit(GetUnitView());
             Model.InitializeStates();
             Model.StartAct();
-            Model.OnDestroyed += GetUnitView().DestroyView;
+            Model.OnDestroyed += GetUnitView().Destroy;
             OnClickSignal.AddListener(GetUnitView().SetGoal);
         }
 
         public override void OnRemove() {
             base.OnRemove();
-            Model.OnDestroyed -= GetUnitView().DestroyView;
+            Model.OnDestroyed -= GetUnitView().Destroy;
             OnClickSignal.RemoveListener(GetUnitView().SetGoal);
         }
 

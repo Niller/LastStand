@@ -25,7 +25,7 @@ namespace Assets.src.mediators {
         }
 
         protected void Dispose() {
-            View.DestroyView();
+            View.Destroy();
         }
 
     }

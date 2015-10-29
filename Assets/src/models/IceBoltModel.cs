@@ -28,5 +28,9 @@ namespace Assets.src.models {
         public IView GetView() {
             return null;
         }
+
+        public void Initialize() {
+            
+        }
     }
 }

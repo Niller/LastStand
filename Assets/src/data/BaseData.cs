@@ -1,5 +1,9 @@
-﻿namespace Assets.src.data {
+﻿using System;
+
+namespace Assets.src.data {
+    [Serializable]
     public abstract class BaseBattleData {
-        
+        public int health;
+        public float vulnerabilityRadius;
     }
 }

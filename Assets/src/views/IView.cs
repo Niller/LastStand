@@ -6,5 +6,6 @@ namespace Assets.src.views {
         IViewModelMediator GetMediator();
         Vector3 GetPosition();
         GameObject GetGameObject();
+        void Destroy();
     }
 }

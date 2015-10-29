@@ -1,0 +1,68 @@
+using System;
+using Assets.Common.Extensions;
+using Assets.src.battle;
+using Assets.src.data;
+using Assets.src.views;
+using UnityEngine;
+using UnityEngine.Assertions;
+
+namespace Assets.src.models {
+    public class BaseTargetBehaviour : ITargetBehaviour {
+        [Inject]
+        public IBattleManager BattleManager { get; set; }
+
+        protected int currentHealth;
+
+        protected bool isDied;
+
+        protected ITarget1 parent;
+
+        protected bool isDefender;
+
+        protected BaseBattleData data;
+
+        public float GetVulnerabilityRadius() {
+            return data.vulnerabilityRadius;
+        }
+
+        public virtual void Initialize(BaseBattleData dataParam, bool isDefenderParam, ITarget1 parentParam) {
+            data = dataParam;
+            isDefender = isDefenderParam;
+            parent = parentParam;
+            InitializeData();
+            //BattleManager.RegisterTarget(parent);
+        }
+
+        public Vector3 GetPosition() {
+            return parent.GetView().GetPosition();
+        }
+
+        protected virtual void InitializeData() {
+            currentHealth = data.health;
+        }
+
+        public void SetDamage(int damage) {
+            currentHealth -= damage;
+            //Debug.Log(currentHealth);
+            if (currentHealth <= 0) {
+                Destroy();
+            }
+        }
+
+        public bool IsDefender { get { return isDefender; } }
+
+        protected virtual void Destroy() {
+            isDied = true;
+            //BattleManager.UnregisterTarget(parent);
+            OnDestroyed.TryCall();
+        }
+
+        public Action OnDestroyed { get; set; }
+
+        public bool IsUnvailableForAttack() {
+            return isDied;
+        }
+
+        public bool IsDynamic { get { return true; } }
+    }
+}
