@@ -10,7 +10,7 @@ namespace Assets.src.models {
         Action OnDestroyed { get; set; }
         Vector3 GetPosition();
         float GetVulnerabilityRadius();
-        void Initialize(BaseBattleData dataParam, bool isDefenderParam, ITarget1 parentParam);
+        void Initialize(BaseBattleData dataParam, bool isDefenderParam, ITarget parentParam);
         bool IsUnvailableForAttack();
         bool IsDynamic { get; }
     }

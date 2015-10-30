@@ -1,6 +1,5 @@
 ﻿using Assets.src.battle;
 using Assets.src.data;
-using Assets.src.mediators;
 using Assets.src.services;
 using Assets.src.signals;
 using Assets.src.utils;
@@ -23,8 +22,6 @@ namespace Assets.src.models {
         [Inject]
         public IBattleManager BattleManager { get; set; }
 
-        public FontainMediator Mediator { protected get; set; }
-
         protected ICooldownItem heroRespawnCooldown;
 
         public void Initialize() {
@@ -46,7 +43,7 @@ namespace Assets.src.models {
         }
 
         public void SpawnHero() {
-            CreateUnitSignal.Dispatch(Mediator.Informer.spawnPoint.position, UnitTypes.HERO, Mediator.Informer.heroData, true);
+            //CreateUnitSignal.Dispatch(Mediator.Informer.spawnPoint.position, UnitTypes.HERO, Mediator.Informer.heroData, true);
         }
 
         public void StopHeroRespawn() {

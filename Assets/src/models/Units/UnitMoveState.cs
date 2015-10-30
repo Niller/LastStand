@@ -1,4 +1,5 @@
 ﻿using Assets.src.battle;
+using Assets.src.models;
 using UnityEngine;
 
 namespace ru.pragmatix.orbix.world.units {
@@ -11,13 +12,13 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         public override void Start() {
-            currentUnit.GetNavUnit().SetDestination(target.GetPosition());
+            currentUnit.GetNavUnit().SetDestination(target.GetTargetBehaviour().GetPosition());
         }
 
         public override void Update() {
-            if (target.IsUnvailableForAttack()) 
+            if (target.GetTargetBehaviour().IsUnvailableForAttack()) 
                 return;
-            if (Vector3.Distance(currentUnit.GetPosition(), target.GetPosition()) < target.GetVulnerabilityRadius()) {
+            if (Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(), target.GetTargetBehaviour().GetPosition()) < target.GetTargetBehaviour().GetVulnerabilityRadius()) {
                 Stop();
             }
         }

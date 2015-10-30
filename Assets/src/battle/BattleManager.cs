@@ -54,7 +54,7 @@ namespace Assets.src.battle {
         }
 
         private List<ITarget> GetAppropriateListForTarget(ITarget target) {
-            return target.IsDefender ? defenders : attackers;
+            return target.GetTargetBehaviour().IsDefender ? defenders : attackers;
         }
 
         private List<ISpawner> GetAppropriateListForSpawner(ISpawner spawner) {

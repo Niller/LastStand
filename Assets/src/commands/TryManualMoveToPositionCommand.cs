@@ -17,6 +17,7 @@ namespace Assets.src.commands {
         public override void Execute() {
             if (GameManager.IsControlBlocked())
                 return;
+            /*
             foreach (var selectedObject in SelectionManager.GetSelectedObjects()) {
                 var unit = selectedObject.GetView().GetMediator().GetModel<IUnit>();
                 if (unit.IsManualControl) {
@@ -27,6 +28,7 @@ namespace Assets.src.commands {
                     }
                 }
             }
+            */
         }
     }
 }

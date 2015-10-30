@@ -1,5 +1,4 @@
 using Assets.src.battle;
-using Assets.src.mediators;
 using Assets.src.models;
 using Assets.src.views;
 using strange.extensions.command.impl;
@@ -14,6 +13,7 @@ namespace Assets.src.commands {
         public ISelectionManager SelectionManager { get; set; }
 
         public override void Execute() {
+            /*
             var selectedObjects = SelectionManager.GetSelectedObjects();
             var ray = Camera.main.ScreenPointToRay(Position);
             var colls = Physics.RaycastAll(ray);
@@ -29,6 +29,7 @@ namespace Assets.src.commands {
                     selectedObject.GetView().GetMediator().GetModel<IUnit>().SetPriorityTarget(priorityTarget, true);                    
                 }
             }
+            */
         }
 
 

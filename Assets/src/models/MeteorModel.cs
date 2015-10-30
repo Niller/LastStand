@@ -18,12 +18,12 @@ namespace Assets.src.models {
         }
 
         public void Apply() {
-            var colls = Physics.OverlapSphere(target.GetPosition(), meteorData.range);
+            var colls = Physics.OverlapSphere(target.GetTargetBehaviour().GetPosition(), meteorData.range);
             foreach (var collider in colls) {
                 var targetView = collider.GetComponent<ITargetView>();
                 if (targetView != null) {
-                    var model = targetView.GetMediator().GetModel<BaseTargetModel>();
-                    model.SetDamage(meteorData.damage);
+                    //var model = targetView.GetMediator().GetModel<BaseTargetModel>();
+                    //model.SetDamage(meteorData.damage);
                 }
             }
         }

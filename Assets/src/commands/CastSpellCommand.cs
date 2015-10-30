@@ -1,5 +1,6 @@
 using Assets.src.battle;
 using Assets.src.data;
+using Assets.src.models;
 using Assets.src.utils;
 using Assets.src.views;
 using strange.extensions.command.impl;

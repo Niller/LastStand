@@ -27,6 +27,7 @@ namespace Assets.src.models {
 
         protected SpellSlot activeSpell;
 
+        /*
         public override void Initialize(BaseBattleInformer informerParam) {
             base.Initialize(informerParam);
             spells = new List<SpellSlot>();
@@ -70,7 +71,8 @@ namespace Assets.src.models {
             OnSpellSlotActivated.RemoveListener(ActivateSpellSlot);
             OnResetSpellPreparationSignal.RemoveListener(ResetActivationSpellSlot);
         }
-
+        */
         public override bool IsManualControl { get { return true; } }
+        
     }
 }

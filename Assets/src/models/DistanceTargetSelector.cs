@@ -21,7 +21,7 @@ namespace Assets.src.models {
             ITarget nearestTarget = null;
             float minDistance = float.PositiveInfinity;
             foreach (var target in targets) {
-                var currentDistance = Vector3.Distance(currentUnit.GetPosition(), target.GetPosition());
+                var currentDistance = Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(), target.GetTargetBehaviour().GetPosition());
                 if (currentDistance < minDistance) {
                     minDistance = currentDistance;
                     nearestTarget = target;

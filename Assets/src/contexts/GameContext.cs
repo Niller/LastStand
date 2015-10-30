@@ -1,7 +1,6 @@
 ﻿using Assets.src.battle;
 using Assets.src.commands;
 using Assets.src.managers;
-using Assets.src.mediators;
 using Assets.src.services;
 using Assets.src.signals;
 using Assets.src.utils;
@@ -93,15 +92,6 @@ namespace Assets.src.contexts {
             injectionBinder.Bind<IGameDataService>().To<GameDataService>().ToSingleton();
             injectionBinder.Bind<ICooldownService>().To<CooldownService>().ToSingleton();
             injectionBinder.Bind<IGameResourcesService>().To<GameResourcesService>().ToSingleton();
-
-            //mediators
-            mediationBinder.Bind<SofaView>().To<SofaMediator>();
-            mediationBinder.Bind<UnitView>().To<UnitMediator>();
-            mediationBinder.Bind<HeroView>().To<HeroMediator>();
-            mediationBinder.Bind<BarracksView>().To<BarracksMediator>();
-            mediationBinder.Bind<FontainView>().To<FontainMediator>();
-            mediationBinder.Bind<IceBoltView>().To<IceBoltMediator>();
-            mediationBinder.Bind<MeteorView>().To<MeteorMediator>();
         }
 
         protected void InitServices() {

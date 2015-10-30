@@ -18,7 +18,7 @@ namespace Assets.src.models {
         }
 
         public void Apply() {
-            target.SetDamage(iceBoltData.damage);
+            target.GetTargetBehaviour().SetDamage(iceBoltData.damage);
         }
 
         public void SetView(IView view) {

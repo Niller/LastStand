@@ -1,11 +1,9 @@
 using Assets.src.battle;
 using Assets.src.data;
-using Assets.src.mediators;
 using Assets.src.views;
-using JetBrains.Annotations;
 
 namespace Assets.src.models {
-    public interface IUnit : ITarget, IModel {
+    public interface IUnit : ITarget {
         INavigationUnit GetNavUnit();
         UnitData GetUnitData();
         bool CheckAttackDistance(ITarget target);

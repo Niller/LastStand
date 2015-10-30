@@ -25,7 +25,7 @@ namespace Assets.src.commands {
         public OnResetSpellPreparationSignal OnResetSpellPreparationSignal { get; set; }
 
         public override void Execute() {
-            var currentSelectedUnits = SelectionManager.GetSelectedObjects();
+            /*var currentSelectedUnits = SelectionManager.GetSelectedObjects();
             foreach (var selectable in currentSelectedUnits) {
                 var hero = selectable.GetView().GetMediator().GetModel<HeroModel>();
                 if (hero != null) {
@@ -53,7 +53,7 @@ namespace Assets.src.commands {
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 }

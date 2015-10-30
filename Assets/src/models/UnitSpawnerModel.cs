@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using Assets.src.battle;
 using Assets.src.data;
-using Assets.src.mediators;
 using Assets.src.services;
 using Assets.src.signals;
 using Assets.src.views;
-using UnityEngine;
 
 namespace Assets.src.models {
     public class UnitSpawnerModel : IModel, ISpawner {

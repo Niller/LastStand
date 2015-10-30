@@ -5,7 +5,7 @@ using strange.extensions.injector.api;
 using UnityEngine;
 
 namespace Assets.src.models {
-    public class MainTargetModel : ITarget1 {
+    public class MainTargetModel : ITarget {
 
         [Inject]
         public IInjectionBinder InjectionBinder { get; set; }
@@ -38,7 +38,7 @@ namespace Assets.src.models {
             return view;
         }
 
-        public BaseTargetBehaviour GetTargetBehaviour() {
+        public ITargetBehaviour GetTargetBehaviour() {
             return baseTargetBehaviour;
         }
     }

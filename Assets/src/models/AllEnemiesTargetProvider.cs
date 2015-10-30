@@ -14,7 +14,7 @@ namespace Assets.src.models {
         }
 
         public List<ITarget> GetTargets() {
-            return currentUnit.IsDefender ? BattleManager.GetAttackers() : BattleManager.GetDefenders();
+            return currentUnit.GetTargetBehaviour().IsDefender ? BattleManager.GetAttackers() : BattleManager.GetDefenders();
         }
     }
 }

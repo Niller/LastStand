@@ -15,7 +15,7 @@ namespace Assets.src.models {
 
         protected bool isDied;
 
-        protected ITarget1 parent;
+        protected ITarget parent;
 
         protected bool isDefender;
 
@@ -25,7 +25,7 @@ namespace Assets.src.models {
             return data.vulnerabilityRadius;
         }
 
-        public virtual void Initialize(BaseBattleData dataParam, bool isDefenderParam, ITarget1 parentParam) {
+        public virtual void Initialize(BaseBattleData dataParam, bool isDefenderParam, ITarget parentParam) {
             data = dataParam;
             isDefender = isDefenderParam;
             parent = parentParam;
