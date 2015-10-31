@@ -1,36 +1,23 @@
 using Assets.src.battle;
 using Assets.src.data;
-using Assets.src.views;
+using Assets.src.utils;
+using UnityEngine;
 
 namespace Assets.src.models {
-    public class IceBoltModel : ISpell, IModel {
-
-        private ITarget target;
+    public class IceBoltModel : BaseSpellModel {
 
         private IceBoltData iceBoltData;
-
-        public void InitializeData(IceBoltData data) {
-            iceBoltData = data;
+        
+        protected override void InitializeData(SpellData data) {
+            iceBoltData = data as IceBoltData;
         }
 
-        public void Initialize(ITarget targetParam) {
-            target = targetParam;
-        }
-
-        public void Apply() {
+        public override void Apply() {
             target.GetTargetBehaviour().SetDamage(iceBoltData.damage);
         }
 
-        public void SetView(IView view) {
-            
-        }
-
-        public IView GetView() {
-            return null;
-        }
-
-        public void Initialize() {
-            
+        protected override GameObject GetViewPrefab() {
+            return ViewModelManager.GetView<IceBoltModel>();
         }
     }
 }

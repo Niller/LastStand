@@ -28,7 +28,7 @@ namespace Assets.src.views {
             transformBehaviour.Start(transform, startPositionParam, End);
         }
 
-        private void Update() {
+        protected override void Update() {
             transformBehaviour.Update(Time.deltaTime);
         }
     }

@@ -28,7 +28,7 @@ namespace Assets.src.views {
             transformBehaviour.Start(transform, new Vector3(targetParam.GetTargetBehaviour().GetPosition().x, targetParam.GetTargetBehaviour().GetPosition().y+10, targetParam.GetTargetBehaviour().GetPosition().z), End);
         }
 
-        private void Update() {
+        protected override void Update() {
             transformBehaviour.Update(Time.deltaTime);
         }
     }

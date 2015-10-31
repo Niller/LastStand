@@ -15,7 +15,7 @@ namespace Assets.src.models {
         public IBattleManager BattleManager { get; set; }
 
         [Inject]
-        public IInjectionBinder InjectionBinder { get; set; }
+        public IUnitFactory UnitFactory { get; set; }
 
         protected Dictionary<int, UnitData> cachedUnitData = new Dictionary<int, UnitData>();
 
@@ -49,12 +49,7 @@ namespace Assets.src.models {
 
         protected void SpawnUnit() {
             var data = view.data;
-            //CreateUnitSignal.Dispatch(view.spawnPoint.position, data.produceUnitType, GetCurrentUnitData(), IsDefender);
-            var unit = new UnitModel();
-            InjectionBinder.injector.Inject(unit);
-            unit.Spawn(view.spawnPoint.position, GetCurrentUnitData(), data.produceUnitType, IsDefender);
-            unit.InitializeStates();
-            unit.StartAct();
+            UnitFactory.CreateUnit(view.spawnPoint.position, data.produceUnitType, GetCurrentUnitData().Copy(), IsDefender);          
             spawnUnitsCooldown = CooldownService.AddCooldown(view.data.upgradeData[view.data.level].trainingSpeed,
                 null, SpawnUnit);
         }

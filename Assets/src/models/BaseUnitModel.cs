@@ -27,7 +27,7 @@ namespace Assets.src.models {
         [Inject]
         public ISelectionManager SelectionManager { get; set; }
 
-        protected UnitView unitView;
+        protected BaseUnitView unitView;
 
         protected ITargetBehaviour targetBehaviour;
 
@@ -59,7 +59,7 @@ namespace Assets.src.models {
         }
 
         protected void InitView(Vector3 position) {
-            var prefab = ViewModelManager.GetView<UnitModel>((int)type);
+            var prefab = GetViewPrefab();
             var unitGO = Object.Instantiate(prefab);
             unitGO.SetActive(true);
             unitGO.transform.position = position;
@@ -70,7 +70,9 @@ namespace Assets.src.models {
            
         }
 
-        protected void Initialize() {
+        protected abstract GameObject GetViewPrefab();
+
+        protected virtual void Initialize() {
             targetProvider = Activator.CreateInstance<TTargetProvider>();
             InjectionBinder.injector.Inject(targetProvider);
             targetProvider.SetCurrentUnit(this);
@@ -86,7 +88,7 @@ namespace Assets.src.models {
         }
 
         public void SetView(IView view) {
-            unitView = view as UnitView;
+            unitView = view as BaseUnitView;
             unitView.OnUpdate += Update;
         }
 
@@ -156,12 +158,12 @@ namespace Assets.src.models {
         public abstract bool IsManualControl { get; }
 
         private void OnDeselected() {
-            if (currentTarget != null && !currentTarget.GetTargetBehaviour().IsUnvailableForAttack() && currentTarget is IModel)
+            if (currentTarget != null && !currentTarget.GetTargetBehaviour().IsUnvailableForAttack() && !(currentTarget is TempTarget))
                 HUDManager.RemoveHUD(((IModel)currentTarget).GetView().GetGameObject(), HudTypes.TARGET_POINTER);
         }
 
         private void OnSelected() {
-            if (currentTarget != null && !currentTarget.GetTargetBehaviour().IsUnvailableForAttack() && currentTarget is IModel)
+            if (currentTarget != null && !currentTarget.GetTargetBehaviour().IsUnvailableForAttack() && !(currentTarget is TempTarget))
                 HUDManager.AddHUD(((IModel)currentTarget).GetView().GetGameObject(), HudTypes.TARGET_POINTER);
         }
     }

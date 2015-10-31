@@ -1,6 +1,7 @@
 ﻿using Assets.src.battle;
 using Assets.src.commands;
 using Assets.src.managers;
+using Assets.src.models;
 using Assets.src.services;
 using Assets.src.signals;
 using Assets.src.utils;
@@ -11,8 +12,10 @@ using strange.extensions.command.api;
 using strange.extensions.command.impl;
 using strange.extensions.context.api;
 using strange.extensions.context.impl;
+using strange.extensions.injector.impl;
 using strange.extensions.pool.api;
 using strange.extensions.pool.impl;
+using UnityEditorInternal;
 
 namespace Assets.src.contexts {
     public class GameContext : MVCSContext {
@@ -50,6 +53,9 @@ namespace Assets.src.contexts {
             injectionBinder.Bind<ISelectionManager>().To<SelectionManager>().ToSingleton();
             injectionBinder.Bind<IHUDManager>().To<HUDManager>().ToSingleton();
             injectionBinder.Bind<IViewModelManager>().To<ViewModelManager>().ToSingleton();
+            injectionBinder.Bind<IUnitFactory>().To<UnitFactory>().ToSingleton();
+            injectionBinder.Bind<ISpellFactory>().To<SpellFactory>().ToSingleton();
+            injectionBinder.Bind<ISpellCastManager>().To<SpellCastManager>().ToSingleton();
 
             //signals
             injectionBinder.Bind<DeselectAllSignal>().ToSingleton();

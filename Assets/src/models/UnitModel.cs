@@ -6,17 +6,12 @@ using UnityEngine;
 
 namespace Assets.src.models {
     public class UnitModel : BaseUnitModel<DistanceTargetSelector, AllEnemiesTargetProvider> {
-
-        
-
         public override bool IsManualControl { get { return false; } }
 
-        /*
-        public UnitModel(Vector3 position, UnitData dataParam, UnitTypes typeParam, bool isDefenderParam) {
-            
-        }
-        */
 
+        protected override GameObject GetViewPrefab() {
+            return ViewModelManager.GetView<UnitModel>((int)type); ;
+        }
 
     }
 }

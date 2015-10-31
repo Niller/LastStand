@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.src.data;
 using Assets.src.models;
 using Assets.src.services;
@@ -24,6 +25,10 @@ namespace Assets.src.battle {
 
         private FontainModel fontain;
 
+        private HeroData currentHeroData;
+
+        
+
         public BattleManager() {
             attackers = new List<ITarget>();
             defenders = new List<ITarget>();
@@ -32,6 +37,7 @@ namespace Assets.src.battle {
         }
 
         public void StartRound() {
+            fontain.SpawnHero();
             foreach (var attackersSpawner in attackersSpawners) {
                 attackersSpawner.StartSpawn();
             }
@@ -41,6 +47,7 @@ namespace Assets.src.battle {
         }
 
         public void StopRound() {
+            
             foreach (var attackersSpawner in attackersSpawners) {
                 attackersSpawner.StopSpawn();
             }
@@ -59,7 +66,7 @@ namespace Assets.src.battle {
 
         public void Initialize() {
             CooldownService.AddCooldown(3f, null, StartRound);
-            //fontain.SpawnHero();
+            
         }
 
         public void RegisterTarget(ITarget target) {
@@ -85,5 +92,15 @@ namespace Assets.src.battle {
         public void RegisterFontaion(FontainModel fontainParam) {
             fontain = fontainParam;
         }
+
+        public HeroData GetCurrentHeroData() {
+            return currentHeroData;
+        }
+
+        public void SaveCurrentHeroData(HeroData data) {
+            currentHeroData = data;
+        }
+
+        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assets.src.data;
 using Assets.src.models;
 
 namespace Assets.src.battle {
@@ -10,5 +11,8 @@ namespace Assets.src.battle {
         List<ITarget> GetDefenders();
         List<ITarget> GetAttackers();
         void RegisterFontaion(FontainModel fontain);
+        HeroData GetCurrentHeroData();
+        void SaveCurrentHeroData(HeroData data);
+
     }
 }

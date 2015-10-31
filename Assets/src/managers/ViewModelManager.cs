@@ -15,14 +15,18 @@ namespace Assets.src.managers {
     public class ViewModelManager : IViewModelManager {
 
         protected Dictionary<Type,List<string>> viewPaths = new Dictionary<Type, List<string>>() {
-            {typeof(UnitModel), new List<string>() { "prefabs/EnemyMeleeUnit", "prefabs/MinionMeleeUnit", "prefabs/EnemyRangeUnit" , "prefabs/MinionRangeUnit" } }
+            {typeof(UnitModel), new List<string>() { "prefabs/EnemyMeleeUnit", "prefabs/MinionMeleeUnit", "prefabs/EnemyRangeUnit" , "prefabs/MinionRangeUnit" } },
+            {typeof(HeroModel), new List<string>() {"prefabs/Hero" } },
+            {typeof(IceBoltModel), new List<string>() {"prefabs/IceBolt" } },
+            {typeof(MeteorModel), new List<string>() { "prefabs/Meteor" } }
         }; 
 
         protected Dictionary<string, GameObject> cachedView = new Dictionary<string, GameObject>();
         
         protected Dictionary<Type, Type> modelsByView = new Dictionary<Type, Type>() {
             {typeof(MainTargetView), typeof(MainTargetModel) },
-            {typeof(UnitSpawnerView), typeof(UnitSpawnerModel) }
+            {typeof(UnitSpawnerView), typeof(UnitSpawnerModel) },
+            {typeof(FontainView), typeof(FontainModel) }
         };
 
         public Type GetModel(Type viewType) {

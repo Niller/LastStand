@@ -4,6 +4,10 @@ using UnityEngine;
 namespace Assets.src.views {
     public class BaseUnitView : BaseView, INavigationUnit, ITargetView {
 
+        protected ISelectableBehaviour selectableBehaviour;
+
+        public ISelectableBehaviour SelectableBehaviour { get { return selectableBehaviour = selectableBehaviour ?? GetComponent<ISelectableBehaviour>(); } }
+
         protected NavMeshAgent navMeshAgent;
         protected NavMeshObstacle navMeshObstacle;
 

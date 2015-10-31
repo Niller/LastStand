@@ -17,18 +17,18 @@ namespace Assets.src.commands {
         public override void Execute() {
             if (GameManager.IsControlBlocked())
                 return;
-            /*
+            
             foreach (var selectedObject in SelectionManager.GetSelectedObjects()) {
-                var unit = selectedObject.GetView().GetMediator().GetModel<IUnit>();
+                var unit = selectedObject.GetView().GetModel<IUnit>();
                 if (unit.IsManualControl) {
                     var ray = Camera.main.ScreenPointToRay(Position);
                     RaycastHit hitInfo;
                     if (Physics.Raycast(ray, out hitInfo, 1 << LayerMask.NameToLayer("Terrain"))) {
-                        unit.SetMovePoint(new TargetMock(hitInfo.point));
+                        unit.SetMovePoint(new TempTarget(hitInfo.point));
                     }
                 }
             }
-            */
+            
         }
     }
 }
