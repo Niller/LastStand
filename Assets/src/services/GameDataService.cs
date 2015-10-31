@@ -18,6 +18,11 @@ namespace Assets.src.services {
             {Spells.ICE_BOLT, SpellTypes.TARGET},
             {Spells.METEOR, SpellTypes.AREA }
         };
+
+        private Dictionary<Spells, string> iconsBySpells = new Dictionary<Spells, string>() {
+            {Spells.ICE_BOLT, "iceBolt"},
+            {Spells.METEOR, "meteor"}
+        };
         
 
         public BulletTypes GetBulletType(UnitTypes uniType) {
@@ -26,6 +31,10 @@ namespace Assets.src.services {
 
         public SpellTypes GetSpellType(Spells spell) {
             return spellsTypes[spell];
+        }
+
+        public string GetIconBySpell(Spells spell) {
+            return iconsBySpells[spell];
         }
 
         public void Initialize() {

@@ -12,6 +12,7 @@ namespace Assets.src.models {
 
         public bool IsDefender { get { return false; } }
         public Action OnDestroyed { get; set; }
+        public Action OnHPChanged { get; set; }
 
         public Vector3 GetPosition() {
             return position;
@@ -33,5 +34,12 @@ namespace Assets.src.models {
         }
 
         public bool IsDynamic { get { return false; } }
+        public int GetCurrentHP() {
+            throw new NotImplementedException();
+        }
+
+        public int GetMaxHP() {
+            throw new NotImplementedException();
+        }
     }
 }

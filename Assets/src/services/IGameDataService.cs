@@ -6,4 +6,5 @@ using Assets.src.utils;
 public interface IGameDataService : IService {
     BulletTypes GetBulletType(UnitTypes uniType);
     SpellTypes GetSpellType(Spells spell);
+    string GetIconBySpell(Spells spell);
 }

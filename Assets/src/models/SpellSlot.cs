@@ -12,5 +12,9 @@ namespace Assets.src.models {
         public Spells spell;
         public int level;
         public bool isPrepared;
+
+        public void Upgrade() {
+            level++;
+        }
     }
 }

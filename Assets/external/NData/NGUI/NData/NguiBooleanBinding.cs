@@ -126,7 +126,6 @@ public class NguiBooleanBinding : NguiBinding
 	
 	protected override void OnChange() {
 		base.OnChange();
-        Debug.Log("!!!! "/* + value*/);
         var newValue = DefaultValue;
 
 	    if (!EvaluateExpression) {

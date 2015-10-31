@@ -20,7 +20,6 @@ public class NguiVisibilityBinding : NguiBooleanBinding, IVisibilityBinding
 	
 	protected override void ApplyNewValue(bool newValue)
 	{
-        Debug.Log("SS" + newValue);
         _nvc.ApplyNewValue(newValue);
 	}
 }

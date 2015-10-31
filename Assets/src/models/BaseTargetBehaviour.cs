@@ -33,6 +33,8 @@ namespace Assets.src.models {
             BattleManager.RegisterTarget(parent);
         }
 
+        public Action OnHPChanged { get; set; }
+
         public Vector3 GetPosition() {
             return parent.GetView().GetPosition();
         }
@@ -43,10 +45,19 @@ namespace Assets.src.models {
 
         public void SetDamage(int damage) {
             currentHealth -= damage;
+            OnHPChanged.TryCall();
             //Debug.Log(currentHealth);
             if (currentHealth <= 0) {
                 Destroy();
             }
+        }
+
+        public int GetCurrentHP() {
+            return currentHealth;
+        }
+
+        public int GetMaxHP() {
+            return data.health;
         }
 
         public bool IsDefender { get { return isDefender; } }
