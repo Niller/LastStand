@@ -12,10 +12,25 @@ namespace Assets.src.gui {
 
     public class SpellSlotUI : EZData.Context {
 
-        public SpellSlotUI(int level, string icon) {
-            Level = level;
+        protected SpellSlot slot;
+
+        protected HeroModel heroModel;
+
+        public SpellSlotUI(HeroContext heroParam, HeroModel heroModelParam, SpellSlot slotParam, string icon) {
+            slot = slotParam;
+            Level = slot.level;
             Icon = icon;
+            Parent = heroParam;
+            heroModel = heroModelParam;
         }
+
+        #region Parent
+        public readonly EZData.VariableContext<HeroContext> ParentEzVariableContext = new EZData.VariableContext<HeroContext>(null);
+        public HeroContext Parent {
+            get { return ParentEzVariableContext.Value; }
+            set { ParentEzVariableContext.Value = value; }
+        }
+        #endregion
 
         #region Property Level
         private readonly EZData.Property<int> _privateLevelProperty = new EZData.Property<int>();
@@ -34,6 +49,11 @@ namespace Assets.src.gui {
             set { IconProperty.SetValue(value); }
         }
         #endregion
+
+        public void OnSlotClick() {
+            if (Parent.IsUpgradeMode)
+                heroModel.UpgradeSpell(slot);
+        }
     }
 
     public class HeroContext : EZData.Context {
@@ -41,6 +61,8 @@ namespace Assets.src.gui {
         [Inject]
         public IGameDataService GameDataService { get; set; }
 
+        [Inject]
+        public IInjectionBinder InjectionBinder { get; set; }
 
         #region Slot1
         public readonly EZData.VariableContext<SpellSlotUI> Slot1EzVariableContext = new EZData.VariableContext<SpellSlotUI>(null);
@@ -58,12 +80,45 @@ namespace Assets.src.gui {
         }
         #endregion
 
-        public void InitializeSlots(HeroModel hero) {
+        #region Property UpgradePoints
+        private readonly EZData.Property<int> _privateUpgradePointsProperty = new EZData.Property<int>();
+        public EZData.Property<int> UpgradePointsProperty { get { return _privateUpgradePointsProperty; } }
+        public int UpgradePoints {
+            get { return UpgradePointsProperty.GetValue(); }
+            set { UpgradePointsProperty.SetValue(value); }
+        }
+        #endregion
+
+        #region Property IsUpgradeMode
+        private readonly EZData.Property<bool> _privateIsUpgradeModeProperty = new EZData.Property<bool>();
+        public EZData.Property<bool> IsUpgradeModeProperty { get { return _privateIsUpgradeModeProperty; } }
+        public bool IsUpgradeMode {
+            get { return IsUpgradeModeProperty.GetValue(); }
+            set { IsUpgradeModeProperty.SetValue(value); }
+        }
+        #endregion
+
+        protected HeroModel hero;
+
+        public void InitializeSlots(HeroModel heroParam) {
+            hero = heroParam;
             var slots = hero.GetSpellSlots();
-            Slot1 = new SpellSlotUI(slots[0].level, GameDataService.GetIconBySpell(slots[0].spell));
-            Slot2 = new SpellSlotUI(slots[1].level, GameDataService.GetIconBySpell(slots[1].spell));
+            Slot1 = new SpellSlotUI(this, hero, slots[0], GameDataService.GetIconBySpell(slots[0].spell));
+            Slot2 = new SpellSlotUI(this, hero, slots[1], GameDataService.GetIconBySpell(slots[1].spell));
+            UpgradePoints = hero.UpgradePoints.Value;
+            hero.UpgradePoints.OnPropertyChanged += OnUpgradePointsChanged;
         }
 
+        private void OnUpgradePointsChanged(int points) {
+            UpgradePoints = points;
+            if (IsUpgradeMode) {
+                IsUpgradeMode = UpgradePoints > 0;
+            }
+        }
+
+        public void UpgradeClickButton() {
+            IsUpgradeMode = !IsUpgradeMode;
+        }
     }
 
 

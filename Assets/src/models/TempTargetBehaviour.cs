@@ -1,13 +1,15 @@
 ﻿using System;
 using Assets.src.data;
 using UnityEngine;
+using UnityEngineInternal;
 
 namespace Assets.src.models {
     public class TempTargetBehaviour : ITargetBehaviour {
 
         protected Vector3 position;
 
-        public void SetDamage(int damage) {
+        public bool SetDamage(int damage) {
+            return false;
         }
 
         public bool IsDefender { get { return false; } }

@@ -43,13 +43,15 @@ namespace Assets.src.models {
             currentHealth = data.health;
         }
 
-        public void SetDamage(int damage) {
+        public bool SetDamage(int damage) {
             currentHealth -= damage;
             OnHPChanged.TryCall();
             //Debug.Log(currentHealth);
             if (currentHealth <= 0) {
                 Destroy();
+                return true;
             }
+            return false;
         }
 
         public int GetCurrentHP() {

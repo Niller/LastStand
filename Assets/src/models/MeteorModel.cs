@@ -22,8 +22,9 @@ namespace Assets.src.models {
             foreach (var collider in colls) {
                 var targetView = collider.GetComponent<ITargetView>();
                 if (targetView != null) {
-                    var model = targetView.GetModel<ITarget>();
-                    model.GetTargetBehaviour().SetDamage(meteorData.damage);
+                    var targetModel = targetView.GetModel<ITarget>();
+                    if (targetModel.GetTargetBehaviour().IsDefender != source.GetTargetBehaviour().IsDefender)
+                        source.DoDamage(targetModel, meteorData.damage);
                 }
             }
         }

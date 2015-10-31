@@ -58,6 +58,14 @@ namespace Assets.src.models {
             Initialize();
         }
 
+        public int GetXPReward() {
+            return data.xpPrice;
+        }
+
+        public int GetGoldReward() {
+            return data.goldPrice;
+        }
+
         protected void InitView(Vector3 position) {
             var prefab = GetViewPrefab();
             var unitGO = Object.Instantiate(prefab);
@@ -98,6 +106,10 @@ namespace Assets.src.models {
 
         public ITargetBehaviour GetTargetBehaviour() {
             return targetBehaviour;
+        }
+
+        public virtual void DoDamage(ITarget target, int damage) {
+            target.GetTargetBehaviour().SetDamage(damage);
         }
 
         public void SetNavUnit(INavigationUnit navUnit) {
@@ -203,7 +215,7 @@ namespace Assets.src.models {
         protected virtual void InitAttackState() {
             attackState = new UnitAttackState();
             InjectionBinder.injector.Inject(attackState);
-            attackState.SetWeapon(new Weapon(GetUnitData().damage, InjectionBinder.GetInstance<IPool<GameObject>>(GameDataService.GetBulletType(type))));
+            attackState.SetWeapon(new Weapon(GetUnitData().damage, InjectionBinder.GetInstance<IPool<GameObject>>(GameDataService.GetBulletType(type)), this));
             attackState.Initialize(this, null);
 
         }

@@ -13,7 +13,7 @@ namespace Assets.src.models {
         }
 
         public override void Apply() {
-            target.GetTargetBehaviour().SetDamage(iceBoltData.damage);
+            source.DoDamage(target, iceBoltData.damage);
         }
 
         protected override GameObject GetViewPrefab() {

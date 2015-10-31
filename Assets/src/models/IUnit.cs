@@ -5,7 +5,7 @@ using Assets.src.views;
 using UnityEngine;
 
 namespace Assets.src.models {
-    public interface IUnit : ITarget {
+    public interface IUnit : IAttackableTarget, ITargetWithReward {
         INavigationUnit GetNavUnit();
         UnitData GetUnitData();
         bool CheckAttackDistance(ITarget target);
@@ -18,5 +18,6 @@ namespace Assets.src.models {
         void SetNavUnit(INavigationUnit navUnit);
         void Update();
         void Spawn(Vector3 position, UnitData dataParam, UnitTypes typeParam, bool isDefenderParam);
+        
     }
 }

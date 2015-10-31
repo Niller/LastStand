@@ -13,7 +13,7 @@ namespace Assets.src.models {
 
         protected ITarget target;
 
-        protected ITarget source;
+        protected IAttackableTarget source;
 
         public abstract void Apply();
 
@@ -21,7 +21,7 @@ namespace Assets.src.models {
 
         protected SpellData baseData;
 
-        public void Initialize(ITarget sourceParam, ITarget targetParam, SpellData data) {
+        public void Initialize(IAttackableTarget sourceParam, ITarget targetParam, SpellData data) {
             source = sourceParam;
             target = targetParam;
             baseData = data;

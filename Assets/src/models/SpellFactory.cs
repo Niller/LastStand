@@ -10,7 +10,7 @@ namespace Assets.src.models {
         [Inject]
         public IInjectionBinder InjectionBinder { get; set; }
 
-        public ISpell CreateSpell(Spells spellType, SpellData data, ITarget target, ITarget source) {
+        public ISpell CreateSpell(Spells spellType, SpellData data, ITarget target, IAttackableTarget source) {
             ISpell spellModel = null;
             switch (spellType) {
                 case Spells.ICE_BOLT:

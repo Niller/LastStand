@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.src.models {
     public interface ITargetBehaviour {
-        void SetDamage(int damage);
+        bool SetDamage(int damage);
         bool IsDefender { get; }
         Action OnDestroyed { get; set; }
         Action OnHPChanged { get; set; }

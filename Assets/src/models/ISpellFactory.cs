@@ -4,6 +4,6 @@ using Assets.src.utils;
 
 namespace Assets.src.models {
     public interface ISpellFactory {
-        ISpell CreateSpell(Spells spellType, SpellData data, ITarget target, ITarget source);
+        ISpell CreateSpell(Spells spellType, SpellData data, ITarget target, IAttackableTarget source);
     }
 }
