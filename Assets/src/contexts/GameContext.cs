@@ -57,7 +57,6 @@ namespace Assets.src.contexts {
             injectionBinder.Bind<OnDragSignal>().ToSingleton();
             injectionBinder.Bind<OnSpellSlotActivated>().ToSingleton();
 
-            commandBinder.Bind<OnCreateUnitSignal>().To<CreateUnitCommand>();
             commandBinder.Bind<OnClickSignal>().To<TrySelectUnitCommand>().To<TryHeroCastSpellCommand>();
             commandBinder.Bind<OnDragEndSignal>().To<TrySelectUnitGroupCommand>();
             commandBinder.Bind<OnAlternativeClickSignal>().To<TryManualMoveToPositionCommand>().To<TrySetPriorityTargetCommand>();

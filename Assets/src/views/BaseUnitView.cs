@@ -2,7 +2,7 @@ using Assets.src.utils;
 using UnityEngine;
 
 namespace Assets.src.views {
-    public class BaseUnitView : BaseView, INavigationUnit {
+    public class BaseUnitView : BaseView, INavigationUnit, ITargetView {
 
         protected NavMeshAgent navMeshAgent;
         protected NavMeshObstacle navMeshObstacle;

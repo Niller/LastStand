@@ -24,6 +24,9 @@ namespace Assets.src.models {
         [Inject]
         public IViewModelManager ViewModelManager { get; set; }
 
+        [Inject]
+        public ISelectionManager SelectionManager { get; set; }
+
         protected UnitView unitView;
 
         protected ITargetBehaviour targetBehaviour;
@@ -41,6 +44,8 @@ namespace Assets.src.models {
         protected ITarget priorityTarget;
 
         protected UnitTypes type;
+
+        protected ISelectableBehaviour selectableBehaviour;
 
         public void Spawn(Vector3 position, UnitData dataParam, UnitTypes typeParam, bool isDefenderParam) {
             data = dataParam;
@@ -60,7 +65,9 @@ namespace Assets.src.models {
             unitGO.transform.position = position;
             unitGO.transform.parent = GameObject.Find("game").transform;
             SetView(unitGO.GetComponent<IView>());
+            GetView().SetModel(this);
             SetNavUnit(unitView);
+           
         }
 
         protected void Initialize() {
@@ -71,9 +78,11 @@ namespace Assets.src.models {
             InjectionBinder.injector.Inject(targetSelector);
             targetSelector.SetProvider(targetProvider);
             targetSelector.SetCurrentUnit(this);
-            
-            //view.OnSelected += OnSelected;
-            //view.OnDeselected += OnDeselected;
+            selectableBehaviour = unitView.SelectableBehaviour;
+            if (selectableBehaviour != null) {
+                selectableBehaviour.OnSelected += OnSelected;
+                selectableBehaviour.OnDeselected += OnDeselected;
+            }
         }
 
         public void SetView(IView view) {
@@ -110,18 +119,18 @@ namespace Assets.src.models {
             if (priorityTarget != null) {
                 priorityTarget = priorityTarget.GetTargetBehaviour().IsUnvailableForAttack() ? null : priorityTarget;
             }
-            /*
-            if (currentTarget != null && view.IsSelected()) {
-                if (!currentTarget.IsUnvailableForAttack())
+            
+            if (currentTarget != null && selectableBehaviour != null && selectableBehaviour.IsSelected()) {
+                if (!currentTarget.GetTargetBehaviour().IsUnvailableForAttack())
                     OnDeselected();
             }
-            */
+            
             currentTarget = priorityTarget ?? targetSelector.FindTarget();
-            /*
-            if (view.IsSelected()) {
+            
+            if (selectableBehaviour != null && unitView.SelectableBehaviour.IsSelected()) {
                 OnSelected();
             }
-            */
+            
             return currentTarget != null;
         }
 
@@ -316,8 +325,10 @@ namespace Assets.src.models {
         }
 
         protected void Destroy() {
+            SelectionManager.Deselect(selectableBehaviour);
             ForceStopCurrentState();
             EnterDieState();
+            
         }
 
         public virtual void Update() {

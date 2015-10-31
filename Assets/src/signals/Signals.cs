@@ -20,6 +20,5 @@ namespace Assets.src.signals {
     public class OnSpellCast : Signal<Vector3, Spells, ITarget, SpellData> { }
 
     public class DeselectAllSignal : Signal { }
-    public class OnCreateUnitSignal : Signal<Vector3, UnitTypes, UnitData, bool> { }
 
 }

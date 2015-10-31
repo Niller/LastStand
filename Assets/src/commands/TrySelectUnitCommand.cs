@@ -25,7 +25,7 @@ namespace Assets.src.commands {
             var ray = Camera.main.ScreenPointToRay(Position);
             var colls = Physics.RaycastAll(ray);
             foreach (var col in colls) {
-                var selectableObject = col.collider.gameObject.GetComponent<ISelectable>();
+                var selectableObject = col.collider.gameObject.GetComponent<ISelectableBehaviour>();
                 if (selectableObject != null && SelectionManager.GetAllSelectableObjects().Contains(selectableObject)) {
                     DeselectAllSignal.Dispatch();
                     SelectionManager.Select(selectableObject);

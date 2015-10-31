@@ -1,7 +1,7 @@
 using System;
 
 namespace Assets.src.views {
-    public interface ISelectable {
+    public interface ISelectableBehaviour {
         IView GetView();
         void Select();
         void Deselect();

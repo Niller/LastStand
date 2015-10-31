@@ -6,7 +6,7 @@ using strange.extensions.mediation.impl;
 using UnityEngine;
 
 namespace Assets.src.views {
-    public abstract class SelectableView : BaseView, ISelectable {
+    public class SelectableBehaviour : View, ISelectableBehaviour {
 
         [Inject]
         public ISelectionManager SelectionManager { get; set; }
@@ -17,8 +17,13 @@ namespace Assets.src.views {
 
         protected bool isSelected = false;
 
+        protected IView parent;
+
+        public Projector selectableCircle;
+
         protected override void Start() {
             base.Start();
+            parent = GetComponent<IView>();
             RegisterSelectableObject();
         }
 
@@ -29,8 +34,6 @@ namespace Assets.src.views {
         protected virtual void UnregisterSelectableObject() {
             SelectionManager.UnregisterSelectableObject(this);
         }
-
-        public Projector selectableCircle;
 
         public virtual void Deselect() {
             if (isSelected) {
@@ -45,7 +48,7 @@ namespace Assets.src.views {
         }
 
         public IView GetView() {
-            return this;
+            return parent;
         }
 
         public virtual void Select() {
@@ -54,10 +57,10 @@ namespace Assets.src.views {
             selectableCircle.enabled = true;
         }
 
-        public override void Destroy() {
+        protected override void OnDestroy() {
             Deselect();
             UnregisterSelectableObject();
-            base.Destroy();
+            base.OnDestroy();
         }
     }
 }

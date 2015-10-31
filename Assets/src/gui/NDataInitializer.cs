@@ -52,7 +52,7 @@ namespace Assets.src.gui {
             
             IsOneUnitSelected = SelectionManager.GetSelectedObjects().Count == 1;
             MaxHP = Random.Range(0, 100);
-            Debug.Log(IsOneUnitSelected);
+            //Debug.Log(IsOneUnitSelected);
         }
     }
 
@@ -67,7 +67,8 @@ namespace Assets.src.gui {
 
         
 
-        void Start() {
+        protected override void Start() {
+            base.Start();
             var rootContext = new GUIRootContext();
             InjectionBinder.injector.Inject(rootContext);
             view.SetContext(rootContext);

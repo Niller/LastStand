@@ -12,9 +12,6 @@ namespace Assets.src.battle {
     public class BattleManager : IBattleManager {
 
         [Inject]
-        public OnCreateUnitSignal CreateUnitSignal { get; set; }
-
-        [Inject]
         public ICooldownService CooldownService { get; set; }
 
         private readonly List<ITarget> attackers;

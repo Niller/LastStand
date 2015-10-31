@@ -21,6 +21,7 @@ namespace Assets.src.views {
             var modelInstance = Activator.CreateInstance(modelType) as IModel;
             if (modelInstance != null) {
                 modelInstance.SetView(view);
+                view.SetModel(modelInstance);
                 InjectionBinder.injector.Inject(modelInstance);
             } else {
                 Debug.LogError("Model hasn't valid type");

@@ -17,9 +17,6 @@ namespace Assets.src.models {
         //public IPool<GameObject> Pool { get; set; } 
 
         [Inject]
-        public OnCreateUnitSignal CreateUnitSignal { get; set; }
-
-        [Inject]
         public IBattleManager BattleManager { get; set; }
 
         protected ICooldownItem heroRespawnCooldown;

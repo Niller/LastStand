@@ -4,12 +4,12 @@ using Assets.src.views;
 
 namespace Assets.src.battle {
     public interface ISelectionManager {
-        void RegisterSelectableObject(ISelectable selectable);
-        void UnregisterSelectableObject(ISelectable selectable);
-        List<ISelectable> GetAllSelectableObjects();
-        List<ISelectable> GetSelectedObjects();
-        void Select(ISelectable selectableObject);
-        void Deselect(ISelectable selectableObject);
+        void RegisterSelectableObject(ISelectableBehaviour selectable);
+        void UnregisterSelectableObject(ISelectableBehaviour selectable);
+        List<ISelectableBehaviour> GetAllSelectableObjects();
+        List<ISelectableBehaviour> GetSelectedObjects();
+        void Select(ISelectableBehaviour selectableObject);
+        void Deselect(ISelectableBehaviour selectableObject);
         Action SelectionChanged { get; set; }
     }
 }

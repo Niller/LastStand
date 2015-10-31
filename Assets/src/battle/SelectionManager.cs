@@ -11,15 +11,15 @@ namespace Assets.src.battle {
         [Inject]
         public DeselectAllSignal DeselectAllSignal { get; set; }
 
-        private readonly List<ISelectable> selectableObjects;
+        private readonly List<ISelectableBehaviour> selectableObjects;
 
-        private readonly List<ISelectable> selectedObjects; 
+        private readonly List<ISelectableBehaviour> selectedObjects; 
 
         public Action SelectionChanged { get; set; }
 
         public SelectionManager() {
-            selectableObjects = new List<ISelectable>();
-            selectedObjects = new List<ISelectable>();
+            selectableObjects = new List<ISelectableBehaviour>();
+            selectedObjects = new List<ISelectableBehaviour>();
         }
 
         [PostConstruct]
@@ -34,29 +34,33 @@ namespace Assets.src.battle {
             selectedObjects.Clear();
         }
 
-        public void RegisterSelectableObject(ISelectable selectable) {
+        public void RegisterSelectableObject(ISelectableBehaviour selectable) {
             selectableObjects.Add(selectable);
         }
 
-        public void UnregisterSelectableObject(ISelectable selectable) {
+        public void UnregisterSelectableObject(ISelectableBehaviour selectable) {
             selectableObjects.Remove(selectable);
         }
 
-        public List<ISelectable> GetAllSelectableObjects() {
+        public List<ISelectableBehaviour> GetAllSelectableObjects() {
             return selectableObjects;
         }
 
-        public List<ISelectable> GetSelectedObjects() {
+        public List<ISelectableBehaviour> GetSelectedObjects() {
             return selectedObjects;
         }
 
-        public void Select(ISelectable selectableObject) {
+        public void Select(ISelectableBehaviour selectableObject) {
+            if (selectableObject == null)
+                return;
             selectedObjects.Add(selectableObject);
             selectableObject.Select();
             SelectionChanged.TryCall();
         }
 
-        public void Deselect(ISelectable selectableObject) {
+        public void Deselect(ISelectableBehaviour selectableObject) {
+            if (selectableObject == null)
+                return;
             selectedObjects.Remove(selectableObject);
             SelectionChanged.TryCall();
         }
