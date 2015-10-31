@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Assets.src.models {
-    public class BaseTargetBehaviour : ITargetBehaviour {
+    public abstract class BaseTargetBehaviour : ITargetBehaviour {
         [Inject]
         public IBattleManager BattleManager { get; set; }
 
@@ -30,7 +30,7 @@ namespace Assets.src.models {
             isDefender = isDefenderParam;
             parent = parentParam;
             InitializeData();
-            //BattleManager.RegisterTarget(parent);
+            BattleManager.RegisterTarget(parent);
         }
 
         public Vector3 GetPosition() {
@@ -53,7 +53,7 @@ namespace Assets.src.models {
 
         protected virtual void Destroy() {
             isDied = true;
-            //BattleManager.UnregisterTarget(parent);
+            BattleManager.UnregisterTarget(parent);
             OnDestroyed.TryCall();
         }
 
@@ -63,6 +63,6 @@ namespace Assets.src.models {
             return isDied;
         }
 
-        public bool IsDynamic { get { return true; } }
+        public abstract bool IsDynamic { get; }
     }
 }

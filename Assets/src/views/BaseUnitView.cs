@@ -2,7 +2,7 @@ using Assets.src.utils;
 using UnityEngine;
 
 namespace Assets.src.views {
-    public class BaseUnitView : BaseTargetView, INavigationUnit {
+    public class BaseUnitView : BaseView, INavigationUnit {
 
         protected NavMeshAgent navMeshAgent;
         protected NavMeshObstacle navMeshObstacle;
@@ -37,7 +37,8 @@ namespace Assets.src.views {
 
         }
 
-        void Update() {
+        protected override void Update() {
+            base.Update();
             /*
             if (!NavMeshAgent.enabled)
                 return;

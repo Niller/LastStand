@@ -35,7 +35,6 @@ namespace Assets.src.battle {
         }
 
         public void StartRound() {
-            Debug.Log(attackersSpawners.Count);
             foreach (var attackersSpawner in attackersSpawners) {
                 attackersSpawner.StartSpawn();
             }

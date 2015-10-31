@@ -20,7 +20,7 @@ namespace Assets.src.models {
         }
 
         public void Initialize() {
-            baseTargetBehaviour = new BaseTargetBehaviour();
+            baseTargetBehaviour = new BuildingTargetBehaviour();
             InjectionBinder.injector.Inject(baseTargetBehaviour);
             baseTargetBehaviour.Initialize(view.data, true, this);
             baseTargetBehaviour.OnDestroyed += OnDestroyed;

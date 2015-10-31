@@ -4,6 +4,7 @@ using Assets.src.data;
 using Assets.src.services;
 using Assets.src.signals;
 using Assets.src.views;
+using strange.extensions.injector.api;
 
 namespace Assets.src.models {
     public class UnitSpawnerModel : IModel, ISpawner {
@@ -15,6 +16,9 @@ namespace Assets.src.models {
 
         [Inject]
         public OnCreateUnitSignal CreateUnitSignal { get; set; }
+
+        [Inject]
+        public IInjectionBinder InjectionBinder { get; set; }
 
         protected Dictionary<int, UnitData> cachedUnitData = new Dictionary<int, UnitData>();
 
@@ -48,9 +52,14 @@ namespace Assets.src.models {
 
         protected void SpawnUnit() {
             var data = view.data;
-            CreateUnitSignal.Dispatch(view.spawnPoint.position, data.produceUnitType, GetCurrentUnitData(), IsDefender);
-            spawnUnitsCooldown = CooldownService.AddCooldown(view.data.upgradeData[view.data.level].trainingSpeed,
-                null, SpawnUnit);
+            //CreateUnitSignal.Dispatch(view.spawnPoint.position, data.produceUnitType, GetCurrentUnitData(), IsDefender);
+            var unit = new UnitModel();
+            InjectionBinder.injector.Inject(unit);
+            unit.Spawn(view.spawnPoint.position, GetCurrentUnitData(), data.produceUnitType, IsDefender);
+            unit.InitializeStates();
+            unit.StartAct();
+            //spawnUnitsCooldown = CooldownService.AddCooldown(view.data.upgradeData[view.data.level].trainingSpeed,
+            //    null, SpawnUnit);
         }
 
         private UnitData GetCurrentUnitData() {

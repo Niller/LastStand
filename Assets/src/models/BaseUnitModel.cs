@@ -1,12 +1,14 @@
 using System;
 using Assets.src.battle;
 using Assets.src.data;
+using Assets.src.managers;
 using Assets.src.utils;
 using Assets.src.views;
 using ru.pragmatix.orbix.world.units;
 using strange.extensions.injector.api;
 using strange.extensions.pool.api;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.src.models {
     public abstract partial class BaseUnitModel<TTargetSelector, TTargetProvider> : IUnit
@@ -18,6 +20,9 @@ namespace Assets.src.models {
 
         [Inject]
         public IHUDManager HUDManager { get; set; }
+
+        [Inject]
+        public IViewModelManager ViewModelManager { get; set; }
 
         protected UnitView unitView;
 
@@ -37,8 +42,28 @@ namespace Assets.src.models {
 
         protected UnitTypes type;
 
-        public void Initialize() {
-            targetBehaviour = new BaseTargetBehaviour();
+        public void Spawn(Vector3 position, UnitData dataParam, UnitTypes typeParam, bool isDefenderParam) {
+            data = dataParam;
+            type = typeParam;
+            targetBehaviour = new UnitTargetBehaviour();
+            InjectionBinder.injector.Inject(targetBehaviour);
+            targetBehaviour.Initialize(data, isDefenderParam, this);
+            targetBehaviour.OnDestroyed += Destroy;
+            InitView(position);
+            Initialize();
+        }
+
+        protected void InitView(Vector3 position) {
+            var prefab = ViewModelManager.GetView<UnitModel>((int)type);
+            var unitGO = Object.Instantiate(prefab);
+            unitGO.SetActive(true);
+            unitGO.transform.position = position;
+            unitGO.transform.parent = GameObject.Find("game").transform;
+            SetView(unitGO.GetComponent<IView>());
+            SetNavUnit(unitView);
+        }
+
+        protected void Initialize() {
             targetProvider = Activator.CreateInstance<TTargetProvider>();
             InjectionBinder.injector.Inject(targetProvider);
             targetProvider.SetCurrentUnit(this);
@@ -53,6 +78,7 @@ namespace Assets.src.models {
 
         public void SetView(IView view) {
             unitView = view as UnitView;
+            unitView.OnUpdate += Update;
         }
 
         public IView GetView() {
@@ -253,7 +279,7 @@ namespace Assets.src.models {
         }
 
         private void TransitAfterDieState() {
-
+            GetView().Destroy();
         }
 
         protected virtual void EnterAttackState() {
@@ -296,6 +322,7 @@ namespace Assets.src.models {
 
         public virtual void Update() {
             stateChangesInThisFrame = 0;
+            //Debug.Log(currentState.GetType(), unitView);
             if (currentState != null)
                 currentState.Update();
         }
@@ -310,10 +337,11 @@ namespace Assets.src.models {
 
         protected void StartPursueOrIdle() {
             if (FindTarget()) {
-                if (currentTarget.GetTargetBehaviour().IsDynamic)
+                if (currentTarget.GetTargetBehaviour().IsDynamic) {
                     EnterPursuingState();
-                else
+                } else {
                     EnterMoveState();
+                }
             } else {
                 EnterIdleState();
             }

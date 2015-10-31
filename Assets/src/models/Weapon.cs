@@ -18,7 +18,7 @@ namespace Assets.src.models {
         public void ShootTo(Vector3 from, ITarget to) {
             var bulletGO = bulletPool.GetInstance();
             var view = bulletGO.GetComponent<BulletView>();
-            //view.Initialize(from, to, DoDamage);
+            view.Initialize(from, to, DoDamage);
         }
 
         protected void DoDamage(ITarget target) {
