@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Assets.src.battle;
 
 namespace Assets.src.models {
@@ -14,7 +15,8 @@ namespace Assets.src.models {
         }
 
         public List<ITarget> GetTargets() {
-            return currentUnit.GetTargetBehaviour().IsDefender ? BattleManager.GetAttackers() : BattleManager.GetDefenders();
+            return currentUnit.GetTargetBehaviour().IsDefender ? BattleManager.GetAttackers() : 
+                BattleManager.GetDefenders().Where(unit => !BattleManager.GetFontain().CheckInFontaionRadius(unit.GetTargetBehaviour().GetPosition())).ToList();
         }
     }
 }
