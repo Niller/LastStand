@@ -47,11 +47,11 @@ namespace Assets.src.models {
             Level = new ObservableProperty<int>(heroData.level);
             spells = new List<SpellSlot>();
             var slot1 = new SpellSlot() {data = GameDataService.GetConfig().iceBoltLevelsData[heroData.spellLevels[0]] };
-            slot1.Initialize(Spells.ICE_BOLT, heroData.spellLevels[0]);
+            slot1.Initialize(0,Spells.ICE_BOLT, heroData.spellLevels[0]);
             InjectionBinder.injector.Inject(slot1);
             spells.Add(slot1);
             var slot2 = new SpellSlot() {data = GameDataService.GetConfig().meteorLevelsData[heroData.spellLevels[1]] };
-            slot2.Initialize(Spells.METEOR, heroData.spellLevels[1]);
+            slot2.Initialize(1,Spells.METEOR, heroData.spellLevels[1]);
             InjectionBinder.injector.Inject(slot2);
             spells.Add(slot2);
         }

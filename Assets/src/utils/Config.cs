@@ -14,5 +14,11 @@ namespace Assets.src.utils {
 
         public float heroRespawnTime = 20f;
 
+        public int roundCount = 5;
+
+        public int roundEnemiesCount = 40;
+
+        public float timeBeforeRoundStart = 10f;
+
     }
 }

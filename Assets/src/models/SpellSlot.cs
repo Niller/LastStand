@@ -19,14 +19,16 @@ namespace Assets.src.models {
 
         public ICooldownItem Cooldown { get; set; }
 
-        public void Initialize(Spells spellParam, int levelParam) {
+        public void Initialize(int numberParam, Spells spellParam, int levelParam) {
             spell = spellParam;
             level = levelParam;
+            number = numberParam;
         }
 
         public SpellData data;
         public Spells spell;
         public int level;
+        public int number;
 
         public bool CheckCastPossibility() {
             return Cooldown == null;

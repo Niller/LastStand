@@ -16,6 +16,12 @@ namespace Assets.src.battle {
         [Inject]
         public ICooldownService CooldownService { get; set; }
 
+        [Inject]
+        public IGameDataService GameDataService { get; set; }
+
+        [Inject]
+        public IGameManager GameManager { get; set; }
+
         private readonly List<ITarget> attackers;
 
         private readonly List<ITarget> defenders;
@@ -32,6 +38,8 @@ namespace Assets.src.battle {
 
         public Action OnHeroRespawnEnd { get; set; }
 
+        protected int enemiesUnitsLeftSpawn;
+
         public BattleManager() {
             attackers = new List<ITarget>();
             defenders = new List<ITarget>();
@@ -40,7 +48,12 @@ namespace Assets.src.battle {
         }
 
         public void StartRound() {
-            fontain.SpawnHero();
+            
+            enemiesUnitsLeftSpawn = GameDataService.GetConfig().roundEnemiesCount;
+            if (attackers.Count != 0) {
+                Debug.LogError(attackers.Count);
+            }
+            
             foreach (var attackersSpawner in attackersSpawners) {
                 attackersSpawner.StartSpawn();
             }
@@ -67,17 +80,32 @@ namespace Assets.src.battle {
             return spawner.IsDefender ? defendersSpawners : attackersSpawners;
         }
 
+        public void UpgradeEnemiesSpawners() {
+            attackersSpawners.ForEach(spawner => spawner.Upgrade());
+        }
+
         public void Initialize() {
-            CooldownService.AddCooldown(3f, null, StartRound);
             
+            //CooldownService.AddCooldown(3f, null, StartRound);
+
         }
 
         public void RegisterTarget(ITarget target) {
+            if (!target.GetTargetBehaviour().IsDefender)
+                enemiesUnitsLeftSpawn--;
+            if (enemiesUnitsLeftSpawn <= 0) {
+                attackersSpawners.ForEach(spawner => spawner.StopSpawn());
+            }
             GetAppropriateListForTarget(target).Add(target);
         }
 
         public void UnregisterTarget(ITarget target) {
             GetAppropriateListForTarget(target).Remove(target);
+            //Debug.Log(attackers.Count + " " + enemiesUnitsLeftSpawn);
+            if (attackers.Count == 0 && enemiesUnitsLeftSpawn <= 0) {
+                StopRound();
+                GameManager.NextRound();
+            }
         }
 
         public void RegisterSpawner(ISpawner spawner) {
@@ -94,6 +122,7 @@ namespace Assets.src.battle {
 
         public void RegisterFontaion(FontainModel fontainParam) {
             fontain = fontainParam;
+            fontain.SpawnHero();
         }
 
         public HeroData GetCurrentHeroData() {

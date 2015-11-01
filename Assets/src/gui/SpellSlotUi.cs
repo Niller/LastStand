@@ -1,13 +1,17 @@
 using Assets.src.models;
+using Assets.src.signals;
 
 namespace Assets.src.gui {
     public class SpellSlotUi : EZData.Context {
+
+        [Inject]
+        public OnSpellSlotActivated SpellSlotActivated { get; set; }
 
         protected SpellSlot slot;
 
         protected HeroModel heroModel;
 
-        public SpellSlotUi(HeroContext heroParam, HeroModel heroModelParam, SpellSlot slotParam, string icon) {
+        public void Initialize(HeroContext heroParam, HeroModel heroModelParam, SpellSlot slotParam, string icon) {
             slot = slotParam;
             Level = slot.level;
             Icon = icon;
@@ -82,10 +86,15 @@ namespace Assets.src.gui {
         #endregion
 
         public void OnSlotClick() {
-            if (!slot.CheckUpgradePossibility())
-                return;
-            if (Parent.IsUpgradeMode)
+
+            if (Parent.IsUpgradeMode) {
+                if (!slot.CheckUpgradePossibility())
+                    return;
                 heroModel.UpgradeSpell(slot);
+                Parent.Reset();
+            } else {
+                SpellSlotActivated.Dispatch(slot.number);
+            }
         }
     }
 }

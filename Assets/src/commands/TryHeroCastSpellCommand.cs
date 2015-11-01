@@ -33,8 +33,11 @@ namespace Assets.src.commands {
                         var targetView = col.collider.gameObject.GetComponent<ITargetView>();
                         if (targetView == null)
                             continue;
-                        SpellCastManager.CastCurrentActiveSpell(targetView.GetModel<ITarget>());
-                        OnResetSpellPreparationSignal.Dispatch();
+                        var target = targetView.GetModel<ITarget>();
+                        if (!target.GetTargetBehaviour().IsDefender) {
+                            SpellCastManager.CastCurrentActiveSpell(targetView.GetModel<ITarget>());
+                            OnResetSpellPreparationSignal.Dispatch();
+                        }
                         return;
                     }
                 } else {

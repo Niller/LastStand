@@ -41,7 +41,7 @@ namespace Assets.src.services {
         }
 
         public Config GetConfig() {
-            return config;
+            return config ?? (config = GameObject.FindObjectOfType<Config>());
         }
 
         public void Initialize() {

@@ -50,10 +50,18 @@ namespace Assets.src.gui {
         public void InitializeSlots(HeroModel heroParam) {
             hero = heroParam;
             var slots = hero.GetSpellSlots();
-            Slot1 = new SpellSlotUi(this, hero, slots[0], GameDataService.GetIconBySpell(slots[0].spell));
-            Slot2 = new SpellSlotUi(this, hero, slots[1], GameDataService.GetIconBySpell(slots[1].spell));
+            Slot1 = new SpellSlotUi();
+            InjectionBinder.injector.Inject(Slot1);
+            Slot1.Initialize(this, hero, slots[0], GameDataService.GetIconBySpell(slots[0].spell));
+            Slot2 = new SpellSlotUi();
+            InjectionBinder.injector.Inject(Slot2);
+            Slot2.Initialize(this, hero, slots[1], GameDataService.GetIconBySpell(slots[1].spell));
             UpgradePoints = hero.UpgradePoints.Value;
             hero.UpgradePoints.OnPropertyChanged += OnUpgradePointsChanged;
+        }
+
+        public void Reset() {
+            InitializeSlots(hero);
         }
 
         private void OnUpgradePointsChanged(int points) {

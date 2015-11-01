@@ -7,5 +7,6 @@ namespace Assets.src.battle {
         void UnblockControl();
         ObservableProperty<int> Gold { get; set; }
         void Initialize();
+        void NextRound();
     }
 }

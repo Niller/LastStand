@@ -27,8 +27,8 @@ namespace Assets.src.models {
 
         [PostConstruct]
         public void Initialize() {
-            BattleManager.RegisterFontaion(this);
             BattleManager.SaveCurrentHeroData(fontainView.hero);
+            BattleManager.RegisterFontaion(this);
         }
 
         public void SetView(IView view) {

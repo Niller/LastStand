@@ -20,5 +20,7 @@ namespace Assets.src.battle {
         void OnHeroRespawned();
         Action OnHeroRespawnStart { get; set; }
         Action OnHeroRespawnEnd { get; set; }
+        void StartRound();
+        void UpgradeEnemiesSpawners();
     }
 }

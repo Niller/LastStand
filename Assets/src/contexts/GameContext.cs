@@ -27,7 +27,6 @@ namespace Assets.src.contexts {
         public GameContext(MonoBehaviour view) : base(view) {
             rootContext = view as RootContext;
             InitServices();
-
         }
 
 
@@ -47,6 +46,7 @@ namespace Assets.src.contexts {
 
 
         protected override void mapBindings() {
+            
             //singletons
             injectionBinder.Bind<IGameManager>().To<GameManager>().ToSingleton();
             injectionBinder.Bind<IBattleManager>().To<BattleManager>().ToSingleton();
@@ -108,6 +108,7 @@ namespace Assets.src.contexts {
 
         protected override void postBindings() {
             base.postBindings();
+            
             InitPools();
 
             injectionBinder.GetInstance<IGameManager>().Initialize();

@@ -27,7 +27,9 @@ namespace Assets.src.commands {
             }
             if (priorityTarget != null) {
                 foreach (var selectedObject in selectedObjects) {
-                    selectedObject.GetView().GetModel<IUnit>().SetPriorityTarget(priorityTarget, true);                    
+                    var unit = selectedObject.GetView().GetModel<IUnit>();
+                    if (unit.GetTargetBehaviour().IsDefender != priorityTarget.GetTargetBehaviour().IsDefender)
+                        selectedObject.GetView().GetModel<IUnit>().SetPriorityTarget(priorityTarget, true);                    
                 }
             }
             
