@@ -18,6 +18,9 @@ namespace Assets.src.models {
         [Inject]
         public ISpellFactory SpellFactory { get; set; }
 
+        [Inject]
+        public IGameManager GameManager { get; set; }
+
         public ObservableProperty<int> UpgradePoints { get; set; }
 
         public ObservableProperty<int> ExperiencePoints { get; set; }
@@ -73,6 +76,7 @@ namespace Assets.src.models {
                 var targetWithReward = target as ITargetWithReward;
                 if (targetWithReward != null) {
                     AddExperiencePoints(targetWithReward.GetXPReward());
+                    GameManager.Gold.Value += targetWithReward.GetGoldReward();
                 }
             }
         }

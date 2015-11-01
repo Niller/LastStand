@@ -10,205 +10,55 @@ using Random = UnityEngine.Random;
 
 namespace Assets.src.gui {
 
-    public class SpellSlotUI : EZData.Context {
+    public class SpawnerContext : EZData.Context {
 
-        protected SpellSlot slot;
+        protected ISpawner spawner;
 
-        protected HeroModel heroModel;
+        public SpawnerContext(ISpawner spawnerParam) {
+            spawner = spawnerParam;
+            Reset();
+        }
 
-        public SpellSlotUI(HeroContext heroParam, HeroModel heroModelParam, SpellSlot slotParam, string icon) {
-            slot = slotParam;
-            Level = slot.level;
-            Icon = icon;
-            Parent = heroParam;
-            heroModel = heroModelParam;
+        public void UpgradeSpawnerClickButton() {
+            spawner.Upgrade();
+            Reset();
+        }
 
-            slot.OnStartCooldown += OnStartCooldown;
-            slot.OnEndCooldown += OnEndCooldown;
-            if (slot.Cooldown != null) {
-                IsOnCooldown = true;
-                slot.Cooldown.OnTick += OnTick;
-            } else {
-                IsOnCooldown = false;
+        protected void Reset() {
+            SpawnerLevel = spawner.GetLevel();
+            UpgradeExist = spawner.IsUpgradeExist();
+            if (UpgradeExist) {
+                UpgradeCost = spawner.GetUpgradeCost();
+                SpawnerLevel = spawner.GetLevel();
             }
         }
 
-        private void OnEndCooldown() {
-            IsOnCooldown = false;
-        }
-
-        private void OnStartCooldown() {
-            slot.Cooldown.OnTick += OnTick;
-            IsOnCooldown = true;
-        }
-
-        private void OnTick() {
-            CooldownPercent = 1f - slot.Cooldown.GetPCT();
-        }
-
-        #region Parent
-        public readonly EZData.VariableContext<HeroContext> ParentEzVariableContext = new EZData.VariableContext<HeroContext>(null);
-        public HeroContext Parent {
-            get { return ParentEzVariableContext.Value; }
-            set { ParentEzVariableContext.Value = value; }
+        #region Property UpgradeExist
+        private readonly EZData.Property<bool> _privateUpgradeExistProperty = new EZData.Property<bool>();
+        public EZData.Property<bool> UpgradeExistProperty { get { return _privateUpgradeExistProperty; } }
+        public bool UpgradeExist {
+            get { return UpgradeExistProperty.GetValue(); }
+            set { UpgradeExistProperty.SetValue(value); }
         }
         #endregion
 
-        #region Property Level
-        private readonly EZData.Property<int> _privateLevelProperty = new EZData.Property<int>();
-        public EZData.Property<int> LevelProperty { get { return _privateLevelProperty; } }
-        public int Level {
-            get { return LevelProperty.GetValue(); }
-            set { LevelProperty.SetValue(value); }
+        #region Property UpgradeCost
+        private readonly EZData.Property<int> _privateUpgradeCostProperty = new EZData.Property<int>();
+        public EZData.Property<int> UpgradeCostProperty { get { return _privateUpgradeCostProperty; } }
+        public int UpgradeCost {
+            get { return UpgradeCostProperty.GetValue(); }
+            set { UpgradeCostProperty.SetValue(value); }
         }
         #endregion
 
-        #region Property Icon
-        private readonly EZData.Property<string> _privateIconProperty = new EZData.Property<string>();
-        public EZData.Property<string> IconProperty { get { return _privateIconProperty; } }
-        public string Icon {
-            get { return IconProperty.GetValue(); }
-            set { IconProperty.SetValue(value); }
+        #region Property SpawnerLevel
+        private readonly EZData.Property<int> _privateSpawnerLevelProperty = new EZData.Property<int>();
+        public EZData.Property<int> SpawnerLevelProperty { get { return _privateSpawnerLevelProperty; } }
+        public int SpawnerLevel {
+            get { return SpawnerLevelProperty.GetValue(); }
+            set { SpawnerLevelProperty.SetValue(value); }
         }
         #endregion
-
-        #region Property CooldownPercent
-        private readonly EZData.Property<float> _privateCooldownPercentProperty = new EZData.Property<float>();
-        public EZData.Property<float> CooldownPercentProperty { get { return _privateCooldownPercentProperty; } }
-        public float CooldownPercent {
-            get { return CooldownPercentProperty.GetValue(); }
-            set { CooldownPercentProperty.SetValue(value); }
-        }
-        #endregion
-
-        #region Property IsOnCooldown
-        private readonly EZData.Property<bool> _privateIsOnCooldownProperty = new EZData.Property<bool>();
-        public EZData.Property<bool> IsOnCooldownProperty { get { return _privateIsOnCooldownProperty; } }
-        public bool IsOnCooldown {
-            get { return IsOnCooldownProperty.GetValue(); }
-            set { IsOnCooldownProperty.SetValue(value); }
-        }
-        #endregion
-
-        public void OnSlotClick() {
-            if (!slot.CheckUpgradePossibility())
-                return;
-            if (Parent.IsUpgradeMode)
-                heroModel.UpgradeSpell(slot);
-        }
-    }
-
-    public class HeroContext : EZData.Context {
-
-        [Inject]
-        public IGameDataService GameDataService { get; set; }
-
-        [Inject]
-        public IInjectionBinder InjectionBinder { get; set; }
-
-        #region Slot1
-        public readonly EZData.VariableContext<SpellSlotUI> Slot1EzVariableContext = new EZData.VariableContext<SpellSlotUI>(null);
-        public SpellSlotUI Slot1 {
-            get { return Slot1EzVariableContext.Value; }
-            set { Slot1EzVariableContext.Value = value; }
-        }
-        #endregion
-
-        #region Slot2
-        public readonly EZData.VariableContext<SpellSlotUI> Slot2EzVariableContext = new EZData.VariableContext<SpellSlotUI>(null);
-        public SpellSlotUI Slot2 {
-            get { return Slot2EzVariableContext.Value; }
-            set { Slot2EzVariableContext.Value = value; }
-        }
-        #endregion
-
-        #region Property UpgradePoints
-        private readonly EZData.Property<int> _privateUpgradePointsProperty = new EZData.Property<int>();
-        public EZData.Property<int> UpgradePointsProperty { get { return _privateUpgradePointsProperty; } }
-        public int UpgradePoints {
-            get { return UpgradePointsProperty.GetValue(); }
-            set { UpgradePointsProperty.SetValue(value); }
-        }
-        #endregion
-
-        #region Property IsUpgradeMode
-        private readonly EZData.Property<bool> _privateIsUpgradeModeProperty = new EZData.Property<bool>();
-        public EZData.Property<bool> IsUpgradeModeProperty { get { return _privateIsUpgradeModeProperty; } }
-        public bool IsUpgradeMode {
-            get { return IsUpgradeModeProperty.GetValue(); }
-            set { IsUpgradeModeProperty.SetValue(value); }
-        }
-        #endregion
-
-        protected HeroModel hero;
-
-        public void InitializeSlots(HeroModel heroParam) {
-            hero = heroParam;
-            var slots = hero.GetSpellSlots();
-            Slot1 = new SpellSlotUI(this, hero, slots[0], GameDataService.GetIconBySpell(slots[0].spell));
-            Slot2 = new SpellSlotUI(this, hero, slots[1], GameDataService.GetIconBySpell(slots[1].spell));
-            UpgradePoints = hero.UpgradePoints.Value;
-            hero.UpgradePoints.OnPropertyChanged += OnUpgradePointsChanged;
-        }
-
-        private void OnUpgradePointsChanged(int points) {
-            UpgradePoints = points;
-            if (IsUpgradeMode) {
-                IsUpgradeMode = UpgradePoints > 0;
-            }
-        }
-
-        public void UpgradeClickButton() {
-            IsUpgradeMode = !IsUpgradeMode;
-        }
-    }
-
-
-    public class UnitContext : EZData.Context {
-
-        protected ITargetBehaviour targetBehaviour;
-
-        public void SetTargetBehaviour(ITargetBehaviour targetBehaviourParam) {
-            targetBehaviour = targetBehaviourParam;
-            MaxHP = targetBehaviour.GetMaxHP();
-            CurrentHP = targetBehaviour.GetCurrentHP();
-            targetBehaviour.OnHPChanged += OnHPChanged;
-        }
-
-        private void OnHPChanged() {
-            CurrentHP = targetBehaviour.GetCurrentHP();
-        }
-
-        #region Property MaxHP
-        private readonly EZData.Property<int> _privateMaxHPProperty = new EZData.Property<int>();
-        public EZData.Property<int> MaxHPProperty { get { return _privateMaxHPProperty; } }
-        public int MaxHP {
-            get { return MaxHPProperty.GetValue(); }
-            set { MaxHPProperty.SetValue(value); }
-        }
-        #endregion
-
-        #region Property CurrentHP
-        private readonly EZData.Property<int> _privateCurrentHPProperty = new EZData.Property<int>();
-        public EZData.Property<int> CurrentHPProperty { get { return _privateCurrentHPProperty; } }
-        public int CurrentHP {
-            get { return CurrentHPProperty.GetValue(); }
-            set {
-                HPPercent = value/(float)MaxHP;
-                CurrentHPProperty.SetValue(value);
-            }
-        }
-        #endregion
-
-        #region Property HPPercent
-        private readonly EZData.Property<float> _privateHPPercentProperty = new EZData.Property<float>();
-        public EZData.Property<float> HPPercentProperty { get { return _privateHPPercentProperty; } }
-        public float HPPercent {
-            get { return HPPercentProperty.GetValue(); }
-            set { HPPercentProperty.SetValue(value); }
-        }
-        #endregion
-
     }
 
     public class GUIRootContext : EZData.Context {
@@ -217,6 +67,10 @@ namespace Assets.src.gui {
 
         [Inject]
         public IInjectionBinder InjectionBinder { get; set; }
+
+        [Inject]
+        public IGameManager GameManager { get; set; }
+
 
         #region CurrentOneUnit
         public readonly EZData.VariableContext<UnitContext> CurrentOneUnitEzVariableContext = new EZData.VariableContext<UnitContext>(null);
@@ -231,6 +85,14 @@ namespace Assets.src.gui {
         public HeroContext CurrentHero {
             get { return CurrentHeroEzVariableContext.Value; }
             set { CurrentHeroEzVariableContext.Value = value; }
+        }
+        #endregion
+
+        #region CurrentSpawner
+        public readonly EZData.VariableContext<SpawnerContext> CurrentSpawnerEzVariableContext = new EZData.VariableContext<SpawnerContext>(null);
+        public SpawnerContext CurrentSpawner {
+            get { return CurrentSpawnerEzVariableContext.Value; }
+            set { CurrentSpawnerEzVariableContext.Value = value; }
         }
         #endregion
 
@@ -252,34 +114,77 @@ namespace Assets.src.gui {
         }
         #endregion
 
+        #region Property IsSpawnerSelected
+        private readonly EZData.Property<bool> _privateIsSpawnerSelectedProperty = new EZData.Property<bool>();
+        public EZData.Property<bool> IsSpawnerSelectedProperty { get { return _privateIsSpawnerSelectedProperty; } }
+        public bool IsSpawnerSelected {
+            get { return IsSpawnerSelectedProperty.GetValue(); }
+            set { IsSpawnerSelectedProperty.SetValue(value); }
+        }
+        #endregion
+
+        #region Property Gold
+        private readonly EZData.Property<int> _privateGoldProperty = new EZData.Property<int>();
+        public EZData.Property<int> GoldProperty { get { return _privateGoldProperty; } }
+        public int Gold {
+            get { return GoldProperty.GetValue(); }
+            set { GoldProperty.SetValue(value); }
+        }
+        #endregion
+
+
+
         public void Initialize() {
             SelectionManager.SelectionChanged += SelectionChanged;
+            GameManager.Gold.OnPropertyChanged += OnGoldChanged;
+            Gold = GameManager.Gold.Value;
+        }
+
+        private void OnGoldChanged(int gold) {
+            Gold = gold;
         }
 
         private void SelectionChanged() {
             IsOneUnitSelected = SelectionManager.GetSelectedObjects().Count == 1;
             if (IsOneUnitSelected) {
-                var selectedObject =
+                var selectedTarget =
                     SelectionManager.GetSelectedObjects()[0].GetView().GetModel<ITarget>();
-                if (selectedObject is HeroModel) {
-                    IsHeroSelected = true;
-                    CurrentHero = new HeroContext();
-                    //CurrentHero.SetTargetBehaviour(selectedObject.GetTargetBehaviour());
-                    InjectionBinder.injector.Inject(CurrentHero);
-                    CurrentHero.InitializeSlots(selectedObject as HeroModel);
-                } else {
-                    IsHeroSelected = false;
-                    CurrentHero = null;
-                }//else {
-                  
+                if (selectedTarget != null) {
+                    IsSpawnerSelected = false;
+                    CurrentSpawner = null;
+                    if (selectedTarget is HeroModel) {
+                        IsHeroSelected = true;
+                        CurrentHero = new HeroContext();
+                        //CurrentHero.SetTargetBehaviour(selectedObject.GetTargetBehaviour());
+                        InjectionBinder.injector.Inject(CurrentHero);
+                        CurrentHero.InitializeSlots(selectedTarget as HeroModel);
+                    } else {
+                        IsHeroSelected = false;
+                        CurrentHero = null;
+                    } //else {
+
                     CurrentOneUnit = new UnitContext();
-                    CurrentOneUnit.SetTargetBehaviour(selectedObject.GetTargetBehaviour());
+                    CurrentOneUnit.SetTargetBehaviour(selectedTarget.GetTargetBehaviour());
+                } else {
+                    var selectedSpawner =
+                        SelectionManager.GetSelectedObjects()[0].GetView().GetModel<ISpawner>();
+                    if (selectedSpawner != null) {
+                        IsSpawnerSelected = true;
+                        CurrentSpawner = new SpawnerContext(selectedSpawner);
+                    }
+                }
                 //}
             } else {
                 CurrentHero = null;
+                IsSpawnerSelected = false;
+                CurrentSpawner = null;
                 IsHeroSelected = false;
                 CurrentOneUnit = null;
             }
+        }
+
+        public void UpgradeSpawnerClickButton() {
+            SelectionManager.GetSelectedObjects()[0].GetView().GetModel<ISpawner>().Upgrade();
         }
     }
 

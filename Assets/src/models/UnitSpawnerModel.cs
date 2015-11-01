@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Remoting.Activation;
 using Assets.src.battle;
 using Assets.src.data;
 using Assets.src.services;
 using Assets.src.signals;
 using Assets.src.views;
 using strange.extensions.injector.api;
+using UnityEngine;
 
 namespace Assets.src.models {
-    public class UnitSpawnerModel : IModel, ISpawner {
+    public class UnitSpawnerModel : ISpawner {
         [Inject]
         public ICooldownService CooldownService { get; set; }
 
@@ -16,6 +18,9 @@ namespace Assets.src.models {
 
         [Inject]
         public IUnitFactory UnitFactory { get; set; }
+
+        [Inject]
+        public IGameManager GameManager { get; set; }
 
         protected Dictionary<int, UnitData> cachedUnitData = new Dictionary<int, UnitData>();
 
@@ -43,14 +48,14 @@ namespace Assets.src.models {
         }
 
         public void StartSpawn() {
-            spawnUnitsCooldown = CooldownService.AddCooldown(view.data.upgradeData[view.data.level].trainingSpeed,
+            spawnUnitsCooldown = CooldownService.AddCooldown(view.data.upgradeData[view.data.level - 1].trainingSpeed,
                 null, SpawnUnit);
         }
 
         protected void SpawnUnit() {
             var data = view.data;
             UnitFactory.CreateUnit(view.spawnPoint.position, data.produceUnitType, GetCurrentUnitData().Copy(), IsDefender);          
-            spawnUnitsCooldown = CooldownService.AddCooldown(view.data.upgradeData[view.data.level].trainingSpeed,
+            spawnUnitsCooldown = CooldownService.AddCooldown(view.data.upgradeData[view.data.level-1].trainingSpeed,
                 null, SpawnUnit);
         }
 
@@ -68,6 +73,26 @@ namespace Assets.src.models {
 
         public void StopSpawn() {
             CooldownService.RemoveCooldown(spawnUnitsCooldown);
+        }
+
+        public bool IsUpgradeExist() {
+            return view.data.upgradeData.Length > view.data.level;
+        }
+
+        public int GetUpgradeCost() {
+            return view.data.upgradeData[view.data.level].cost;
+        }
+
+        public void Upgrade() {
+            if (GameManager.Gold.Value >= GetUpgradeCost()) {
+                GameManager.Gold.Value -= GetUpgradeCost();
+                view.data.level++;
+            }
+            
+        }
+
+        public int GetLevel() {
+            return view.data.level;
         }
     }
 }

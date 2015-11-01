@@ -1,4 +1,5 @@
-﻿using Assets.src.signals;
+﻿using Assets.src.models;
+using Assets.src.signals;
 
 namespace Assets.src.battle {
     public class GameManager : IGameManager {
@@ -8,17 +9,11 @@ namespace Assets.src.battle {
 
         protected bool isControlBlocked;
 
+        public ObservableProperty<int> Gold { get; set; } 
 
-        /*[PostConstruct]
-        public void GameManagerInitialize() {
+        public void Initialize() {
+            Gold = new ObservableProperty<int>(150);
             BattleManager.Initialize();
-
-        }
-        */
-
-        public GameManager() {
-            //BattleManager.Initialize();
-
         }
 
         public void BlockControl() {

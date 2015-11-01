@@ -110,7 +110,7 @@ namespace Assets.src.contexts {
             base.postBindings();
             InitPools();
 
-            injectionBinder.GetInstance<IBattleManager>().Initialize();
+            injectionBinder.GetInstance<IGameManager>().Initialize();
             
         }
 

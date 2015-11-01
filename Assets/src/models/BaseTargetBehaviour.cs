@@ -44,6 +44,9 @@ namespace Assets.src.models {
         }
 
         public bool SetDamage(int damage) {
+            if (isDied) {
+                return false;
+            }
             currentHealth -= damage;
             OnHPChanged.TryCall();
             //Debug.Log(currentHealth);
