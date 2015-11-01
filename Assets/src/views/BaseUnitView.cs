@@ -1,3 +1,4 @@
+using Assets.src.models;
 using Assets.src.utils;
 using UnityEngine;
 
@@ -43,6 +44,7 @@ namespace Assets.src.views {
 
         protected override void Update() {
             base.Update();
+            NavMeshAgent.speed = GetModel<IUnit>().GetUnitData().movementSpeed;
             /*
             if (!NavMeshAgent.enabled)
                 return;

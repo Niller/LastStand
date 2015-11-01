@@ -3,6 +3,8 @@
 namespace Assets.src.data {
     [Serializable]
     public class HeroData : UnitData {
+
+        public float rangeCast;
         public int level;
         public int xp;
         public int upgradePoints;
@@ -40,6 +42,7 @@ namespace Assets.src.data {
                 xp = xp,
                 level = level,
                 upgradePoints = upgradePoints,
+                rangeCast = rangeCast
             };
             newUnitData.spellLevels = (int[])spellLevels.Clone();
             return newUnitData;

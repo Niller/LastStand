@@ -47,7 +47,8 @@ namespace Assets.src.models {
             if (isDied) {
                 return false;
             }
-            currentHealth -= damage;
+            
+            currentHealth -= damage > 0? Mathf.RoundToInt(damage*(1f-data.armor)) : damage;
             if (currentHealth > data.health) {
                 currentHealth = data.health;
             }

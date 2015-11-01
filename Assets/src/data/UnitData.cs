@@ -3,7 +3,6 @@
 namespace Assets.src.data {
     [Serializable]
     public class UnitData : BaseBattleData {
-        public float armor;
         public int damage;
         public float attackSpeed;
         public float movementSpeed;

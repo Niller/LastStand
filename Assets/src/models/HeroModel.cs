@@ -8,6 +8,18 @@ using ru.pragmatix.orbix.world.units;
 using UnityEngine;
 
 namespace Assets.src.models {
+
+    public class SpellCastQueueItem {
+
+        public SpellCastQueueItem(SpellSlot slotParam, ITarget targetParam) {
+            slot = slotParam;
+            target = targetParam;
+        } 
+
+        public SpellSlot slot;
+        public ITarget target;
+    }
+
     public class HeroModel : BaseUnitModel<DistanceTargetSelector, AllEnemiesTargetProvider> {
 
         [Inject]
@@ -31,6 +43,8 @@ namespace Assets.src.models {
         protected List<SpellSlot> spells;
 
         protected HeroData heroData;
+
+        protected SpellCastQueueItem spellToCast;
 
         protected override GameObject GetViewPrefab() {
             return ViewModelManager.GetView<HeroModel>();
@@ -66,9 +80,42 @@ namespace Assets.src.models {
         public void TryCastSpell(ITarget target, SpellSlot slot) {
             ForceStopCurrentState();
             //OnSpellCast.Dispatch(GetView().GetPosition(), slot.spell, target, slot.data);
-            SpellFactory.CreateSpell(slot.spell, slot.data, target, this);
-            slot.StartCooldown();
+            if (CheckRangeCast(target.GetTargetBehaviour().GetPosition())) {
+                SpellFactory.CreateSpell(slot.spell, slot.data, target, this);
+                slot.StartCooldown();
+            } else {
+                SetPriorityTarget(target, true);
+                spellToCast = new SpellCastQueueItem(slot, target);
+                return;
+            }
             StartPursueOrIdle();
+        }
+
+        protected bool CheckRangeCast(Vector3 targetPosition) {
+            return Vector3.Distance(GetView().GetPosition(), targetPosition) <= heroData.rangeCast;
+        }
+
+        public override void Update() {
+            base.Update();
+            if (spellToCast != null) {
+                if (CheckRangeCast(spellToCast.target.GetTargetBehaviour().GetPosition())) {
+                    SpellFactory.CreateSpell(spellToCast.slot.spell, spellToCast.slot.data, spellToCast.target, this);
+                    spellToCast.slot.StartCooldown();
+                    spellToCast = null;
+                    ForceStopCurrentState();
+                    StartPursueOrIdle();
+                }
+            }
+        }
+
+        protected override void ForceStopCurrentState() {
+            base.ForceStopCurrentState();
+            spellToCast = null;
+        }
+
+        protected override void OnStateStopped() {
+            spellToCast = null;
+            base.OnStateStopped();
         }
 
         /*public void UpgradeSpell(int slotNumber) {
