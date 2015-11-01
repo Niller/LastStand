@@ -22,6 +22,28 @@ namespace Assets.src.gui {
             Icon = icon;
             Parent = heroParam;
             heroModel = heroModelParam;
+
+            slot.OnStartCooldown += OnStartCooldown;
+            slot.OnEndCooldown += OnEndCooldown;
+            if (slot.Cooldown != null) {
+                IsOnCooldown = true;
+                slot.Cooldown.OnTick += OnTick;
+            } else {
+                IsOnCooldown = false;
+            }
+        }
+
+        private void OnEndCooldown() {
+            IsOnCooldown = false;
+        }
+
+        private void OnStartCooldown() {
+            slot.Cooldown.OnTick += OnTick;
+            IsOnCooldown = true;
+        }
+
+        private void OnTick() {
+            CooldownPercent = 1f - slot.Cooldown.GetPCT();
         }
 
         #region Parent
@@ -50,7 +72,27 @@ namespace Assets.src.gui {
         }
         #endregion
 
+        #region Property CooldownPercent
+        private readonly EZData.Property<float> _privateCooldownPercentProperty = new EZData.Property<float>();
+        public EZData.Property<float> CooldownPercentProperty { get { return _privateCooldownPercentProperty; } }
+        public float CooldownPercent {
+            get { return CooldownPercentProperty.GetValue(); }
+            set { CooldownPercentProperty.SetValue(value); }
+        }
+        #endregion
+
+        #region Property IsOnCooldown
+        private readonly EZData.Property<bool> _privateIsOnCooldownProperty = new EZData.Property<bool>();
+        public EZData.Property<bool> IsOnCooldownProperty { get { return _privateIsOnCooldownProperty; } }
+        public bool IsOnCooldown {
+            get { return IsOnCooldownProperty.GetValue(); }
+            set { IsOnCooldownProperty.SetValue(value); }
+        }
+        #endregion
+
         public void OnSlotClick() {
+            if (!slot.CheckUpgradePossibility())
+                return;
             if (Parent.IsUpgradeMode)
                 heroModel.UpgradeSpell(slot);
         }

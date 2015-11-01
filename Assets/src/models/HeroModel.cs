@@ -54,6 +54,7 @@ namespace Assets.src.models {
             ForceStopCurrentState();
             //OnSpellCast.Dispatch(GetView().GetPosition(), slot.spell, target, slot.data);
             SpellFactory.CreateSpell(slot.spell, slot.data, target, this);
+            slot.StartCooldown();
             StartPursueOrIdle();
         }
 

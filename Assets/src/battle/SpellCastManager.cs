@@ -42,6 +42,8 @@ namespace Assets.src.battle {
         protected void SpellSlotActivated(int slotNumber) {
             if (selectedHero != null) {
                 var spellSlot = selectedHero.GetSpellSlots()[slotNumber];
+                if (!spellSlot.CheckCastPossibility())
+                    return;
                 activeSpell = spellSlot;
                 if (GameDataService.GetSpellType(spellSlot.spell) == SpellTypes.TARGET) {
                     OnPreparationTargetSignal.Dispatch();

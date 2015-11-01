@@ -13,7 +13,7 @@ namespace Assets.src.services {
 
         public float TickInterval { get; private set; }
 
-        public Action OnTick { get; private set; }
+        public Action OnTick { get; set; }
         public Action OnEnd { get; private set; }
 
 
