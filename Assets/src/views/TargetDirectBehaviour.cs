@@ -1,6 +1,7 @@
 using System;
 using Assets.Common.Extensions;
 using Assets.src.battle;
+using Assets.src.models;
 using UnityEngine;
 
 namespace Assets.src.views {
@@ -31,7 +32,7 @@ namespace Assets.src.views {
             onEnd = endCallback;
             transform = currentTransform;
             startPosition = startPositionParam;
-            lastTargetPosition = target.GetPosition();
+            lastTargetPosition = target.GetTargetBehaviour().GetPosition();
             transform.position = startPosition;
             totalTime = (GetTargetPosition() - startPosition).magnitude / bulletSpeed;
             currentTime = 0;
@@ -52,7 +53,7 @@ namespace Assets.src.views {
         }
 
         protected Vector3 GetTargetPosition() {
-            return target.IsUnvailableForAttack() ? lastTargetPosition : target.GetPosition();
+            return target.GetTargetBehaviour().IsUnvailableForAttack() ? lastTargetPosition : target.GetTargetBehaviour().GetPosition();
         }
     }
 }

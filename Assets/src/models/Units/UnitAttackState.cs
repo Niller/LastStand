@@ -24,19 +24,21 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         protected bool CheckAttackPossibility() {
-            return !currentUnit.IsUnvailableForAttack() && !target.IsUnvailableForAttack() && currentUnit.CheckAttackDistance(target);
+            return !currentUnit.GetTargetBehaviour().IsUnvailableForAttack() && !target.GetTargetBehaviour().IsUnvailableForAttack() && currentUnit.CheckAttackDistance(target);
         }
 
         public override void Start() {
-            if (!CheckAttackPossibility())
+            if (!CheckAttackPossibility()) {
                 Stop();
+                return;
+            }
             Shoot();
         }
 
         protected void Shoot() {
-            if (target.IsUnvailableForAttack() || currentUnit.IsUnvailableForAttack())
+            if (target.GetTargetBehaviour().IsUnvailableForAttack() || currentUnit.GetTargetBehaviour().IsUnvailableForAttack())
                 return;
-            weapon.ShootTo(currentUnit.GetPosition(), target);
+            weapon.ShootTo(currentUnit.GetTargetBehaviour().GetPosition(), target);
             attackSpeedCooldown = CooldownService.AddCooldown(1f/currentUnit.GetUnitData().attackSpeed, null, Start, 0, 0.1f);
         }
 

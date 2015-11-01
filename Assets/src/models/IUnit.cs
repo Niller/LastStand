@@ -1,11 +1,11 @@
 using Assets.src.battle;
 using Assets.src.data;
-using Assets.src.mediators;
+using Assets.src.utils;
 using Assets.src.views;
-using JetBrains.Annotations;
+using UnityEngine;
 
 namespace Assets.src.models {
-    public interface IUnit : ITarget, IModel {
+    public interface IUnit : IAttackableTarget, ITargetWithReward {
         INavigationUnit GetNavUnit();
         UnitData GetUnitData();
         bool CheckAttackDistance(ITarget target);
@@ -17,5 +17,7 @@ namespace Assets.src.models {
         bool IsManualControl { get; }
         void SetNavUnit(INavigationUnit navUnit);
         void Update();
+        void Spawn(Vector3 position, UnitData dataParam, UnitTypes typeParam, bool isDefenderParam);
+        
     }
 }

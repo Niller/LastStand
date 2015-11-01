@@ -1,20 +1,30 @@
-﻿using Assets.src.mediators;
+﻿using System;
+using Assets.Common.Extensions;
+using Assets.src.models;
 using strange.extensions.mediation.impl;
 using UnityEngine;
 
 namespace Assets.src.views {
     public abstract class BaseView : View, IView {
 
-        protected IViewModelMediator mediator;
+        protected IModel model;
 
-        public IViewModelMediator Mediator { get { return mediator = mediator ?? GetComponent<IViewModelMediator>(); } }
+        public Action OnUpdate { get; set; }
 
-        public virtual void DestroyView() {
-            Destroy(gameObject);
+        public T GetModel<T>() where T : class, IModel {
+            return model as T;
         }
 
-        public IViewModelMediator GetMediator() {
-            return Mediator;
+        public void SetModel(IModel modelParam) {
+            if (model == null) {
+                model = modelParam;
+            } else {
+                Debug.LogError("Try to reset model for view", this);
+            }
+        }
+
+        public virtual void Destroy() {
+            Destroy(gameObject);
         }
 
         public Vector3 GetPosition() {
@@ -23,6 +33,10 @@ namespace Assets.src.views {
 
         public GameObject GetGameObject() {
             return gameObject;
+        }
+
+        protected virtual void Update() {
+            OnUpdate.TryCall();
         }
     }
 }

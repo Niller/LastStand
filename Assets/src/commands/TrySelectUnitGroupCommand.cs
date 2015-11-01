@@ -46,7 +46,7 @@ namespace Assets.src.commands {
             if (GameManager.IsControlBlocked())
                 return;
             var selectableObjects = SelectionManager.GetAllSelectableObjects();
-            List<ISelectable> objectsToSelect = new List<ISelectable>(); 
+            List<ISelectableBehaviour> objectsToSelect = new List<ISelectableBehaviour>(); 
             foreach (var selectableObject in selectableObjects) {
                 if (TrySelectInGroup(selectableObject.GetView().GetGameObject(), Positions)) {
                     objectsToSelect.Add(selectableObject);

@@ -3,7 +3,6 @@ using Assets.src.models;
 using Assets.src.signals;
 using Assets.src.utils;
 using Assets.src.views;
-using JetBrains.Annotations;
 using strange.extensions.command.impl;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace Assets.src.commands {
         public Vector3 Position { get; set; }
 
         [Inject]
-        public ISelectionManager SelectionManager { get; set; }
+        public ISpellCastManager SpellCastManager { get; set; }
 
         [Inject]
         public IGameManager GameManager { get; set; }
@@ -25,32 +24,28 @@ namespace Assets.src.commands {
         public OnResetSpellPreparationSignal OnResetSpellPreparationSignal { get; set; }
 
         public override void Execute() {
-            var currentSelectedUnits = SelectionManager.GetSelectedObjects();
-            foreach (var selectable in currentSelectedUnits) {
-                var hero = selectable.GetView().GetMediator().GetModel<HeroModel>();
-                if (hero != null) {
-                    if (hero.GetActiveSpell() == null) {
+            if (SpellCastManager.IsReadyToCastSpell()) {
+                var activeSpell = SpellCastManager.GetActiveSpell();
+                if (GameDataService.GetSpellType(activeSpell.spell) == SpellTypes.TARGET) {
+                    var ray = Camera.main.ScreenPointToRay(Position);
+                    var colls = Physics.RaycastAll(ray);
+                    foreach (var col in colls) {
+                        var targetView = col.collider.gameObject.GetComponent<ITargetView>();
+                        if (targetView == null)
+                            continue;
+                        var target = targetView.GetModel<ITarget>();
+                        if (!target.GetTargetBehaviour().IsDefender) {
+                            SpellCastManager.CastCurrentActiveSpell(targetView.GetModel<ITarget>());
+                            OnResetSpellPreparationSignal.Dispatch();
+                        }
                         return;
                     }
-                    if (GameDataService.GetSpellType(hero.GetActiveSpell().spell) == SpellTypes.TARGET) {
-                        var ray = Camera.main.ScreenPointToRay(Position);
-                        var colls = Physics.RaycastAll(ray);
-                        foreach (var col in colls) {
-                            var targetView = col.collider.gameObject.GetComponent<ITargetView>();
-                            if (targetView == null)
-                                continue;
-                            hero.TryCastSpell(targetView.GetMediator().GetModel<BaseTargetModel>());
-                            OnResetSpellPreparationSignal.Dispatch();
-                            return;
-                        }
-                    } else {
-                        var ray = Camera.main.ScreenPointToRay(Position);
-                        RaycastHit hitInfo;
-                        if (Physics.Raycast(ray, out hitInfo, 1 << LayerMask.NameToLayer("Terrain"))) {
-                            hero.TryCastSpell(new TargetMock(hitInfo.point));
-                            OnResetSpellPreparationSignal.Dispatch();
-                            return;
-                        }
+                } else {
+                    var ray = Camera.main.ScreenPointToRay(Position);
+                    RaycastHit hitInfo;
+                    if (Physics.Raycast(ray, out hitInfo, 1 << LayerMask.NameToLayer("Terrain"))) {
+                        SpellCastManager.CastCurrentActiveSpell(new TempTarget(hitInfo.point));
+                        OnResetSpellPreparationSignal.Dispatch();
                     }
                 }
             }

@@ -1,21 +1,193 @@
 using System;
 using Assets.src.battle;
 using Assets.src.data;
-using Assets.src.mediators;
+using Assets.src.managers;
 using Assets.src.utils;
 using Assets.src.views;
 using ru.pragmatix.orbix.world.units;
 using strange.extensions.injector.api;
 using strange.extensions.pool.api;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.src.models {
-    public abstract partial class BaseUnitModel<TTargetSelector, TTargetProvider> : BaseTargetModel
+    public abstract partial class BaseUnitModel<TTargetSelector, TTargetProvider> : IUnit
         where TTargetSelector : ITargetSelector
         where TTargetProvider : ITargetProvider {
 
         [Inject]
+        public IInjectionBinder InjectionBinder { get; set; }
+
+        [Inject]
+        public IHUDManager HUDManager { get; set; }
+
+        [Inject]
+        public IViewModelManager ViewModelManager { get; set; }
+
+        [Inject]
+        public ISelectionManager SelectionManager { get; set; }
+
+        protected BaseUnitView unitView;
+
+        protected ITargetBehaviour targetBehaviour;
+
+        protected TTargetSelector targetSelector;
+
+        protected TTargetProvider targetProvider;
+
+        protected UnitData data;
+
+        protected INavigationUnit navigationUnit;
+
+        protected ITarget currentTarget;
+
+        protected ITarget priorityTarget;
+
+        protected UnitTypes type;
+
+        protected ISelectableBehaviour selectableBehaviour;
+
+        public void Spawn(Vector3 position, UnitData dataParam, UnitTypes typeParam, bool isDefenderParam) {
+            data = dataParam;
+            type = typeParam;
+            targetBehaviour = new UnitTargetBehaviour();
+            InjectionBinder.injector.Inject(targetBehaviour);
+            targetBehaviour.Initialize(data, isDefenderParam, this);
+            targetBehaviour.OnDestroyed += Destroy;
+            InitView(position);
+            Initialize();
+        }
+
+        public int GetXPReward() {
+            return data.xpPrice;
+        }
+
+        public int GetGoldReward() {
+            return data.goldPrice;
+        }
+
+        protected void InitView(Vector3 position) {
+            var prefab = GetViewPrefab();
+            var unitGO = Object.Instantiate(prefab);
+            unitGO.SetActive(true);
+            unitGO.transform.position = position;
+            unitGO.transform.parent = GameObject.Find("game").transform;
+            SetView(unitGO.GetComponent<IView>());
+            GetView().SetModel(this);
+            SetNavUnit(unitView);
+           
+        }
+
+        protected abstract GameObject GetViewPrefab();
+
+        protected virtual void Initialize() {
+            targetProvider = Activator.CreateInstance<TTargetProvider>();
+            InjectionBinder.injector.Inject(targetProvider);
+            targetProvider.SetCurrentUnit(this);
+            targetSelector = Activator.CreateInstance<TTargetSelector>();
+            InjectionBinder.injector.Inject(targetSelector);
+            targetSelector.SetProvider(targetProvider);
+            targetSelector.SetCurrentUnit(this);
+            selectableBehaviour = unitView.SelectableBehaviour;
+            if (selectableBehaviour != null) {
+                selectableBehaviour.OnSelected += OnSelected;
+                selectableBehaviour.OnDeselected += OnDeselected;
+            }
+        }
+
+        public void SetView(IView view) {
+            unitView = view as BaseUnitView;
+            unitView.OnUpdate += Update;
+        }
+
+        public IView GetView() {
+            return unitView;
+        }
+
+        public ITargetBehaviour GetTargetBehaviour() {
+            return targetBehaviour;
+        }
+
+        public virtual void DoDamage(ITarget target, int damage) {
+            target.GetTargetBehaviour().SetDamage(damage);
+        }
+
+        public void SetNavUnit(INavigationUnit navUnit) {
+            navigationUnit = navUnit;
+        }
+
+        public INavigationUnit GetNavUnit() {
+            return navigationUnit;
+        }
+
+        public UnitData GetUnitData() {
+            return data;
+        }
+
+        public bool CheckAttackDistance(ITarget target) {
+            return Vector3.Distance(target.GetTargetBehaviour().GetPosition(), GetView().GetPosition()) - target.GetTargetBehaviour().GetVulnerabilityRadius() <=
+                   GetUnitData().attackRange;
+        }
+
+        protected bool FindTarget() {
+            if (priorityTarget != null) {
+                priorityTarget = priorityTarget.GetTargetBehaviour().IsUnvailableForAttack() ? null : priorityTarget;
+            }
+            
+            if (currentTarget != null && selectableBehaviour != null && selectableBehaviour.IsSelected()) {
+                if (!currentTarget.GetTargetBehaviour().IsUnvailableForAttack())
+                    OnDeselected();
+            }
+            
+            currentTarget = priorityTarget ?? targetSelector.FindTarget();
+            
+            if (selectableBehaviour != null && unitView.SelectableBehaviour.IsSelected()) {
+                OnSelected();
+            }
+            
+            return currentTarget != null;
+        }
+
+        public void SetPriorityTarget(ITarget target, bool isOverride) {
+            if (isOverride || priorityTarget == null) {
+                priorityTarget = target;
+                ForceStopCurrentState();
+                StartPursueOrIdle();
+            }
+        }
+
+        public void SetMovePoint(ITarget target) {
+            ForceStopCurrentState();
+            OnDeselected();
+            currentTarget = target;
+            EnterMoveState();
+        }
+
+        public ITarget GetCurrentTarget() {
+            return currentTarget;
+        }
+
+        public abstract bool IsManualControl { get; }
+
+        private void OnDeselected() {
+            if (currentTarget != null && !currentTarget.GetTargetBehaviour().IsUnvailableForAttack() && !(currentTarget is TempTarget))
+                HUDManager.RemoveHUD(((IModel)currentTarget).GetView().GetGameObject(), HudTypes.TARGET_POINTER);
+        }
+
+        private void OnSelected() {
+            if (currentTarget != null && !currentTarget.GetTargetBehaviour().IsUnvailableForAttack() && !(currentTarget is TempTarget))
+                HUDManager.AddHUD(((IModel)currentTarget).GetView().GetGameObject(), HudTypes.TARGET_POINTER);
+        }
+    }
+
+    public abstract partial class BaseUnitModel<TTargetSelector, TTargetProvider> : IUnit
+        where TTargetSelector : ITargetSelector
+        where TTargetProvider : ITargetProvider {
+        [Inject]
         public IGameDataService GameDataService { get; set; }
+
+        [Inject]
+        public IBattleManager BattleManager { get; set; }
 
         protected IUnitPursuingState pursuingState;
 
@@ -46,9 +218,9 @@ namespace Assets.src.models {
         protected virtual void InitAttackState() {
             attackState = new UnitAttackState();
             InjectionBinder.injector.Inject(attackState);
-            attackState.SetWeapon(new Weapon(GetUnitData().damage, InjectionBinder.GetInstance<IPool<GameObject>>(GameDataService.GetBulletType(unitInformer.type))));
+            attackState.SetWeapon(new Weapon(GetUnitData().damage, InjectionBinder.GetInstance<IPool<GameObject>>(GameDataService.GetBulletType(type)), this));
             attackState.Initialize(this, null);
-            
+
         }
 
         protected virtual void InitPursuingState() {
@@ -102,7 +274,7 @@ namespace Assets.src.models {
                 TransitAfterIdleState();
                 return;
             }
-            
+
             if (currentState is IUnitAttackState) {
                 TransitAfterAttackState();
                 return;
@@ -112,7 +284,7 @@ namespace Assets.src.models {
                 TransitAfterDieState();
                 return;
             }
-            
+
             currentState = null;
         }
 
@@ -126,14 +298,14 @@ namespace Assets.src.models {
 
         private void TransitAfterPursuingState() {
             EnterAttackState();
-        }   
+        }
 
         private void TransitAfterIdleState() {
             StartPursueOrIdle();
         }
 
         private void TransitAfterDieState() {
-            
+            GetView().Destroy();
         }
 
         protected virtual void EnterAttackState() {
@@ -169,14 +341,16 @@ namespace Assets.src.models {
             currentState.Start();
         }
 
-        protected override void Destroy() {
+        protected void Destroy() {
+            SelectionManager.Deselect(selectableBehaviour);
             ForceStopCurrentState();
             EnterDieState();
-            base.Destroy();
+            
         }
 
         public virtual void Update() {
             stateChangesInThisFrame = 0;
+            //Debug.Log(currentState.GetType(), unitView);
             if (currentState != null)
                 currentState.Update();
         }
@@ -191,126 +365,19 @@ namespace Assets.src.models {
 
         protected void StartPursueOrIdle() {
             if (FindTarget()) {
-                if (currentTarget.IsDynamic)
+                if (currentTarget.GetTargetBehaviour().IsDynamic) {
                     EnterPursuingState();
-                else
+                } else {
                     EnterMoveState();
+                }
             } else {
-                EnterIdleState();
+                if (BattleManager.GetFontain().CheckInFontaionRadius(GetView().GetPosition())) {
+                    EnterIdleState();
+                } else {
+                    SetPriorityTarget(new TempTarget(BattleManager.GetFontain().GetView().GetPosition()), true);
+                }
             }
         }
 
-    }
-
-    public abstract partial class BaseUnitModel<TTargetSelector,TTargetProvider> : BaseTargetModel, IUnit 
-        where TTargetSelector : ITargetSelector 
-        where TTargetProvider : ITargetProvider {
-
-        [Inject]
-        public IInjectionBinder InjectionBinder { get; set; }
-
-        [Inject]
-        public IHUDManager HUDManager { get; set; }
-
-        protected TTargetSelector targetSelector;
-
-        protected TTargetProvider targetProvider;
-
-        protected UnitData data;
-
-        protected INavigationUnit navigationUnit;
-
-        protected ITarget currentTarget;
-
-        protected ITarget priorityTarget;
-
-        protected UnitInformer unitInformer;
-
-        public override void Initialize(BaseBattleInformer informerParam) {
-            base.Initialize(informerParam);
-            targetProvider = Activator.CreateInstance<TTargetProvider>();
-            InjectionBinder.injector.Inject(targetProvider);
-            targetProvider.SetCurrentUnit(this);
-            targetSelector = Activator.CreateInstance<TTargetSelector>();
-            InjectionBinder.injector.Inject(targetSelector);
-            targetSelector.SetProvider(targetProvider);
-            targetSelector.SetCurrentUnit(this);
-            view.OnSelected += OnSelected;
-            view.OnDeselected += OnDeselected;
-        }
-
-        protected override void InitializeData() {       
-            base.InitializeData();
-            unitInformer = informer as UnitInformer;
-            data = unitInformer.data;
-            if (data != null) {
-                currentHealth = data.health;                     
-            } else {
-                //Debug.LogError("Data isn't valid for this object", Mediator);
-            }
-        }
-
-        public void SetNavUnit(INavigationUnit navUnit) {
-            navigationUnit = navUnit;
-        }
-
-        public INavigationUnit GetNavUnit() {
-            return navigationUnit;
-        }
-
-        public UnitData GetUnitData() {
-            return data;
-        }
-
-        public bool CheckAttackDistance(ITarget target) {
-            return Vector3.Distance(target.GetPosition(), GetPosition()) - target.GetVulnerabilityRadius() <=
-                   GetUnitData().attackRange;
-        }
-
-        protected bool FindTarget() {
-            if (priorityTarget != null) {
-                priorityTarget = priorityTarget.IsUnvailableForAttack() ? null : priorityTarget;
-            }
-            if (currentTarget != null && view.IsSelected()) {
-                if (!currentTarget.IsUnvailableForAttack())
-                    OnDeselected();
-            }
-            currentTarget = priorityTarget ?? targetSelector.FindTarget();
-            if (view.IsSelected()) {
-                OnSelected();
-            }
-            return currentTarget != null;
-        }
-
-        public void SetPriorityTarget(ITarget target, bool isOverride) {
-            if (isOverride || priorityTarget == null) {
-                priorityTarget = target;
-                ForceStopCurrentState();
-                StartPursueOrIdle();
-            }
-        }
-
-        public void SetMovePoint(ITarget target) {
-            ForceStopCurrentState();
-            OnDeselected();
-            currentTarget = target;
-            EnterMoveState();
-        }
-
-        public ITarget GetCurrentTarget() {
-            return currentTarget;
-        }
-
-        public abstract bool IsManualControl { get; }
-
-        private void OnDeselected() {
-            if (currentTarget != null && !currentTarget.IsUnvailableForAttack() && currentTarget is IModel)
-                HUDManager.RemoveHUD(((IModel) currentTarget).GetView().GetGameObject(), HudTypes.TARGET_POINTER);
-        }
-
-        private void OnSelected() {
-            if (currentTarget != null && !currentTarget.IsUnvailableForAttack() && currentTarget is IModel)
-                HUDManager.AddHUD(((IModel) currentTarget).GetView().GetGameObject(), HudTypes.TARGET_POINTER);
-        }
     }
 }

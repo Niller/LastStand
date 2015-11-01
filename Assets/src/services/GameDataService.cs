@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.src.data;
 using Assets.src.utils;
+using UnityEngine;
 
 namespace Assets.src.services {
     public class GameDataService : IGameDataService {
@@ -18,7 +20,13 @@ namespace Assets.src.services {
             {Spells.ICE_BOLT, SpellTypes.TARGET},
             {Spells.METEOR, SpellTypes.AREA }
         };
-        
+
+        private Dictionary<Spells, string> iconsBySpells = new Dictionary<Spells, string>() {
+            {Spells.ICE_BOLT, "icebolt"},
+            {Spells.METEOR, "meteor"}
+        };
+
+        protected Config config;
 
         public BulletTypes GetBulletType(UnitTypes uniType) {
             return bullets[uniType];
@@ -28,8 +36,16 @@ namespace Assets.src.services {
             return spellsTypes[spell];
         }
 
+        public string GetIconBySpell(Spells spell) {
+            return iconsBySpells[spell];
+        }
+
+        public Config GetConfig() {
+            return config ?? (config = GameObject.FindObjectOfType<Config>());
+        }
+
         public void Initialize() {
-            
+            config = GameObject.FindObjectOfType<Config>();
         }
 
         public void OnUpdate() {

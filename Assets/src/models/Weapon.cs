@@ -10,9 +10,12 @@ namespace Assets.src.models {
 
         protected IPool<GameObject> bulletPool;
 
-        public Weapon(int damageParam, IPool<GameObject> bulletPoolParam) {
+        protected IAttackableTarget source;
+
+        public Weapon(int damageParam, IPool<GameObject> bulletPoolParam, IAttackableTarget sourceParam) {
             damage = damageParam;
             bulletPool = bulletPoolParam;
+            source = sourceParam;
         }
 
         public void ShootTo(Vector3 from, ITarget to) {
@@ -22,8 +25,8 @@ namespace Assets.src.models {
         }
 
         protected void DoDamage(ITarget target) {
-            if (!target.IsUnvailableForAttack())
-                target.SetDamage(damage);
+            if (!target.GetTargetBehaviour().IsUnvailableForAttack())
+                source.DoDamage(target, damage);
         }
     }
 }

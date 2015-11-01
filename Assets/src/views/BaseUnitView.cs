@@ -1,7 +1,14 @@
+using Assets.src.models;
+using Assets.src.utils;
 using UnityEngine;
 
 namespace Assets.src.views {
-    public class BaseUnitView : BaseTargetView, INavigationUnit {
+    public class BaseUnitView : BaseView, INavigationUnit, ITargetView {
+
+        protected ISelectableBehaviour selectableBehaviour;
+
+        public ISelectableBehaviour SelectableBehaviour { get { return selectableBehaviour = selectableBehaviour ?? GetComponent<ISelectableBehaviour>(); } }
+
         protected NavMeshAgent navMeshAgent;
         protected NavMeshObstacle navMeshObstacle;
 
@@ -35,7 +42,9 @@ namespace Assets.src.views {
 
         }
 
-        void Update() {
+        protected override void Update() {
+            base.Update();
+            NavMeshAgent.speed = GetModel<IUnit>().GetUnitData().movementSpeed;
             /*
             if (!NavMeshAgent.enabled)
                 return;

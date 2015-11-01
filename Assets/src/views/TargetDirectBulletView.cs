@@ -1,5 +1,6 @@
 using System;
 using Assets.src.battle;
+using Assets.src.models;
 using UnityEngine;
 
 namespace Assets.src.views {

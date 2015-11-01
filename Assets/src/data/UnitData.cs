@@ -3,8 +3,6 @@
 namespace Assets.src.data {
     [Serializable]
     public class UnitData : BaseBattleData {
-        public int health;
-        public float armor;
         public int damage;
         public float attackSpeed;
         public float movementSpeed;
@@ -20,6 +18,7 @@ namespace Assets.src.data {
                 attackSpeed = first.attackSpeed + second.attackSpeed,
                 movementSpeed = first.movementSpeed + second.movementSpeed,
                 attackRange = first.attackRange + second.attackRange,
+                vulnerabilityRadius = first.vulnerabilityRadius + second.vulnerabilityRadius,
                 goldPrice = first.goldPrice + second.goldPrice,
                 xpPrice = first.xpPrice + second.xpPrice
             };
@@ -34,6 +33,7 @@ namespace Assets.src.data {
                 attackSpeed = attackSpeed,
                 movementSpeed = movementSpeed,
                 attackRange = attackRange,
+                vulnerabilityRadius = vulnerabilityRadius,
                 goldPrice = goldPrice,
                 xpPrice = xpPrice
             };
