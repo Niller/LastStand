@@ -18,6 +18,9 @@ namespace Assets.src.models {
         [Inject]
         public IUnitFactory UnitFactory { get; set; }
 
+        [Inject]
+        public IGameDataService GameDataService { get; set; }
+
         protected ICooldownItem heroRespawnCooldown;
 
         protected FontainView fontainView;
@@ -39,11 +42,16 @@ namespace Assets.src.models {
         public bool IsDefender { get { return true; } }
 
         public void StartHeroRespawn() {
-            heroRespawnCooldown = CooldownService.AddCooldown(10, null, SpawnHero);
+            heroRespawnCooldown = CooldownService.AddCooldown(GameDataService.GetConfig().heroRespawnTime, null, SpawnHero);
         }
 
         public void SpawnHero() {
-            UnitFactory.CreateUnit(fontainView.spawnPoint.position, UnitTypes.HERO, BattleManager.GetCurrentHeroData(), true);
+            UnitFactory.CreateUnit(fontainView.spawnPoint.position, UnitTypes.HERO, BattleManager.GetCurrentHeroData().Copy(), true);
+            BattleManager.OnHeroRespawned();
+        }
+
+        public ICooldownItem GetHeroRespawnCooldown() {
+            return heroRespawnCooldown;
         }
 
         public void StopHeroRespawn() {

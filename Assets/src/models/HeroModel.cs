@@ -4,6 +4,7 @@ using Assets.src.battle;
 using Assets.src.data;
 using Assets.src.signals;
 using Assets.src.utils;
+using ru.pragmatix.orbix.world.units;
 using UnityEngine;
 
 namespace Assets.src.models {
@@ -21,6 +22,9 @@ namespace Assets.src.models {
         [Inject]
         public IGameManager GameManager { get; set; }
 
+        [Inject]
+        public IBattleManager BattleManager { get; set; }
+
         public ObservableProperty<int> UpgradePoints { get; set; }
 
         public ObservableProperty<int> ExperiencePoints { get; set; }
@@ -29,24 +33,33 @@ namespace Assets.src.models {
 
         protected List<SpellSlot> spells;
 
+        protected HeroData heroData;
+
         protected override GameObject GetViewPrefab() {
             return ViewModelManager.GetView<HeroModel>();
         }
 
         protected override void Initialize() {
             base.Initialize();
-            UpgradePoints = new ObservableProperty<int>(0);
-            ExperiencePoints = new ObservableProperty<int>(1);
-            Level = new ObservableProperty<int>(1);
+            heroData = data as HeroData;
+            UpgradePoints = new ObservableProperty<int>(heroData.upgradePoints);
+            ExperiencePoints = new ObservableProperty<int>(heroData.xp);
+            Level = new ObservableProperty<int>(heroData.level);
             spells = new List<SpellSlot>();
-            var slot1 = new SpellSlot() {data = GameDataService.GetConfig().iceBoltLevelsData[0]};
-            slot1.Initialize(Spells.ICE_BOLT, 1);
+            var slot1 = new SpellSlot() {data = GameDataService.GetConfig().iceBoltLevelsData[heroData.spellLevels[0]] };
+            slot1.Initialize(Spells.ICE_BOLT, heroData.spellLevels[0]);
             InjectionBinder.injector.Inject(slot1);
             spells.Add(slot1);
-            var slot2 = new SpellSlot() {data = GameDataService.GetConfig().meteorLevelsData[0]};
-            slot2.Initialize(Spells.METEOR, 1);
+            var slot2 = new SpellSlot() {data = GameDataService.GetConfig().meteorLevelsData[heroData.spellLevels[1]] };
+            slot2.Initialize(Spells.METEOR, heroData.spellLevels[1]);
             InjectionBinder.injector.Inject(slot2);
             spells.Add(slot2);
+        }
+
+        protected override void InitDieState() {
+            dieState = new HeroDieState();
+            InjectionBinder.injector.Inject(dieState);
+            dieState.Initialize(this, null);
         }
 
         public List<SpellSlot> GetSpellSlots() {
@@ -95,6 +108,16 @@ namespace Assets.src.models {
         }
 
         public override bool IsManualControl { get { return true; } }
+
+        protected override void EnterDieState() {
+            base.EnterDieState();
+            var newData = heroData.Copy();
+            newData.upgradePoints = UpgradePoints.Value;
+            newData.xp = ExperiencePoints.Value;
+            newData.level = Level.Value;
+            newData.spellLevels = new[] {spells[0].level, spells[1].level};
+            BattleManager.SaveCurrentHeroData(newData);
+        }
         
     }
 }

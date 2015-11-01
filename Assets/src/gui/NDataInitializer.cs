@@ -9,58 +9,6 @@ using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
 
 namespace Assets.src.gui {
-
-    public class SpawnerContext : EZData.Context {
-
-        protected ISpawner spawner;
-
-        public SpawnerContext(ISpawner spawnerParam) {
-            spawner = spawnerParam;
-            Reset();
-        }
-
-        public void UpgradeSpawnerClickButton() {
-            spawner.Upgrade();
-            Reset();
-        }
-
-        protected void Reset() {
-            SpawnerLevel = spawner.GetLevel();
-            UpgradeExist = spawner.IsUpgradeExist();
-            if (UpgradeExist) {
-                UpgradeCost = spawner.GetUpgradeCost();
-                SpawnerLevel = spawner.GetLevel();
-            }
-        }
-
-        #region Property UpgradeExist
-        private readonly EZData.Property<bool> _privateUpgradeExistProperty = new EZData.Property<bool>();
-        public EZData.Property<bool> UpgradeExistProperty { get { return _privateUpgradeExistProperty; } }
-        public bool UpgradeExist {
-            get { return UpgradeExistProperty.GetValue(); }
-            set { UpgradeExistProperty.SetValue(value); }
-        }
-        #endregion
-
-        #region Property UpgradeCost
-        private readonly EZData.Property<int> _privateUpgradeCostProperty = new EZData.Property<int>();
-        public EZData.Property<int> UpgradeCostProperty { get { return _privateUpgradeCostProperty; } }
-        public int UpgradeCost {
-            get { return UpgradeCostProperty.GetValue(); }
-            set { UpgradeCostProperty.SetValue(value); }
-        }
-        #endregion
-
-        #region Property SpawnerLevel
-        private readonly EZData.Property<int> _privateSpawnerLevelProperty = new EZData.Property<int>();
-        public EZData.Property<int> SpawnerLevelProperty { get { return _privateSpawnerLevelProperty; } }
-        public int SpawnerLevel {
-            get { return SpawnerLevelProperty.GetValue(); }
-            set { SpawnerLevelProperty.SetValue(value); }
-        }
-        #endregion
-    }
-
     public class GUIRootContext : EZData.Context {
         [Inject]
         public ISelectionManager SelectionManager { get; set; }
@@ -71,6 +19,8 @@ namespace Assets.src.gui {
         [Inject]
         public IGameManager GameManager { get; set; }
 
+        [Inject]
+        public IBattleManager BattleManager { get; set; }
 
         #region CurrentOneUnit
         public readonly EZData.VariableContext<UnitContext> CurrentOneUnitEzVariableContext = new EZData.VariableContext<UnitContext>(null);
@@ -132,12 +82,46 @@ namespace Assets.src.gui {
         }
         #endregion
 
+        #region Property IsHeroRespawn
+        private readonly EZData.Property<bool> _privateIsHeroRespawnProperty = new EZData.Property<bool>();
+        public EZData.Property<bool> IsHeroRespawnProperty { get { return _privateIsHeroRespawnProperty; } }
+        public bool IsHeroRespawn {
+            get { return IsHeroRespawnProperty.GetValue(); }
+            set { IsHeroRespawnProperty.SetValue(value); }
+        }
+        #endregion
 
+        #region Property HeroRespawnCooldownPercent
+        private readonly EZData.Property<float> _privateHeroRespawnCooldownPercentProperty = new EZData.Property<float>();
+        public EZData.Property<float> HeroRespawnCooldownPercentProperty { get { return _privateHeroRespawnCooldownPercentProperty; } }
+        public float HeroRespawnCooldownPercent {
+            get { return HeroRespawnCooldownPercentProperty.GetValue(); }
+            set { HeroRespawnCooldownPercentProperty.SetValue(value); }
+        }
+        #endregion
 
         public void Initialize() {
             SelectionManager.SelectionChanged += SelectionChanged;
             GameManager.Gold.OnPropertyChanged += OnGoldChanged;
             Gold = GameManager.Gold.Value;
+            BattleManager.OnHeroRespawnStart += OnHeroRespawnStart;
+            BattleManager.OnHeroRespawnEnd += OnHeroRespawnEnd;
+            IsHeroRespawn = false;
+        }
+
+        private void OnHeroRespawnEnd() {
+            IsHeroRespawn = false;
+            if (BattleManager.GetHeroRespawnCooldown() != null)
+                BattleManager.GetHeroRespawnCooldown().OnTick -= OnTickHeroRespawnCooldown;
+        }
+
+        private void OnHeroRespawnStart() {
+            IsHeroRespawn = true;
+            BattleManager.GetHeroRespawnCooldown().OnTick += OnTickHeroRespawnCooldown;
+        }
+
+        private void OnTickHeroRespawnCooldown() {
+            HeroRespawnCooldownPercent =1f- BattleManager.GetHeroRespawnCooldown().GetPCT();
         }
 
         private void OnGoldChanged(int gold) {

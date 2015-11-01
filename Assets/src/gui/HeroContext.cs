@@ -1,5 +1,6 @@
 ﻿using Assets.src.models;
 using strange.extensions.injector.api;
+using UnityEngine;
 
 namespace Assets.src.gui {
     public class HeroContext : EZData.Context {

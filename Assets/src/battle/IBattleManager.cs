@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.src.data;
 using Assets.src.models;
+using Assets.src.services;
 
 namespace Assets.src.battle {
     public interface IBattleManager {
@@ -13,6 +15,10 @@ namespace Assets.src.battle {
         void RegisterFontaion(FontainModel fontain);
         HeroData GetCurrentHeroData();
         void SaveCurrentHeroData(HeroData data);
-
+        void StartRespawnHero();
+        ICooldownItem GetHeroRespawnCooldown();
+        void OnHeroRespawned();
+        Action OnHeroRespawnStart { get; set; }
+        Action OnHeroRespawnEnd { get; set; }
     }
 }

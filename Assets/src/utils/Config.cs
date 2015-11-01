@@ -12,5 +12,7 @@ namespace Assets.src.utils {
 
         public int heroXpStep = 100;
 
+        public float heroRespawnTime = 20f;
+
     }
 }

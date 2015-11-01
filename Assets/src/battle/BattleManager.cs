@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Common.Extensions;
 using Assets.src.data;
 using Assets.src.models;
 using Assets.src.services;
@@ -27,7 +28,9 @@ namespace Assets.src.battle {
 
         private HeroData currentHeroData;
 
-        
+        public Action OnHeroRespawnStart { get; set; }
+
+        public Action OnHeroRespawnEnd { get; set; }
 
         public BattleManager() {
             attackers = new List<ITarget>();
@@ -95,12 +98,25 @@ namespace Assets.src.battle {
 
         public HeroData GetCurrentHeroData() {
             return currentHeroData;
+
         }
 
         public void SaveCurrentHeroData(HeroData data) {
             currentHeroData = data;
         }
 
+        public void StartRespawnHero() {
+            fontain.StartHeroRespawn();
+            OnHeroRespawnStart.TryCall();
+        }
+
+        public ICooldownItem GetHeroRespawnCooldown() {
+            return fontain.GetHeroRespawnCooldown();
+        }
+
+        public void OnHeroRespawned() {
+            OnHeroRespawnEnd.TryCall();
+        }
         
     }
 }
