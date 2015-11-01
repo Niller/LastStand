@@ -146,6 +146,10 @@ namespace Assets.src.battle {
         public void OnHeroRespawned() {
             OnHeroRespawnEnd.TryCall();
         }
+
+        public FontainModel GetFontain() {
+            return fontain;
+        }
         
     }
 }

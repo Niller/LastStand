@@ -48,6 +48,9 @@ namespace Assets.src.models {
                 return false;
             }
             currentHealth -= damage;
+            if (currentHealth > data.health) {
+                currentHealth = data.health;
+            }
             OnHPChanged.TryCall();
             //Debug.Log(currentHealth);
             if (currentHealth <= 0) {

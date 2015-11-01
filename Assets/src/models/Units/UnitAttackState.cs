@@ -28,8 +28,10 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         public override void Start() {
-            if (!CheckAttackPossibility())
+            if (!CheckAttackPossibility()) {
                 Stop();
+                return;
+            }
             Shoot();
         }
 

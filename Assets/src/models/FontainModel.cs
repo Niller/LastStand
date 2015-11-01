@@ -25,10 +25,31 @@ namespace Assets.src.models {
 
         protected FontainView fontainView;
 
+        protected ICooldownItem fontainHealCooldown;
+
         [PostConstruct]
         public void Initialize() {
             BattleManager.SaveCurrentHeroData(fontainView.hero);
             BattleManager.RegisterFontaion(this);
+            fontainHealCooldown = CooldownService.AddCooldown(0.5f, null, Heal, 0, 0.1f);
+        }
+
+        private void Heal() {
+            var colls = Physics.OverlapSphere(fontainView.GetPosition(), fontainView.fontainHealRadius);
+            foreach (var collider in colls) {
+                var targetView = collider.GetComponent<ITargetView>();
+                if (targetView != null) {
+                    var targetModel = targetView.GetModel<ITarget>();
+                    if (targetModel.GetTargetBehaviour().IsDefender) {
+                        targetModel.GetTargetBehaviour().SetDamage(-fontainView.fontainHealPower);
+                    }
+                }
+            }
+            fontainHealCooldown = CooldownService.AddCooldown(0.5f, null, Heal, 0, 0.1f);
+        }
+
+        public bool CheckInFontaionRadius(Vector3 position) {
+            return Vector3.Distance(position, fontainView.GetPosition()) <= fontainView.fontainHealRadius;
         }
 
         public void SetView(IView view) {

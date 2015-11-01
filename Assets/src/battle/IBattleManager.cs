@@ -22,5 +22,6 @@ namespace Assets.src.battle {
         Action OnHeroRespawnEnd { get; set; }
         void StartRound();
         void UpgradeEnemiesSpawners();
+        FontainModel GetFontain();
     }
 }

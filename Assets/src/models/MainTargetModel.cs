@@ -28,6 +28,8 @@ namespace Assets.src.models {
 
         private void OnDestroyed() {
             GetView().Destroy();
+            Debug.Log("Game over!");
+            Application.Quit();
         }
 
         public void SetView(IView viewParam) {

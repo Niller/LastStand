@@ -186,6 +186,9 @@ namespace Assets.src.models {
         [Inject]
         public IGameDataService GameDataService { get; set; }
 
+        [Inject]
+        public IBattleManager BattleManager { get; set; }
+
         protected IUnitPursuingState pursuingState;
 
         protected IUnitMoveState moveState;
@@ -368,7 +371,11 @@ namespace Assets.src.models {
                     EnterMoveState();
                 }
             } else {
-                EnterIdleState();
+                if (BattleManager.GetFontain().CheckInFontaionRadius(GetView().GetPosition())) {
+                    EnterIdleState();
+                } else {
+                    SetPriorityTarget(new TempTarget(BattleManager.GetFontain().GetView().GetPosition()), true);
+                }
             }
         }
 

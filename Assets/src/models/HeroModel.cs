@@ -22,9 +22,6 @@ namespace Assets.src.models {
         [Inject]
         public IGameManager GameManager { get; set; }
 
-        [Inject]
-        public IBattleManager BattleManager { get; set; }
-
         public ObservableProperty<int> UpgradePoints { get; set; }
 
         public ObservableProperty<int> ExperiencePoints { get; set; }
