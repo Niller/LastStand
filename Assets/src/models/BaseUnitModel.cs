@@ -309,10 +309,14 @@ namespace Assets.src.models {
         }
 
         protected virtual void EnterAttackState() {
+            
             currentState = attackState;
             currentState.OnStop += OnCurrentStateStopped;
             attackState.SetTarget(currentTarget);
             currentState.Start();
+            if (currentTarget is IUnit) {
+                SetPriorityTarget(this, false);
+            }
         }
 
         protected virtual void EnterIdleState() {
