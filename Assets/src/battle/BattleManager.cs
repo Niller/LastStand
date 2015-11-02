@@ -38,8 +38,6 @@ namespace Assets.src.battle {
 
         public Action OnHeroRespawnEnd { get; set; }
 
-        protected int enemiesUnitsLeftSpawn;
-
         public BattleManager() {
             attackers = new List<ITarget>();
             defenders = new List<ITarget>();
@@ -48,12 +46,6 @@ namespace Assets.src.battle {
         }
 
         public void StartRound() {
-            
-            enemiesUnitsLeftSpawn = GameDataService.GetConfig().roundEnemiesCount;
-            if (attackers.Count != 0) {
-                Debug.LogError(attackers.Count);
-            }
-            
             foreach (var attackersSpawner in attackersSpawners) {
                 attackersSpawner.StartSpawn();
             }
@@ -85,24 +77,15 @@ namespace Assets.src.battle {
         }
 
         public void Initialize() {
-            
-            //CooldownService.AddCooldown(3f, null, StartRound);
-
         }
 
         public void RegisterTarget(ITarget target) {
-            if (!target.GetTargetBehaviour().IsDefender)
-                enemiesUnitsLeftSpawn--;
-            if (enemiesUnitsLeftSpawn <= 0) {
-                attackersSpawners.ForEach(spawner => spawner.StopSpawn());
-            }
             GetAppropriateListForTarget(target).Add(target);
         }
 
         public void UnregisterTarget(ITarget target) {
             GetAppropriateListForTarget(target).Remove(target);
-            //Debug.Log(attackers.Count + " " + enemiesUnitsLeftSpawn);
-            if (attackers.Count == 0 && enemiesUnitsLeftSpawn <= 0) {
+            if (attackers.Count == 0 && attackersSpawners.TrueForAll(spawner => spawner.IsSpawnEnded())) {
                 StopRound();
                 GameManager.NextRound();
             }

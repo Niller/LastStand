@@ -8,6 +8,7 @@ namespace Assets.src.data {
     public class SpawnerData {
         public UnitTypes produceUnitType;
         public int level;
+        public int waveSpanwLimit;
         public BarracksUpgradeData[] upgradeData;
     }
 }

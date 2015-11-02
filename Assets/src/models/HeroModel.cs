@@ -67,7 +67,6 @@ namespace Assets.src.models {
 
         public void TryCastSpell(ITarget target, SpellSlot slot) {
             ForceStopCurrentState();
-            //OnSpellCast.Dispatch(GetView().GetPosition(), slot.spell, target, slot.data);
             if (CheckRangeCast(target.GetTargetBehaviour().GetPosition())) {
                 SpellFactory.CreateSpell(slot.spell, slot.data, target, this);
                 slot.StartCooldown();

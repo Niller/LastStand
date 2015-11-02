@@ -12,6 +12,7 @@ namespace Assets.src.services {
             {UnitTypes.MINION_MELEE, BulletTypes.MELEE_BULLET },
             {UnitTypes.ENEMY_RANGE, BulletTypes.RANGE_BULLET },
             {UnitTypes.MINION_RANGE, BulletTypes.RANGE_BULLET },
+            {UnitTypes.BOSS, BulletTypes.MELEE_BULLET },
             {UnitTypes.HERO, BulletTypes.MELEE_BULLET }
         };
 

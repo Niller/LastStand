@@ -6,7 +6,7 @@ namespace Assets.src.services {
         float Duration { get; }
         float ElapsedTime { get; }
 
-        Action OnEnd { get; }
+        Action OnEnd { get; set; }
         float TickInterval { get; }
         Action OnTick { get; set; }
 

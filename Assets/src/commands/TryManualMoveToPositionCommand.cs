@@ -20,7 +20,7 @@ namespace Assets.src.commands {
             
             foreach (var selectedObject in SelectionManager.GetSelectedObjects()) {
                 var unit = selectedObject.GetView().GetModel<IUnit>();
-                if (unit.IsManualControl) {
+                if (unit != null && unit.IsManualControl) {
                     var ray = Camera.main.ScreenPointToRay(Position);
                     RaycastHit hitInfo;
                     if (Physics.Raycast(ray, out hitInfo, 1 << LayerMask.NameToLayer("Terrain"))) {

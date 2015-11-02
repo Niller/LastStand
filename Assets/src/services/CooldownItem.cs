@@ -8,7 +8,7 @@ namespace Assets.src.services {
         //сколько прошло времени
         public float ElapsedTime { get; private set; }
 
-        public float TickInterval { get; private set; }
+        public float TickInterval { get; set; }
 
         public Action OnTick { get; set; }
         public Action OnEnd { get; set; }

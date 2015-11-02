@@ -1,6 +1,9 @@
+using System;
 using Assets.src.battle;
 using Assets.src.models;
+using Assets.src.services;
 using strange.extensions.injector.api;
+using UnityEngine;
 
 namespace Assets.src.gui {
     public class GUIRootContext : EZData.Context {
@@ -94,6 +97,35 @@ namespace Assets.src.gui {
         }
         #endregion
 
+        #region Property IsRoundCountdown
+        private readonly EZData.Property<bool> _privateIsRoundCountdownProperty = new EZData.Property<bool>();
+        public EZData.Property<bool> IsRoundCountdownProperty { get { return _privateIsRoundCountdownProperty; } }
+        public bool IsRoundCountdown {
+            get { return IsRoundCountdownProperty.GetValue(); }
+            set { IsRoundCountdownProperty.SetValue(value); }
+        }
+        #endregion
+
+        #region Property Timer
+        private readonly EZData.Property<int> _privateTimerProperty = new EZData.Property<int>();
+        public EZData.Property<int> TimerProperty { get { return _privateTimerProperty; } }
+        public int Timer {
+            get { return TimerProperty.GetValue(); }
+            set { TimerProperty.SetValue(value); }
+        }
+        #endregion
+
+        #region Property Round
+        private readonly EZData.Property<int> _privateRoundProperty = new EZData.Property<int>();
+        public EZData.Property<int> RoundProperty { get { return _privateRoundProperty; } }
+        public int Round {
+            get { return RoundProperty.GetValue(); }
+            set { RoundProperty.SetValue(value); }
+        }
+        #endregion
+
+        protected ICooldownItem roundCountdownCooldown;
+
         public void Initialize() {
             SelectionManager.SelectionChanged += SelectionChanged;
             GameManager.Gold.OnPropertyChanged += OnGoldChanged;
@@ -101,6 +133,24 @@ namespace Assets.src.gui {
             BattleManager.OnHeroRespawnStart += OnHeroRespawnStart;
             BattleManager.OnHeroRespawnEnd += OnHeroRespawnEnd;
             IsHeroRespawn = false;
+            GameManager.OnNextRoundStartCountdown += OnNextRoundStartCountdown;
+        }
+
+        private void OnNextRoundStartCountdown(ICooldownItem cooldownItem, int round) {
+            roundCountdownCooldown = cooldownItem;
+            Round = round;
+            IsRoundCountdown = true;
+            cooldownItem.OnEnd += RoundCountdownEnd;
+            cooldownItem.OnTick += OnTick;
+            Timer = Mathf.RoundToInt(roundCountdownCooldown.Duration - roundCountdownCooldown.ElapsedTime);
+        }
+
+        private void OnTick() {
+            Timer = Mathf.RoundToInt(roundCountdownCooldown.Duration - roundCountdownCooldown.ElapsedTime);
+        }
+
+        private void RoundCountdownEnd() {
+            IsRoundCountdown = false;
         }
 
         private void OnHeroRespawnEnd() {
@@ -125,45 +175,75 @@ namespace Assets.src.gui {
         private void SelectionChanged() {
             IsOneUnitSelected = SelectionManager.GetSelectedObjects().Count == 1;
             if (IsOneUnitSelected) {
-                var selectedTarget =
-                    SelectionManager.GetSelectedObjects()[0].GetView().GetModel<ITarget>();
-                if (selectedTarget != null) {
-                    IsSpawnerSelected = false;
-                    CurrentSpawner = null;
-                    if (selectedTarget is HeroModel) {
-                        IsHeroSelected = true;
-                        CurrentHero = new HeroContext();
-                        //CurrentHero.SetTargetBehaviour(selectedObject.GetTargetBehaviour());
-                        InjectionBinder.injector.Inject(CurrentHero);
-                        CurrentHero.InitializeSlots(selectedTarget as HeroModel);
-                    } else {
-                        IsHeroSelected = false;
-                        CurrentHero = null;
-                    } //else {
-
-                    CurrentOneUnit = new UnitContext();
-                    CurrentOneUnit.SetTargetBehaviour(selectedTarget.GetTargetBehaviour());
+                if (TrySelectOneUnit()) {
+                    TrySelectHero();
                 } else {
-                    var selectedSpawner =
-                        SelectionManager.GetSelectedObjects()[0].GetView().GetModel<ISpawner>();
-                    if (selectedSpawner != null) {
-                        IsSpawnerSelected = true;
-                        CurrentSpawner = new SpawnerContext(selectedSpawner);
-                    }
-                    CurrentHero = null;
-                    IsHeroSelected = false;
-                    CurrentOneUnit = null;
-                    IsOneUnitSelected = false;
+                    TrySelectSpawner();
                 }
-                
-                //}
             } else {
-                CurrentHero = null;
-                IsSpawnerSelected = false;
-                CurrentSpawner = null;
-                IsHeroSelected = false;
-                CurrentOneUnit = null;
+                ResetHero();
+                ResetSpawner();
+                ResetOneUnit();
             }
+        }
+
+        protected bool TrySelectSpawner() {
+            var selectedSpawner =
+                        SelectionManager.GetSelectedObjects()[0].GetView().GetModel<ISpawner>();
+            if (selectedSpawner != null) {
+                IsSpawnerSelected = true;
+                CurrentSpawner = new SpawnerContext(selectedSpawner);
+                return true;
+            } else {
+                ResetSpawner();
+                return false;
+            }
+        }
+
+        protected bool TrySelectOneUnit() {
+            var selectedTarget =
+                    SelectionManager.GetSelectedObjects()[0].GetView().GetModel<ITarget>();
+            if (selectedTarget is IUnit) {
+                CurrentOneUnit = new UnitContext();
+                CurrentOneUnit.SetTargetBehaviour(selectedTarget.GetTargetBehaviour());
+                ResetSpawner();
+                return true;
+            } else {
+                ResetHero();
+                ResetOneUnit();
+                return false;
+            }
+        }
+
+        protected bool TrySelectHero() {
+            var selectedTarget =
+                    SelectionManager.GetSelectedObjects()[0].GetView().GetModel<ITarget>();
+            if (selectedTarget is HeroModel) {
+                IsHeroSelected = true;
+                CurrentHero = new HeroContext();
+                InjectionBinder.injector.Inject(CurrentHero);
+                CurrentHero.InitializeSlots(selectedTarget as HeroModel);
+                ResetSpawner();
+                return true;
+            } else {
+                ResetHero();
+                return false;
+            }
+        }
+
+        protected void ResetSpawner() {
+            IsSpawnerSelected = false;
+            CurrentSpawner = null;
+        }
+
+        protected void ResetHero() {
+            IsHeroSelected = false;
+            CurrentHero = null;
+        }
+
+        protected void ResetOneUnit() {
+            CurrentOneUnit = null;
+            IsOneUnitSelected = false;
         }
 
         public void UpgradeSpawnerClickButton() {

@@ -1,4 +1,6 @@
-﻿using System.Net.Mime;
+﻿using System;
+using System.Net.Mime;
+using Assets.Common.Extensions;
 using Assets.src.models;
 using Assets.src.services;
 using Assets.src.signals;
@@ -22,28 +24,26 @@ namespace Assets.src.battle {
 
         protected int currentRound = 0;
 
+        public Action<ICooldownItem, int> OnNextRoundStartCountdown { get; set; }
+
         public void Initialize() {
             Gold = new ObservableProperty<int>(150);
             BattleManager.Initialize();
-            NextRound();
+            CooldownService.AddCooldown(1f, null, NextRound);
         }
 
         public void NextRound() {
-            Debug.Log("NextRound");
             if (currentRound < GameDataService.GetConfig().roundCount) {
                 if (currentRound != 0) {
                     BattleManager.UpgradeEnemiesSpawners();
                 }
                 currentRound++;
-                CooldownService.AddCooldown(GameDataService.GetConfig().timeBeforeRoundStart, Test,
+                var cd = CooldownService.AddCooldown(GameDataService.GetConfig().timeBeforeRoundStart, null,
                     BattleManager.StartRound);
+                OnNextRoundStartCountdown.TryCall(cd, currentRound);
             } else {
                 Application.Quit();
             }
-        }
-
-        private void Test() {
-            Debug.Log(Time.time);
         }
 
         public void BlockControl() {

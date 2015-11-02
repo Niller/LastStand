@@ -23,18 +23,8 @@ namespace Assets.src.models {
             var sortedTargets = targets.OrderBy(
                 t =>
                     Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(),
-                        t.GetTargetBehaviour().GetPosition()));
+                        t.GetTargetBehaviour().GetPosition())).ToList();
             nearestTarget = sortedTargets.FirstOrDefault(t => t is IUnit) ?? sortedTargets.FirstOrDefault();
-            /*
-            float minDistance = float.PositiveInfinity;
-            foreach (var target in targets) {
-                var currentDistance = Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(), target.GetTargetBehaviour().GetPosition());
-                if (currentDistance < minDistance) {
-                    minDistance = currentDistance;
-                    nearestTarget = target;
-                }
-            }
-             */
             return nearestTarget;
         }
     }

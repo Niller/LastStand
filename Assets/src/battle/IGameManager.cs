@@ -1,4 +1,6 @@
-﻿using Assets.src.models;
+﻿using System;
+using Assets.src.models;
+using Assets.src.services;
 
 namespace Assets.src.battle {
     public interface IGameManager {
@@ -6,6 +8,7 @@ namespace Assets.src.battle {
         bool IsControlBlocked();
         void UnblockControl();
         ObservableProperty<int> Gold { get; set; }
+        Action<ICooldownItem, int> OnNextRoundStartCountdown { get; set; }
         void Initialize();
         void NextRound();
     }

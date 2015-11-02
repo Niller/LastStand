@@ -4,43 +4,6 @@ using Assets.src.signals;
 namespace Assets.src.gui {
     public class SpellSlotUi : EZData.Context {
 
-        [Inject]
-        public OnSpellSlotActivated SpellSlotActivated { get; set; }
-
-        protected SpellSlot slot;
-
-        protected HeroModel heroModel;
-
-        public void Initialize(HeroContext heroParam, HeroModel heroModelParam, SpellSlot slotParam, string icon) {
-            slot = slotParam;
-            Level = slot.level;
-            Icon = icon;
-            Parent = heroParam;
-            heroModel = heroModelParam;
-
-            slot.OnStartCooldown += OnStartCooldown;
-            slot.OnEndCooldown += OnEndCooldown;
-            if (slot.Cooldown != null) {
-                IsOnCooldown = true;
-                slot.Cooldown.OnTick += OnTick;
-            } else {
-                IsOnCooldown = false;
-            }
-        }
-
-        private void OnEndCooldown() {
-            IsOnCooldown = false;
-        }
-
-        private void OnStartCooldown() {
-            slot.Cooldown.OnTick += OnTick;
-            IsOnCooldown = true;
-        }
-
-        private void OnTick() {
-            CooldownPercent = 1f - slot.Cooldown.GetPCT();
-        }
-
         #region Parent
         public readonly EZData.VariableContext<HeroContext> ParentEzVariableContext = new EZData.VariableContext<HeroContext>(null);
         public HeroContext Parent {
@@ -85,8 +48,44 @@ namespace Assets.src.gui {
         }
         #endregion
 
-        public void OnSlotClick() {
+        [Inject]
+        public OnSpellSlotActivated SpellSlotActivated { get; set; }
 
+        protected SpellSlot slot;
+
+        protected HeroModel heroModel;
+
+        public void Initialize(HeroContext heroParam, HeroModel heroModelParam, SpellSlot slotParam, string icon) {
+            slot = slotParam;
+            Level = slot.level;
+            Icon = icon;
+            Parent = heroParam;
+            heroModel = heroModelParam;
+
+            slot.OnStartCooldown += OnStartCooldown;
+            slot.OnEndCooldown += OnEndCooldown;
+            if (slot.Cooldown != null) {
+                IsOnCooldown = true;
+                slot.Cooldown.OnTick += OnTick;
+            } else {
+                IsOnCooldown = false;
+            }
+        }
+
+        private void OnEndCooldown() {
+            IsOnCooldown = false;
+        }
+
+        private void OnStartCooldown() {
+            slot.Cooldown.OnTick += OnTick;
+            IsOnCooldown = true;
+        }
+
+        private void OnTick() {
+            CooldownPercent = 1f - slot.Cooldown.GetPCT();
+        }
+
+        public void OnSlotClick() {
             if (Parent.IsUpgradeMode) {
                 if (!slot.CheckUpgradePossibility())
                     return;

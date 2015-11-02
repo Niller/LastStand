@@ -28,6 +28,8 @@ namespace Assets.src.models {
 
         protected UnitSpawnerView view;
 
+        protected int leftSpawn;
+
         [PostConstruct]
         public void UnitSpawnerModelConstructor() {
             Initialize();
@@ -48,15 +50,21 @@ namespace Assets.src.models {
         }
 
         public void StartSpawn() {
+            leftSpawn = view.data.waveSpanwLimit;
             spawnUnitsCooldown = CooldownService.AddCooldown(view.data.upgradeData[view.data.level - 1].trainingSpeed,
                 null, SpawnUnit);
         }
 
         protected void SpawnUnit() {
-            var data = view.data;
-            UnitFactory.CreateUnit(view.spawnPoint.position, data.produceUnitType, GetCurrentUnitData().Copy(), IsDefender);          
-            spawnUnitsCooldown = CooldownService.AddCooldown(view.data.upgradeData[view.data.level-1].trainingSpeed,
-                null, SpawnUnit);
+            if (leftSpawn > 0 || IsDefender) {
+                var data = view.data;
+                leftSpawn--;
+                UnitFactory.CreateUnit(view.spawnPoint.position, data.produceUnitType, GetCurrentUnitData().Copy(),
+                    IsDefender);
+                spawnUnitsCooldown =
+                    CooldownService.AddCooldown(view.data.upgradeData[view.data.level - 1].trainingSpeed,
+                        null, SpawnUnit);
+            }
         }
 
         private UnitData GetCurrentUnitData() {
@@ -81,6 +89,10 @@ namespace Assets.src.models {
 
         public int GetUpgradeCost() {
             return view.data.upgradeData[view.data.level].cost;
+        }
+
+        public bool IsSpawnEnded() {
+            return leftSpawn <= 0;
         }
 
         public void Upgrade() {

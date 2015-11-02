@@ -15,8 +15,9 @@ namespace Assets.src.models {
         }
 
         public List<ITarget> GetTargets() {
-            return currentUnit.GetTargetBehaviour().IsDefender ? BattleManager.GetAttackers() : 
-                BattleManager.GetDefenders().Where(unit => !BattleManager.GetFontain().CheckInFontaionRadius(unit.GetTargetBehaviour().GetPosition())).ToList();
+            return currentUnit.GetTargetBehaviour().IsDefender
+                ? BattleManager.GetAttackers()
+                : BattleManager.GetDefenders().Where(unit => !BattleManager.GetFontain().CheckInFontaionRadius(unit.GetTargetBehaviour().GetPosition())).ToList();
         }
     }
 }

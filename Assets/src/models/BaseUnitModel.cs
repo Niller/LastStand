@@ -169,6 +169,7 @@ namespace Assets.src.models {
             ForceStopCurrentState();
             OnDeselected();
             currentTarget = target;
+            priorityTarget = target;
             EnterMoveState();
         }
 
@@ -341,6 +342,7 @@ namespace Assets.src.models {
         }
 
         private void TransitAfterMoveState() {
+            priorityTarget = null;
             StartPursueOrIdle();
         }
 
@@ -412,9 +414,14 @@ namespace Assets.src.models {
 
         public virtual void Update() {
             stateChangesInThisFrame = 0;
-            //Debug.Log(currentState.GetType(), unitView);
             if (currentState != null)
                 currentState.Update();
+            if (priorityTarget == null && currentState is UnitMoveState && !(currentState is IUnitPursuingState)) {
+                if (FindTarget()) {
+                    ForceStopCurrentState();
+                    StartPursueOrIdle();
+                }
+            }
         }
 
         protected virtual void ForceStopCurrentState() {
@@ -427,18 +434,21 @@ namespace Assets.src.models {
 
         protected void StartPursueOrIdle() {
             if (FindTarget()) {
-                if (currentTarget.GetTargetBehaviour().IsDynamic) {
-                    EnterPursuingState();
-                } else {
-                    EnterMoveState();
-                }
+                EnterPursuingState();
             } else {
-                if (BattleManager.GetFontain().CheckInFontaionRadius(GetView().GetPosition())) {
-                    EnterIdleState();
+                if (GetTargetBehaviour().IsDefender) {
+                    if (BattleManager.GetFontain().CheckInFontaionRadius(GetView().GetPosition())) {
+                        EnterIdleState();
+                    } else {
+                        currentTarget = new TempTarget(BattleManager.GetFontain().GetView().GetPosition());
+                        EnterMoveState();
+                        priorityTarget = null;
+                    }
                 } else {
-                    SetPriorityTarget(new TempTarget(BattleManager.GetFontain().GetView().GetPosition()), true);
+                    EnterIdleState();
                 }
             }
+            
         }
 
     }

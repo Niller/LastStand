@@ -7,5 +7,6 @@
         int GetUpgradeCost();
         void Upgrade();
         int GetLevel();
+        bool IsSpawnEnded();
     }
 }
