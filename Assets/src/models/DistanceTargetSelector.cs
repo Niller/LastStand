@@ -1,3 +1,4 @@
+using System.Linq;
 using Assets.src.battle;
 using UnityEngine;
 
@@ -17,8 +18,14 @@ namespace Assets.src.models {
         }
 
         public ITarget FindTarget() {
-            var targets = provider.GetTargets();
             ITarget nearestTarget = null;
+            var targets = provider.GetTargets();
+            var sortedTargets = targets.OrderBy(
+                t =>
+                    Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(),
+                        t.GetTargetBehaviour().GetPosition()));
+            nearestTarget = sortedTargets.First(t => t is IUnit) ?? sortedTargets.First();
+            /*
             float minDistance = float.PositiveInfinity;
             foreach (var target in targets) {
                 var currentDistance = Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(), target.GetTargetBehaviour().GetPosition());
@@ -27,6 +34,7 @@ namespace Assets.src.models {
                     nearestTarget = target;
                 }
             }
+             */
             return nearestTarget;
         }
     }
