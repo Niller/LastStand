@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting;
 using Assets.src.battle;
 using Assets.src.data;
 using Assets.src.managers;
@@ -46,6 +49,8 @@ namespace Assets.src.models {
         protected UnitTypes type;
 
         protected ISelectableBehaviour selectableBehaviour;
+
+        protected Dictionary<Type, IBuff> buffs = new Dictionary<Type, IBuff>(); 
 
         public void Spawn(Vector3 position, UnitData dataParam, UnitTypes typeParam, bool isDefenderParam) {
             data = dataParam;
@@ -178,6 +183,43 @@ namespace Assets.src.models {
             if (currentTarget != null && !currentTarget.GetTargetBehaviour().IsUnvailableForAttack() && !(currentTarget is TempTarget))
                 HUDManager.AddHUD(((IModel)currentTarget).GetView().GetGameObject(), HudTypes.TARGET_POINTER);
         }
+
+        public void AddBuff<T>(T buff) where T : IBuff {
+            if (buffs.ContainsKey(typeof(T))) {
+                RemoveBuff<T>();
+            }
+            buffs.Add(typeof(T), buff);
+            buff.OnEnd += RemoveBuff;
+        }
+
+        protected void RemoveBuff(IBuff buff) {
+            buffs.Remove(buff.GetType());
+        }
+
+        public void RemoveBuff<T>() where T : IBuff {
+            var buff = buffs[typeof (T)];
+            buffs.Remove(typeof(T));
+            buff.OnEnd = null;
+        }
+
+        protected void ClearBuffs() {
+            var temp = buffs.Values.ToList();
+            foreach (var buff in temp) {
+                RemoveBuff(buff);
+            }
+            buffs.Clear();
+        }
+
+        public float GetMovementSpeed() {
+            float buffCoef = buffs.Values.Aggregate<IBuff, float>(1, (current, buff) => current*buff.GetMovementModifier());
+            return GetUnitData().movementSpeed * buffCoef;
+        }
+
+        public float GetAttackSpeed() {
+            float buffCoef = buffs.Values.Aggregate<IBuff, float>(1, (current, buff) => current * buff.GetAttackSpeedModifier());
+            return GetUnitData().attackSpeed * buffCoef;
+        }
+
     }
 
     public abstract partial class BaseUnitModel<TTargetSelector, TTargetProvider> : IUnit
@@ -347,6 +389,7 @@ namespace Assets.src.models {
         }
 
         protected void Destroy() {
+            ClearBuffs();
             SelectionManager.Deselect(selectableBehaviour);
             ForceStopCurrentState();
             EnterDieState();

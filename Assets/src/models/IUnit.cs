@@ -18,6 +18,9 @@ namespace Assets.src.models {
         void SetNavUnit(INavigationUnit navUnit);
         void Update();
         void Spawn(Vector3 position, UnitData dataParam, UnitTypes typeParam, bool isDefenderParam);
-        
+        float GetMovementSpeed();
+        float GetAttackSpeed();
+        void AddBuff<T>(T buff) where T : IBuff;
+        void RemoveBuff<T>() where T : IBuff;
     }
 }

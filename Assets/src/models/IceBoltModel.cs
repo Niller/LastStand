@@ -14,6 +14,15 @@ namespace Assets.src.models {
 
         public override void Apply() {
             source.DoDamage(target, iceBoltData.damage);
+            if (!target.GetTargetBehaviour().IsUnvailableForAttack()) {
+                var unit = target as IUnit;
+                if (unit != null) {
+                    var buff = new FreezeBuff();
+                    InjectionBinder.injector.Inject(buff);
+                    buff.Initialize(iceBoltData.buffData);
+                    unit.AddBuff(buff);
+                }
+            }
         }
 
         protected override GameObject GetViewPrefab() {

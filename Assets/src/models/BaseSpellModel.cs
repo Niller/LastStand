@@ -2,6 +2,7 @@ using System;
 using Assets.src.data;
 using Assets.src.managers;
 using Assets.src.views;
+using strange.extensions.injector.api;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -10,6 +11,9 @@ namespace Assets.src.models {
 
         [Inject]
         public IViewModelManager ViewModelManager { get; set; }
+
+        [Inject]
+        public IInjectionBinder InjectionBinder { get; set; }
 
         protected ITarget target;
 
