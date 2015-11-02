@@ -5,6 +5,5 @@ namespace ru.pragmatix.orbix.world.units {
         void SetAnimatorBool(string key, bool value);
         void PlayAnimation(string animName);
         void StopAnimation(string animName);
-        AnimationEventInformer GetAnimationEventInformer();
     }
 }

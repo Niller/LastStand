@@ -31,6 +31,10 @@ namespace Assets.src.views {
             return transform.position;
         }
 
+        public Vector3 GetForward() {
+            return transform.forward;
+        }
+
         public GameObject GetGameObject() {
             return gameObject;
         }

@@ -10,5 +10,6 @@ namespace Assets.src.views {
         Action OnUpdate { get; set; }
         T GetModel<T>() where T : class, IModel;
         void SetModel(IModel model);
+        Vector3 GetForward();
     }
 }

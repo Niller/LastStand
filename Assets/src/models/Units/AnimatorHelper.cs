@@ -8,11 +8,8 @@ namespace ru.pragmatix.orbix.world.units {
 
         private string currentAnimation = null;
 
-        private AnimationEventInformer animationEventInformer;
-
-        public AnimatorHelper(Animator animatorParam, AnimationEventInformer eventInformer) {
+        public AnimatorHelper(Animator animatorParam) {
             animator = animatorParam;
-            animationEventInformer = eventInformer;
         }
 
         public void SetAnimatorBool(string key, bool value) {
@@ -40,9 +37,6 @@ namespace ru.pragmatix.orbix.world.units {
             }
 
         }
-
-        public AnimationEventInformer GetAnimationEventInformer() {
-            return animationEventInformer;
-        }
+        
     }
 }

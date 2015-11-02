@@ -62,7 +62,7 @@ namespace Assets.src.models {
             targetBehaviour.Initialize(data, isDefenderParam, this);
             targetBehaviour.OnDestroyed += Destroy;
             InitView(position);
-            animatorHelper = new AnimatorHelper(unitView.animator, unitView.animationEventInformer);
+            animatorHelper = new AnimatorHelper(unitView.animator);
             Initialize();
         }
 
@@ -133,8 +133,9 @@ namespace Assets.src.models {
         }
 
         public bool CheckAttackDistance(ITarget target) {
-            return Vector3.Distance(target.GetTargetBehaviour().GetPosition(), GetView().GetPosition()) - target.GetTargetBehaviour().GetVulnerabilityRadius() <=
+            bool checkDistance =  Vector3.Distance(target.GetTargetBehaviour().GetPosition(), GetView().GetPosition()) - target.GetTargetBehaviour().GetVulnerabilityRadius() <=
                    GetUnitData().attackRange;
+            return checkDistance;
         }
 
         protected bool FindTarget() {
@@ -344,7 +345,7 @@ namespace Assets.src.models {
         }
 
         private void TransitAfterPursuingState() {
-            EnterAttackState();
+            TryAttack();
         }
 
         private void TransitAfterIdleState() {
@@ -355,8 +356,16 @@ namespace Assets.src.models {
             GetView().Destroy();
         }
 
+        protected void TryAttack() {
+            if (!currentTarget.GetTargetBehaviour().IsUnvailableForAttack()) {
+                EnterAttackState();
+            } else {
+                StartPursueOrIdle();
+            }
+        }
+
         protected virtual void EnterAttackState() {
-            
+            GetNavUnit().RotateToPosition(currentTarget.GetTargetBehaviour().GetPosition());
             currentState = attackState;
             currentState.OnStop += OnCurrentStateStopped;
             attackState.SetTarget(currentTarget);
