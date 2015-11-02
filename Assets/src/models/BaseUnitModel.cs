@@ -314,8 +314,9 @@ namespace Assets.src.models {
             currentState.OnStop += OnCurrentStateStopped;
             attackState.SetTarget(currentTarget);
             currentState.Start();
-            if (currentTarget is IUnit) {
-                SetPriorityTarget(this, false);
+            var unit = currentTarget as IUnit;
+            if (unit != null) {
+                unit.SetPriorityTarget(this, false);
             }
         }
 
