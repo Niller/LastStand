@@ -188,6 +188,7 @@ namespace Assets.src.models {
             if (buffs.ContainsKey(typeof(T))) {
                 RemoveBuff<T>();
             }
+            buff.Apply(this);
             buffs.Add(typeof(T), buff);
             buff.OnEnd += RemoveBuff;
         }
@@ -199,6 +200,7 @@ namespace Assets.src.models {
         public void RemoveBuff<T>() where T : IBuff {
             var buff = buffs[typeof (T)];
             buffs.Remove(typeof(T));
+            buff.Free();
             buff.OnEnd = null;
         }
 
@@ -211,13 +213,13 @@ namespace Assets.src.models {
         }
 
         public float GetMovementSpeed() {
-            float buffCoef = buffs.Values.Aggregate<IBuff, float>(1, (current, buff) => current*buff.GetMovementModifier());
-            return GetUnitData().movementSpeed * buffCoef;
+            //float buffCoef = buffs.Values.Aggregate<IBuff, float>(1, (current, buff) => current*buff.GetMovementModifier());
+            return GetUnitData().movementSpeed/* * buffCoef*/;
         }
 
         public float GetAttackSpeed() {
-            float buffCoef = buffs.Values.Aggregate<IBuff, float>(1, (current, buff) => current * buff.GetAttackSpeedModifier());
-            return GetUnitData().attackSpeed * buffCoef;
+            //float buffCoef = buffs.Values.Aggregate<IBuff, float>(1, (current, buff) => current * buff.GetAttackSpeedModifier());
+            return GetUnitData().attackSpeed/* * buffCoef*/;
         }
 
     }

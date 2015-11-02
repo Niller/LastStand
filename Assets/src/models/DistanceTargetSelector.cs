@@ -24,7 +24,7 @@ namespace Assets.src.models {
                 t =>
                     Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(),
                         t.GetTargetBehaviour().GetPosition()));
-            nearestTarget = sortedTargets.First(t => t is IUnit) ?? sortedTargets.First();
+            nearestTarget = sortedTargets.FirstOrDefault(t => t is IUnit) ?? sortedTargets.FirstOrDefault();
             /*
             float minDistance = float.PositiveInfinity;
             foreach (var target in targets) {
