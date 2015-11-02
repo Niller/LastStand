@@ -45,7 +45,7 @@ namespace Assets.src.battle {
                 if (!spellSlot.CheckCastPossibility())
                     return;
                 activeSpell = spellSlot;
-                if (GameDataService.GetSpellType(spellSlot.spell) == SpellTypes.TARGET) {
+                if (spellSlot.data.type == SpellTypes.TARGET) {
                     OnPreparationTargetSignal.Dispatch();
                 } else {
                     OnPreparationAreaSignal.Dispatch((spellSlot.data as MeteorData).range);

@@ -32,9 +32,11 @@ namespace Assets.src.services {
             return bullets[uniType];
         }
 
+        /*
         public SpellTypes GetSpellType(Spells spell) {
             return spellsTypes[spell];
         }
+        */
 
         public string GetIconBySpell(Spells spell) {
             return iconsBySpells[spell];

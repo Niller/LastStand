@@ -26,7 +26,7 @@ namespace Assets.src.commands {
         public override void Execute() {
             if (SpellCastManager.IsReadyToCastSpell()) {
                 var activeSpell = SpellCastManager.GetActiveSpell();
-                if (GameDataService.GetSpellType(activeSpell.spell) == SpellTypes.TARGET) {
+                if (activeSpell.data.type == SpellTypes.TARGET) {
                     var ray = Camera.main.ScreenPointToRay(Position);
                     var colls = Physics.RaycastAll(ray);
                     foreach (var col in colls) {
