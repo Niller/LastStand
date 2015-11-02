@@ -67,7 +67,7 @@ namespace Assets.src.models {
         }
 
         public void SpawnHero() {
-            //UnitFactory.CreateUnit(fontainView.spawnPoint.position, UnitTypes.HERO, BattleManager.GetCurrentHeroData().Copy(), true);
+            UnitFactory.CreateUnit(fontainView.spawnPoint.position, UnitTypes.HERO, BattleManager.GetCurrentHeroData().Copy(), true);
             BattleManager.OnHeroRespawned();
         }
 

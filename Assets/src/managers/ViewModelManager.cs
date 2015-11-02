@@ -15,8 +15,8 @@ namespace Assets.src.managers {
     public class ViewModelManager : IViewModelManager {
 
         protected Dictionary<Type,List<string>> viewPaths = new Dictionary<Type, List<string>>() {
-            {typeof(UnitModel), new List<string>() { "prefabs/EnemyMeleeUnit", "prefabs/MinionMeleeUnit", "prefabs/EnemyRangeUnit" , "prefabs/MinionRangeUnit" } },
-            {typeof(HeroModel), new List<string>() {"prefabs/Hero" } },
+            {typeof(UnitModel), new List<string>() { "prefabs/EnemyMeleeUnit", "prefabs/MinionMeleeUnit", "prefabs/EnemyRangeUnit" , "prefabs/MinionRangeUnit", "prefabs/Boss" } },
+            {typeof(HeroModel), new List<string>() { "prefabs/MainCharacter" } },
             {typeof(IceBoltModel), new List<string>() {"prefabs/IceBolt" } },
             {typeof(MeteorModel), new List<string>() { "prefabs/Meteor" } }
         }; 

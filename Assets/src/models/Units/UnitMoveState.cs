@@ -20,7 +20,9 @@ namespace ru.pragmatix.orbix.world.units {
         public override void Update() {
             if (target.GetTargetBehaviour().IsUnvailableForAttack()) 
                 return;
-            if (Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(), target.GetTargetBehaviour().GetPosition()) < target.GetTargetBehaviour().GetVulnerabilityRadius()) {
+            Debug.Log(Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(), target.GetTargetBehaviour().GetPosition()));
+            if (Vector3.Distance(currentUnit.GetTargetBehaviour().GetPosition(), target.GetTargetBehaviour().GetPosition()) < currentUnit.GetTargetBehaviour().GetVulnerabilityRadius()) {
+
                 Stop();
             }
         }

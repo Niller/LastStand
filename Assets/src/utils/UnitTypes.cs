@@ -7,6 +7,7 @@ namespace Assets.src.utils {
         MINION_MELEE = 1,
         ENEMY_RANGE = 2,
         MINION_RANGE = 3,
-        HERO = 4
+        BOSS = 4,
+        HERO = 5
     }
 }
