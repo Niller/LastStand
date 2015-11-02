@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.src.views;
+using UnityEngine;
 
 namespace ru.pragmatix.orbix.world.units {
     public class AnimatorHelper : IAnimatorHelper {
@@ -7,10 +8,11 @@ namespace ru.pragmatix.orbix.world.units {
 
         private string currentAnimation = null;
 
-        public AnimatorHelper(Animator animator) {
-            if (animator != null) {
-                this.animator = animator;
-            }
+        private AnimationEventInformer animationEventInformer;
+
+        public AnimatorHelper(Animator animatorParam, AnimationEventInformer eventInformer) {
+            animator = animatorParam;
+            animationEventInformer = eventInformer;
         }
 
         public void SetAnimatorBool(string key, bool value) {
@@ -37,6 +39,10 @@ namespace ru.pragmatix.orbix.world.units {
                 currentAnimation = null;
             }
 
+        }
+
+        public AnimationEventInformer GetAnimationEventInformer() {
+            return animationEventInformer;
         }
     }
 }

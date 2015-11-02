@@ -5,11 +5,10 @@ namespace Assets.src.services {
         int Id { get; }
         float Duration { get; }
         float ElapsedTime { get; }
-        bool Test { get; set; }
 
-        Action OnTick { get; set; }
         Action OnEnd { get; }
         float TickInterval { get; }
+        Action OnTick { get; set; }
 
         float GetPCT();
         float GetTimeLeft();

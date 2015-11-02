@@ -1,20 +1,17 @@
 ﻿using System;
-using UnityEngine;
-using System.Collections;
 using Assets.Common.Extensions;
 
 namespace Assets.src.services {
     public class CooldownItem : ICooldownItem {
-        public int Id { get; private set; }
+         public int Id { get; private set; }
         public float Duration { get; private set; }
         //сколько прошло времени
         public float ElapsedTime { get; private set; }
-        public bool Test { get; set; }
 
         public float TickInterval { get; private set; }
 
         public Action OnTick { get; set; }
-        public Action OnEnd { get; private set; }
+        public Action OnEnd { get; set; }
 
 
         public CooldownItem(int id, float duration, Action onTick, Action onEnd, float elapsedTime = 0, float tickInterval = 1) {
@@ -45,16 +42,17 @@ namespace Assets.src.services {
             return Duration;
         }
 
-        public void Tick() {
-            if (Test) {
-                Debug.LogError("Removed cooldown was executed!");
-            }
-
-            ElapsedTime += TickInterval;
+        public void Tick(float deltaTime) {
+            ElapsedTime += deltaTime;
             OnTick.TryCall();
+        }
 
-            if (GetPCT() >= 1)
+        public virtual bool CheckEnd() {
+            if (GetPCT() >= 1) {
                 OnEnd.TryCall();
+                return true;
+            }
+            return false;
         }
     }
 }

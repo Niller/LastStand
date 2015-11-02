@@ -8,18 +8,6 @@ using ru.pragmatix.orbix.world.units;
 using UnityEngine;
 
 namespace Assets.src.models {
-
-    public class SpellCastQueueItem {
-
-        public SpellCastQueueItem(SpellSlot slotParam, ITarget targetParam) {
-            slot = slotParam;
-            target = targetParam;
-        } 
-
-        public SpellSlot slot;
-        public ITarget target;
-    }
-
     public class HeroModel : BaseUnitModel<DistanceTargetSelector, AllEnemiesTargetProvider> {
 
         [Inject]
@@ -70,7 +58,7 @@ namespace Assets.src.models {
         protected override void InitDieState() {
             dieState = new HeroDieState();
             InjectionBinder.injector.Inject(dieState);
-            dieState.Initialize(this, null);
+            dieState.Initialize(this, animatorHelper);
         }
 
         public List<SpellSlot> GetSpellSlots() {

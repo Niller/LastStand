@@ -9,6 +9,10 @@ namespace Assets.src.views {
 
         public ISelectableBehaviour SelectableBehaviour { get { return selectableBehaviour = selectableBehaviour ?? GetComponent<ISelectableBehaviour>(); } }
 
+        public Animator animator;
+
+        public AnimationEventInformer animationEventInformer;
+
         protected NavMeshAgent navMeshAgent;
         protected NavMeshObstacle navMeshObstacle;
 
@@ -60,15 +64,17 @@ namespace Assets.src.views {
         }
 
         public void SetDestination(Vector3 destPosition) {
+            
             NavMeshObstacle.enabled = false;
             NavMeshAgent.enabled = true;
+            NavMeshAgent.Resume();
             NavMeshAgent.SetDestination(destPosition);
         }
 
         public void StopMoving() {
             NavMeshAgent.Stop();
-            NavMeshAgent.enabled = false;
-            NavMeshObstacle.enabled = true;
+            //NavMeshAgent.enabled = false;
+            //NavMeshObstacle.enabled = true;
         }
     }
 }

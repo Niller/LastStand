@@ -50,7 +50,9 @@ namespace Assets.src.models {
 
         protected ISelectableBehaviour selectableBehaviour;
 
-        protected Dictionary<Type, IBuff> buffs = new Dictionary<Type, IBuff>(); 
+        protected Dictionary<Type, IBuff> buffs = new Dictionary<Type, IBuff>();
+
+        protected IAnimatorHelper animatorHelper;
 
         public void Spawn(Vector3 position, UnitData dataParam, UnitTypes typeParam, bool isDefenderParam) {
             data = dataParam;
@@ -60,6 +62,7 @@ namespace Assets.src.models {
             targetBehaviour.Initialize(data, isDefenderParam, this);
             targetBehaviour.OnDestroyed += Destroy;
             InitView(position);
+            animatorHelper = new AnimatorHelper(unitView.animator, unitView.animationEventInformer);
             Initialize();
         }
 
@@ -263,32 +266,32 @@ namespace Assets.src.models {
             attackState = new UnitAttackState();
             InjectionBinder.injector.Inject(attackState);
             attackState.SetWeapon(new Weapon(GetUnitData().damage, InjectionBinder.GetInstance<IPool<GameObject>>(GameDataService.GetBulletType(type)), this));
-            attackState.Initialize(this, null);
+            attackState.Initialize(this, animatorHelper);
 
         }
 
         protected virtual void InitPursuingState() {
             pursuingState = new UnitPursuingState();
             InjectionBinder.injector.Inject(pursuingState);
-            pursuingState.Initialize(this, null);
+            pursuingState.Initialize(this, animatorHelper);
         }
 
         protected virtual void InitIdleState() {
             idleState = new UnitIdleState();
             InjectionBinder.injector.Inject(idleState);
-            idleState.Initialize(this, null);
+            idleState.Initialize(this, animatorHelper);
         }
 
         protected virtual void InitMoveState() {
             moveState = new UnitMoveState();
             InjectionBinder.injector.Inject(moveState);
-            moveState.Initialize(this, null);
+            moveState.Initialize(this, animatorHelper);
         }
 
         protected virtual void InitDieState() {
             dieState = new UnitDieState();
             InjectionBinder.injector.Inject(dieState);
-            dieState.Initialize(this, null);
+            dieState.Initialize(this, animatorHelper);
         }
 
         protected void OnCurrentStateStopped() {

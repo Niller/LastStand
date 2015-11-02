@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.src.contexts;
+using Assets.src.services;
 using Assets.src.utils;
 
 public interface IGameDataService : IService {

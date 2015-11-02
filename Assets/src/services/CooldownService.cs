@@ -3,34 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.src.services {
-    public class CooldownService :  ICooldownService {
+namespace Assets.src.services{
+    public class CooldownService : ICooldownService {
+        
+        private int count = 0;
 
-        private readonly Dictionary<float, Dictionary<int, ICooldownItem>> cooldowns = new Dictionary<float, Dictionary<int, ICooldownItem>>();
-        private readonly Dictionary<float, float> lastTickTimes = new Dictionary<float, float>(); 
+        private readonly Dictionary<int, ICooldownItem> items = new Dictionary<int, ICooldownItem>();
+        private readonly Dictionary<int, float> lastTickTimes = new Dictionary<int, float>();
 
-        private int count;
-
-        private readonly List<ICooldownItem> forRemove = new List<ICooldownItem>(); 
+        private float expectedSyncTime = 0;
+        private bool isSync = false;
+        private readonly DateTime startTime = DateTime.Now;
 
         public int GetUniqueId() {
+            count++;
             return count + 1;
         }
 
+
+        float GetTime() {
+            float rez = (float)(DateTime.Now - startTime).TotalSeconds;
+            return rez;
+        }
+
         private void AddCooldown(ICooldownItem cooldown) {
-            if (cooldowns.ContainsKey(cooldown.TickInterval)) {
-                cooldowns[cooldown.TickInterval].Add(cooldown.Id, cooldown);
-            } else {
-                cooldowns[cooldown.TickInterval] = new Dictionary<int, ICooldownItem> { {cooldown.Id,cooldown}};
-            }
-
-            if (lastTickTimes.ContainsKey(cooldown.TickInterval)) {
-                cooldown.AddDuration(Time.time - lastTickTimes[cooldown.TickInterval]);
-            } else {
-                lastTickTimes.Add(cooldown.TickInterval, Time.time);
-            }
-
-            count++;
+            items.Add(cooldown.Id, cooldown);
+            lastTickTimes[cooldown.Id] = GetTime();
         }
 
         public ICooldownItem AddCooldown(float duration, Action onTick, Action onEnd, float elapsedTime = 0, float tickInterval = 1) {
@@ -39,24 +37,47 @@ namespace Assets.src.services {
             return item;
         }
 
+
         public void RemoveCooldown(ICooldownItem item) {
-            //RemoveCooldown(item.InitSortId);
             if (item == null)
                 return;
-            item.Test = true;
-            if (cooldowns.ContainsKey(item.TickInterval)) {
-                cooldowns[item.TickInterval].Remove(item.Id);
-                if (cooldowns[item.TickInterval].Count == 0)
-                    lastTickTimes.Remove(item.TickInterval);
-            }
+
+            items.Remove(item.Id);
+            lastTickTimes.Remove(item.Id);
         }
 
         public ICooldownItem GetById(int id) {
-            foreach (var cooldownPair in cooldowns) {
-                if (cooldownPair.Value.ContainsKey(id))
-                    return cooldownPair.Value[id];
-            }
+            if (items.ContainsKey(id))
+                return items[id];
             return null;
+        }
+
+
+        public void UpdateOfTime(float currentTime) {
+            var listKeys = items.Keys.ToList();
+            for (int i = listKeys.Count - 1; i >= 0; i--) {
+                int id = listKeys[i];
+                if (lastTickTimes.ContainsKey(id)) {
+                    float lastTickTime = lastTickTimes[id];
+                    CooldownItem cooldown = (CooldownItem) items[id];
+
+                    float deltaTime = currentTime - lastTickTime;
+
+                    if (deltaTime >= cooldown.TickInterval) {
+                        cooldown.Tick(deltaTime);
+                        lastTickTimes[id] = currentTime;
+
+                        if (cooldown.CheckEnd()) {
+                            RemoveCooldown(cooldown);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void Clear() {
+            items.Clear();
+            lastTickTimes.Clear();
         }
 
         public void Initialize() {
@@ -64,46 +85,7 @@ namespace Assets.src.services {
         }
 
         public void OnUpdate() {
-            var listKeys = lastTickTimes.Keys.ToList();
-            foreach (var lastTick in listKeys) {
-                if (!lastTickTimes.ContainsKey(lastTick))
-                    continue;
-                
-                if (Time.time - lastTickTimes[lastTick] >= lastTick) {
-                    Tick(cooldowns[lastTick]);
-                    //lastTickTime = Time.time;
-                    lastTickTimes[lastTick] = Time.time;
-                }    
-            }
-
-            foreach (var cooldownItem in forRemove) {
-                RemoveCooldown(cooldownItem);
-            }
-            forRemove.Clear();
-            
-        }
-
-        void Tick(Dictionary<int, ICooldownItem> cooldownsForTick) {
-            var listKeys = cooldownsForTick.Keys.ToList();
-            for (int i = listKeys.Count - 1; i >= 0; i--) {
-                if (!cooldownsForTick.ContainsKey(listKeys[i]))
-                    continue;
-                ((CooldownItem)cooldownsForTick[listKeys[i]]).Tick();
-                
-                //Случается, когда мы на OnEnd в кулдауне делаем, например, очистку всех кулдаунов
-                if (!cooldownsForTick.ContainsKey(listKeys[i]))
-                    continue;
-
-                if (cooldownsForTick[listKeys[i]].GetPCT() >= 1) {
-                    //CooldownsForTick.Remove(listKeys[i]);
-                    forRemove.Add(cooldownsForTick[listKeys[i]]);
-                }
-            }
-        }
-
-        public void Clear() {
-            lastTickTimes.Clear();
-            cooldowns.Clear();
+            UpdateOfTime(GetTime());
         }
     }
 }

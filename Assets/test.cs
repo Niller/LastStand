@@ -3,9 +3,10 @@ using System.Collections;
 
 public class test : MonoBehaviour {
 
+    public Animator animator;
 	// Use this for initialization
 	void Start () {
-	    //GetComponent<Animator>().Play();
+	    animator.SetBool("running", true);
 	}
 	
 	

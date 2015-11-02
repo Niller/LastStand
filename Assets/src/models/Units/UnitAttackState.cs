@@ -15,6 +15,18 @@ namespace ru.pragmatix.orbix.world.units {
 
         protected Weapon weapon;
 
+        public override void Initialize(IUnit unit, IAnimatorHelper animatorHelperParam) {
+            base.Initialize(unit, animatorHelperParam);
+            animatorHelper.GetAnimationEventInformer().OnAttack += Attack;
+        }
+
+        private void Attack() {
+            if (!currentUnit.GetTargetBehaviour().IsUnvailableForAttack() &&
+                !target.GetTargetBehaviour().IsUnvailableForAttack()) {
+                Shoot();
+            }
+        }
+
         public void SetTarget(ITarget targetParam) {
             target = targetParam;
         }
@@ -32,7 +44,12 @@ namespace ru.pragmatix.orbix.world.units {
                 Stop();
                 return;
             }
-            Shoot();
+            animatorHelper.SetAnimatorBool("attacking", true);
+            StartAttackAnimation();
+        }
+
+        protected void StartAttackAnimation() {
+            animatorHelper.PlayAnimation("attacking");
         }
 
         protected void Shoot() {
@@ -47,6 +64,7 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         public override void ForceStop() {
+            animatorHelper.SetAnimatorBool("attacking", false);
             CooldownService.RemoveCooldown(attackSpeedCooldown);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using Assets.src.services;
 using strange.extensions.context.impl;
 
 namespace Assets.src.contexts {

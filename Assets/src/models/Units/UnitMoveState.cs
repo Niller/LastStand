@@ -1,5 +1,6 @@
 ﻿using Assets.src.battle;
 using Assets.src.models;
+using Assets.src.views;
 using UnityEngine;
 
 namespace ru.pragmatix.orbix.world.units {
@@ -12,6 +13,7 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         public override void Start() {
+            animatorHelper.SetAnimatorBool("running", true);
             currentUnit.GetNavUnit().SetDestination(target.GetTargetBehaviour().GetPosition());
         }
 
@@ -24,6 +26,7 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         public override void ForceStop() {
+            animatorHelper.SetAnimatorBool("running", false);
             currentUnit.GetNavUnit().StopMoving();
         }
 
