@@ -1,5 +1,5 @@
 using System;
-using Assets.Common.Extensions;
+using Assets.src.utils;
 
 namespace Assets.src.models {
     public class ObservableProperty<T> {

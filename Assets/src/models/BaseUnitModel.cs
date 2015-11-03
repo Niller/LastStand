@@ -218,13 +218,11 @@ namespace Assets.src.models {
         }
 
         public float GetMovementSpeed() {
-            //float buffCoef = buffs.Values.Aggregate<IBuff, float>(1, (current, buff) => current*buff.GetMovementModifier());
-            return GetUnitData().movementSpeed/* * buffCoef*/;
+            return GetUnitData().movementSpeed;
         }
 
         public float GetAttackSpeed() {
-            //float buffCoef = buffs.Values.Aggregate<IBuff, float>(1, (current, buff) => current * buff.GetAttackSpeedModifier());
-            return GetUnitData().attackSpeed/* * buffCoef*/;
+            return GetUnitData().attackSpeed;
         }
 
     }
@@ -367,7 +365,7 @@ namespace Assets.src.models {
         }
 
         protected virtual void EnterAttackState() {
-            GetNavUnit().RotateToPosition(currentTarget.GetTargetBehaviour().GetPosition());
+            
             currentState = attackState;
             currentState.OnStop += OnCurrentStateStopped;
             attackState.SetTarget(currentTarget);

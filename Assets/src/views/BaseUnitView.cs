@@ -1,5 +1,4 @@
 using System;
-using Assets.Common.Extensions;
 using Assets.src.models;
 using Assets.src.utils;
 using UnityEngine;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Assets.Common.Extensions {
+namespace Assets.src.utils {
     public static partial class Extensions {
         public static void TryCall<T0, T1>(this Action<T0, T1> target, T0 param0, T1 param1) {
             var local = target;

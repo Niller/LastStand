@@ -34,7 +34,6 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         public override void Start() {
-            //animatorHelper.SetAnimatorBool("attacking", true);
             StartAttackAnimation();
         }
 
@@ -56,6 +55,7 @@ namespace ru.pragmatix.orbix.world.units {
         }
 
         protected void StartAttackAnimation() {
+            currentUnit.GetNavUnit().RotateToPosition(target.GetTargetBehaviour().GetPosition());
             animatorHelper.PlayAnimation("attacking");
             attackCooldown = CooldownService.AddCooldown(0.5f, null, Attack, 0, 0.1f);
         }

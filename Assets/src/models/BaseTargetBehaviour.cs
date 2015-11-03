@@ -1,7 +1,7 @@
 using System;
-using Assets.Common.Extensions;
 using Assets.src.battle;
 using Assets.src.data;
+using Assets.src.utils;
 using Assets.src.views;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -53,7 +53,6 @@ namespace Assets.src.models {
                 currentHealth = data.health;
             }
             OnHPChanged.TryCall();
-            //Debug.Log(currentHealth);
             if (currentHealth <= 0) {
                 Destroy();
                 return true;

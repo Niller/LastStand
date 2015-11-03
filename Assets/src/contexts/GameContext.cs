@@ -73,20 +73,9 @@ namespace Assets.src.contexts {
 
             //pools
 
-            //units
-            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_MELEE);
-            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.MINION_MELEE);
-            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.ENEMY_RANGE);
-            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.MINION_RANGE);
-            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(UnitTypes.HERO);
-
             //bullets
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(BulletTypes.MELEE_BULLET);
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(BulletTypes.RANGE_BULLET);
-
-            //spells
-            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(Spells.ICE_BOLT);
-            injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(Spells.METEOR);
 
             //hud
             injectionBinder.Bind<IPool<GameObject>>().To<Pool<GameObject>>().ToSingleton().ToName(HudTypes.TARGET_POINTER);
@@ -116,57 +105,9 @@ namespace Assets.src.contexts {
         }
 
         protected void InitPools() {
-
-            //units
-            IPool<GameObject> enemyMeleePool = injectionBinder.GetInstance<IPool<GameObject>>(UnitTypes.ENEMY_MELEE);
-            enemyMeleePool.instanceProvider = new ResourceInstanceProvider("prefabs/EnemyMeleeUnit",
-                LayerMask.NameToLayer("enemy"));
-            enemyMeleePool.inflationType = PoolInflationType.INCREMENT;
-
-            IPool<GameObject> minionMeleePool = injectionBinder.GetInstance<IPool<GameObject>>(UnitTypes.MINION_MELEE);
-            minionMeleePool.instanceProvider = new ResourceInstanceProvider("prefabs/MinionMeleeUnit",
-                LayerMask.NameToLayer("minion"));
-            minionMeleePool.inflationType = PoolInflationType.INCREMENT;
-
-            IPool<GameObject> enemyRangePool = injectionBinder.GetInstance<IPool<GameObject>>(UnitTypes.ENEMY_RANGE);
-            enemyRangePool.instanceProvider = new ResourceInstanceProvider("prefabs/EnemyRangeUnit",
-                LayerMask.NameToLayer("enemy"));
-            enemyRangePool.inflationType = PoolInflationType.INCREMENT;
-
-            IPool<GameObject> minionRangePool = injectionBinder.GetInstance<IPool<GameObject>>(UnitTypes.MINION_RANGE);
-            minionRangePool.instanceProvider = new ResourceInstanceProvider("prefabs/MinionRangeUnit",
-                LayerMask.NameToLayer("minion"));
-            minionRangePool.inflationType = PoolInflationType.INCREMENT;
-
-            IPool<GameObject> heroPool = injectionBinder.GetInstance<IPool<GameObject>>(UnitTypes.HERO);
-            heroPool.instanceProvider = new ResourceInstanceProvider("prefabs/Hero",
-                LayerMask.NameToLayer("minion"));
-            heroPool.inflationType = PoolInflationType.INCREMENT;
-
-            //bullets
-            IPool<GameObject> bulletMeleePool = injectionBinder.GetInstance<IPool<GameObject>>(BulletTypes.MELEE_BULLET);
-            bulletMeleePool.instanceProvider = new ResourceInstanceProvider("prefabs/InstantBullet",
-                LayerMask.NameToLayer("bullet"));
-            bulletMeleePool.inflationType = PoolInflationType.INCREMENT;
-
-            IPool<GameObject> bulletRangePool = injectionBinder.GetInstance<IPool<GameObject>>(BulletTypes.RANGE_BULLET);
-            bulletRangePool.instanceProvider = new ResourceInstanceProvider("prefabs/DirectTargetBullet",
-                LayerMask.NameToLayer("bullet"));
-            bulletRangePool.inflationType = PoolInflationType.INCREMENT;
-
-            //spells
-            IPool<GameObject> iceBoltPool = injectionBinder.GetInstance<IPool<GameObject>>(Spells.ICE_BOLT);
-            iceBoltPool.instanceProvider = new ResourceInstanceProvider("prefabs/IceBolt",
-                LayerMask.NameToLayer("bullet"));
-            iceBoltPool.inflationType = PoolInflationType.INCREMENT;
-
-            InitPool(Spells.METEOR, "prefabs/Meteor");
-
-            //hud
-            IPool<GameObject> targetPointerPool = injectionBinder.GetInstance<IPool<GameObject>>(HudTypes.TARGET_POINTER);
-            targetPointerPool.instanceProvider = new ResourceInstanceProvider("prefabs/gui/TargetPointer",
-                LayerMask.NameToLayer("bullet"));
-            targetPointerPool.inflationType = PoolInflationType.INCREMENT;
+            InitPool(HudTypes.TARGET_POINTER, "prefabs/gui/TargetPointer");
+            InitPool(BulletTypes.MELEE_BULLET, "prefabs/InstantBullet");
+            InitPool(BulletTypes.RANGE_BULLET, "prefabs/DirectTargetBullet");
         }
 
         protected void InitPool(object name, string prefabPath) {

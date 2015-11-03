@@ -1,7 +1,7 @@
 using System;
-using Assets.Common.Extensions;
 using Assets.src.data;
 using Assets.src.services;
+using Assets.src.utils;
 
 namespace Assets.src.models {
     public class FreezeBuff : IBuff {

@@ -105,11 +105,6 @@ namespace Assets.src.models {
             base.OnStateStopped();
         }
 
-        /*public void UpgradeSpell(int slotNumber) {
-            spells[slotNumber].Upgrade();
-        }
-        */
-
         public void UpgradeSpell(SpellSlot slot) {
             slot.Upgrade();
             UpgradePoints.Value--;

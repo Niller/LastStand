@@ -1,7 +1,7 @@
 using System;
-using Assets.Common.Extensions;
 using Assets.src.battle;
 using Assets.src.models;
+using Assets.src.utils;
 using UnityEngine;
 
 namespace Assets.src.views {
